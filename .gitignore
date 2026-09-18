@@ -1,0 +1,27 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+sku_env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# M5 raw and generated data
+data/raw/*
+data/interim/*
+data/processed/*
+
+# Generated outputs
+outputs/figures/*
+outputs/tables/*
+
+# OS
+.DS_Store
+Thumbs.db
+"@ | Set-Content .gitignore
