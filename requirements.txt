@@ -1,0 +1,33 @@
+# Core data analysis
+pandas
+numpy
+
+# Visualization
+matplotlib
+seaborn
+
+# Statistics and time-series analysis
+scipy
+statsmodels
+
+# Machine learning
+scikit-learn
+lightgbm
+
+# Structural break detection
+ruptures
+
+# Forecasting
+pmdarima
+
+# Jupyter
+jupyter
+notebook
+ipykernel
+
+# Data/file handling
+openpyxl
+pyarrow
+
+# Notebook utilities
+nbformat
