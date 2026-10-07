@@ -31,3 +31,10 @@ pyarrow
 
 # Notebook utilities
 nbformat
+
+# Testing
+pytest
+
+# Dashboard
+streamlit
+plotly
