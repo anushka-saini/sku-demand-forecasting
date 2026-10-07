@@ -1,0 +1,3 @@
+method,parameter,value,heldout_false_alarm_rate,n_heldout_surrogates
+CUSUM,threshold h,14.38499871851911,0.047933884297520664,14520
+PELT,penalty,31.032266659545684,0.048347107438016526,7260

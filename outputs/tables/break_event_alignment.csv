@@ -1,0 +1,6 @@
+event,window_wks,n_breaks,aligned_pct,chance_pct,p_value
+sustained price change,2,488,4.3,2.3,0.0038
+sustained price change,4,488,5.7,4.2,0.0438
+sustained price change,8,488,9.8,7.5,0.0212
+calendar event,0,488,49.2,47.2,0.1982
+calendar event,1,488,89.5,87.9,0.1504

@@ -1,0 +1,6 @@
+size_sd,n_trials,shift_pct_of_mean_median,cusum_detection_rate,cusum_correct_sign_rate,cusum_median_delay_wks,pelt_hit_rate_8wk
+0.0,1264,0.0,0.447,0.222,42.0,0.103
+0.5,1264,17.979,0.464,0.345,33.0,0.168
+1.0,1264,35.958,0.578,0.522,23.0,0.403
+2.0,1264,71.916,0.866,0.85,13.0,0.824
+3.0,1264,107.874,0.95,0.945,8.0,0.938
