@@ -1,0 +1,13 @@
+model,variant,policy,used_in_inventory
+seasonal_naive,static,seasonal_naive_static,True
+seasonal_naive,adaptive,seasonal_naive_adaptive,False
+seasonal_naive,placebo,seasonal_naive_placebo,False
+ets,static,ets_static,False
+ets,adaptive,ets_adaptive,False
+ets,placebo,ets_placebo,False
+lightgbm,static,lightgbm_static,True
+lightgbm,adaptive,lightgbm_adaptive,True
+lightgbm,placebo,lightgbm_placebo,False
+tsb,static,tsb_static,False
+tsb,adaptive,tsb_adaptive,False
+tsb,placebo,tsb_placebo,False
