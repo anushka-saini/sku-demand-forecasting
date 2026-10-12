@@ -1,0 +1,5 @@
+# Dashboard only (used by Streamlit Community Cloud: entrypoint dashboard/app.py)
+streamlit>=1.50
+plotly>=6.0
+pandas>=2.2
+pyarrow>=15
