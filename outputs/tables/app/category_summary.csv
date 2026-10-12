@@ -1,0 +1,4 @@
+category,total_items,items_with_leading_zeros,pct_items_with_leading_zeros,ax_ay_candidates,items_tested,pct_stationary
+FOODS,1437.0,714.0,49.7,337.0,337.0,85.2
+HOBBIES,565.0,303.0,53.6,106.0,106.0,87.7
+HOUSEHOLD,1047.0,548.0,52.3,283.0,283.0,83.4
