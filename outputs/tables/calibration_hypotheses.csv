@@ -1,0 +1,5 @@
+hypothesis,supported,evidence
+H1.1 CUSUM FAR on the new null is above 5%,True,FAR = 0.1186
+H1.2 adjusted share is below the observed share,True,adjusted 0.6350 (CI 0.5975 to 0.6721) vs observed 0.6783
+H1.3 power at 5% and 10% within 10 points of control (steps and drifts),True,control 0.0701; step 5%/10% 0.0751/0.0927; drift 5%/10% 0.0754/0.0904
+H1.4 drifts are detected later than steps at every size,False,5%: step 54 vs drift 54 wks; 10%: step 53 vs drift 54 wks; 20%: step 45 vs drift 55 wks; 30%: step 36 vs drift 50 wks
