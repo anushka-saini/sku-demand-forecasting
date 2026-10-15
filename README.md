@@ -54,20 +54,17 @@ An interactive website lets you explore all the results. It has ten pages, each 
 words, with charts that say what they show and how to read them. The pictures below switch between light and dark
 to match your GitHub theme.
 
-| Overview: the four answers | Does retraining help? |
+| Overview: the four answers | Data and method |
 |---|---|
-| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/overview.png"><img alt="Overview page" src="docs/screenshots/overview.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/retraining.png"><img alt="Retraining page" src="docs/screenshots/retraining.png"></picture> |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/overview.png"><img alt="Overview: the four answers page" src="docs/screenshots/overview.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/data_method.png"><img alt="Data and method page" src="docs/screenshots/data_method.png"></picture> |
+| **Which products were studied** | **Spotting changes in sales** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/segmentation.png"><img alt="Which products were studied page" src="docs/screenshots/segmentation.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/breaks.png"><img alt="Spotting changes in sales page" src="docs/screenshots/breaks.png"></picture> |
+| **Which forecast works best** | **Does retraining help?** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/forecasts.png"><img alt="Which forecast works best page" src="docs/screenshots/forecasts.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/retraining.png"><img alt="Does retraining help? page" src="docs/screenshots/retraining.png"></picture> |
 | **Inventory simulator** | **Planner: what to check on Monday** |
-| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/inventory.png"><img alt="Inventory simulator page" src="docs/screenshots/inventory.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/planner.png"><img alt="Planner page" src="docs/screenshots/planner.png"></picture> |
-
-### Dark mode
-The dashboard follows your computer's light or dark setting.
-
-| Shift detection (dark) | Forecast comparison (dark) |
-|---|---|
-| <img alt="Shift detection page in dark mode" src="docs/screenshots/dark/breaks.png"> | <img alt="Forecast comparison page in dark mode" src="docs/screenshots/dark/forecasts.png"> |
-
-All pages are in [docs/screenshots](docs/screenshots) (light) and [docs/screenshots/dark](docs/screenshots/dark).
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/inventory.png"><img alt="Inventory simulator page" src="docs/screenshots/inventory.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/planner.png"><img alt="Planner: what to check on Monday page" src="docs/screenshots/planner.png"></picture> |
+| **Texas and Wisconsin** | **Assumptions and limits** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/replication.png"><img alt="Texas and Wisconsin page" src="docs/screenshots/replication.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/limitations.png"><img alt="Assumptions and limits page" src="docs/screenshots/limitations.png"></picture> |
 
 ### Run it yourself
 ```bash
