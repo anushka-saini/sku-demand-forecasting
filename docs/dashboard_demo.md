@@ -1,51 +1,54 @@
 # Dashboard demo kit
 
-Every number below is shown somewhere in the app at its default settings. Defaults are a 95% service level, a 7-day lead time, LightGBM, and item FOODS_1_004.
+Every number here is in `outputs/results_facts.json` and is shown in the app at its default settings: 95% target service level, 7-day lead time, base assumed costs, all categories.
 
-## 3-minute walkthrough
+## 2-minute walkthrough (follows the page order)
 
-**0:00 – Overview (30 s)**
-> "This project asks whether Walmart items' demand shifts in detectable ways, and whether a forecast that retrains after a shift leads to better stocking decisions. The headline at the top is generated from the results, and it's a negative finding. Retraining after a break made forecasts slightly *worse*: median MASE changed by +0.0033, with a 95% interval of +0.0015 to +0.0053, across 488 items. A random training cut on items with no break changed it by +0.0009, which is essentially nothing. I analysed 726 items, and 67.2% had a break by the last forecast date."
+**Overview (25 s)**
+> "The question is whether retail demand shifts in ways we can detect, and whether retraining after a shift improves forecasts and stocking. The four verdicts at the top are computed from the results, not typed. The main one is **No**: none of four retraining methods helped. That negative result is the finding. The gains came from a better static forecast and better-calibrated safety stock."
 
-**0:30 – Data & method (20 s)**
-> "Here's the pipeline. One data bug mattered a lot. FOODS_1_004 shows 403 days of zero sales before it was ever sold. Left in, every new product would look like it had a huge structural break at launch. 1,565 items had more than 30 of these leading zero days, so I trimmed every series to its first sale."
+**Data & method (10 s)**
+> "I modelled the 726 high-volume California items: 23.8% of items but 66.4% of units sold. Before anything else, I trimmed pre-launch zeros, which would otherwise look like huge launch shifts."
 
-**0:50 – Segmentation (15 s)**
-> "I modelled only the AX and AY items: high volume and reasonably steady. That's 726 of 3,049 items, but 66% of units sold. You can click any item here and open it in the forecast explorer."
+**Shift detection (25 s)**
+> "Shifts are real but the detector is coarse. On break-free series that keep each item's seasonality, CUSUM raises false alarms 11.9% of the time, not the 4.8% the simpler test suggested. After removing chance alarms, about 63.5% of items have a real shift, with a CI from 59.8 to 67.2%. A sudden 20% shift is caught only 18% of the time, and only 171 of 488 breaks pass every quality check."
 
-**1:05 – Break detection (35 s)**
-> "Breaks are found with a weekly CUSUM whose threshold I calibrated on simulated series with no breaks. It gives false alarms on 4.8% of them. PELT, a second method, agrees on 83.7% of items, with a kappa of 0.62. The honest limitation is this chart. When I inject *no* shift at all, CUSUM still alarms 45% of the time, because the series drift on their own. And only 5.7% of breaks sit near a sustained price change, against 4.2% expected by chance. So most breaks have no identifiable cause in this data."
+**Forecast comparison (15 s)**
+> "LightGBM is the best model: median error 0.744, against 0.755 for ETS and 0.976 for repeating last week. It runs 3.6% low overall. Its uncalibrated 90% bands covered only 85.5% of days; conformal calibration brings that to 89.9%."
 
-**1:40 – Forecast comparison (40 s)**
-> "LightGBM is the best static model, with a median MASE of 0.744 against 0.976 for seasonal naive. In the confidence-interval chart, adaptive retraining doesn't significantly help in any of the 8 model-category groups. The orange intervals sit at or right of zero. The placebo shows that shortening the training window at random doesn't help either. Break items also aren't harder to forecast. After adjusting for volume, variability and history length, the difference is +2.8%, and the interval includes zero. Down here, the item explorer shows actual sales against the static and adaptive forecasts, with 90% bands."
+**Does retraining help? (15 s)**
+> "Restarting the model from the shift made error slightly worse, +0.0033 MASE, with a CI wholly above zero. A placebo, cutting the training window at random on items without a shift, also changed nothing. And it isn't because shifted items are harder: +2.8% after adjustment, with a CI that includes zero."
 
-**2:20 – Inventory decision (30 s)**
-> "This simulates every item's stock day by day. At a 95% target, static LightGBM reaches a 97.69% fill rate holding $161,205 of inventory, at a total cost of $68,708. Seasonal naive needs $193,251 of inventory for 97.28%. Adaptive costs +12.4% more than static. But item by item that difference isn't significant (p = 0.307), because a few items drive it. The costs are assumptions, labelled as such. Across every cost combination in the grid, adaptive costs 8.3% to 16.0% more."
+**Inventory simulator (20 s)**
+> "Costs here are assumptions, shown with an orange frame. At a 95% target, LightGBM-based reorder points hold 16.6% less stock at 10.1% lower cost than the baseline. Sizing safety stock from calibrated bands cuts cost by another 31.1%. Adaptive costs more than static in all three seasons tested."
 
-**2:50 – Assumptions & limitations (10 s)**
-> "This last page lists the scope, the assumed parameters, what didn't work, and what would change the conclusion. For example, the 90% bands only cover 84.5% of days, so safety stock comes out a bit too low."
+**Planner (5 s)**
+> "This is the Monday list: 38 items below a 95% fill-rate target with calibrated safety stock (95 with the textbook formula), each with reasons and a CSV export."
 
-## Five likely interview questions about the dashboard
+**Replication (5 s)**
+> "Everything was rerun on Texas and Wisconsin with all settings frozen, and all 14 conclusion checks held."
 
-1. **"Why is the headline negative? Isn't that a failed project?"**
-   The question was whether adapting helps. The data says no for this setup: +0.0033 MASE, interval above zero, and the placebo near zero. A dashboard that hid that would mislead a planner. The positive, actionable result is that a good static model beats the baseline: 0.744 vs 0.976 MASE, with less inventory and a lower cost.
+## Five likely interview questions
 
-2. **"How do I know the numbers in the app are right?"**
-   The app never models anything; it only reads result files from the notebooks. A test recomputes the per-item adaptive and placebo medians from the error table and checks they match the notebook's statistical tests. Another test renders every page. Every headline and chart title is built from the data, not typed in.
+1. **"Why didn't retraining help?"**
+   Four methods were tested: restart from the shift, down-weight old data, a shift feature, and a blend. None met the pre-registered bar, and restarting was significantly worse (+0.0033 MASE). My best explanation, which I haven't tested, is that LightGBM's rolling-mean features already follow level changes, so discarding history loses seasonality and price information without gaining anything. The placebo supports this: random truncation on items without a shift also did nothing.
 
-3. **"What does the stockout-risk flag mean, and is it reliable?"**
-   It's a derived rule, labelled as such on the page: the item's simulated fill rate fell below the target service level. At 95% with a 7-day lead time, 95 items are flagged for static LightGBM. It depends on the simulation's assumptions (lead time, lost sales), so it's a prompt for review, not a measured fact.
+2. **"Why should I trust your detector?"**
+   Partly, and the dashboard says so. I measured false alarms on break-free series that keep each item's yearly seasonality and autocorrelation: 11.9% for CUSUM. So I report a chance-adjusted share of 63.5% with a CI rather than the raw 67.8%. PELT agrees on 83.7% of items. Injecting known shifts shows the limits: a 20% step is caught 18% of the time. I trust it for "large shifts are common", not for spotting small ones.
 
-4. **"Why should a planner trust the cost numbers?"**
-   They shouldn't treat them as measured. Holding cost (25% a year), stockout cost (0.5× price) and lead time are assumptions, shown with an ASSUMED tag, and a sensitivity grid sits next to them. The ranking (adaptive costs more than static) held in every combination tested. The cheapest service level was 99% in every case, which would change if holding costs were much higher.
+3. **"Your first false-alarm rate was 4.8%. Why did it change?"**
+   That 4.8% was measured on the same simple simulation used to set the threshold, so it was about 5% by construction. A stricter, seasonality-preserving null gave 11.9%. I pre-registered the new check before running it, logged it, and corrected the README.
 
-5. **"Why Streamlit with pre-computed files instead of live models?"**
-   The backtest takes about 30 minutes, which is too slow for a page load. Pre-computing keeps every page under a second in testing, keeps the app reproducible from a fresh clone (about 22 MB of committed results), and guarantees the dashboard shows exactly what the notebooks produced.
+4. **"How do you know the inventory savings aren't just your cost assumptions?"**
+   Fill rate, stockouts and inventory are measured in the simulation, and costs are assumed and labelled. The direction held across a grid of holding (15–35%/yr) and lost-sale (0.25–2× price) costs, three seasons, and two other states. A 99% target beats 95% unless a lost sale costs less than about a quarter of the annual holding rate.
 
-## Captions
+5. **"What would you do next?"**
+   Correct the 3.6% under-forecast, test adaptation only on large, confirmed shifts, try store-level and slower-moving items where shifts are relatively bigger, and replace assumed costs with real ones.
 
-**GitHub repo description (≤ 350 chars):**
-> Detecting structural breaks in 726 Walmart (M5) SKU demand series and testing whether retraining after a break improves forecasts and inventory decisions. Calibrated CUSUM + PELT, rolling-origin backtest (LightGBM MASE 0.744 vs 0.976 naive), placebo-controlled test, inventory simulation, and an explainable Streamlit dashboard.
+## Repository description
+> Do demand shifts matter? Walmart M5 SKU study: calibrated shift detection (CUSUM + PELT), rolling-origin forecasting (LightGBM, ETS), four pre-registered retraining strategies (none helped), conformal safety stock, inventory simulation, replication in TX/WI, and an explainable Streamlit dashboard.
 
-**Resume line:**
-> Built an explainable Streamlit dashboard over a 726-SKU Walmart demand study. It showed that a static LightGBM cut median MASE from 0.976 to 0.744 vs seasonal naive, while retraining after detected breaks gave no gain under a placebo-controlled test. Every figure is generated from tested, pre-computed results.
+## Resume bullets
+- Built a demand-forecasting and inventory pipeline on 726 Walmart SKUs. LightGBM cut median forecast error (MASE) from 0.976 to 0.744 vs a seasonal-naive baseline, and its reorder points held 16.6% less inventory at 10.1% lower simulated cost.
+- Pre-registered and ran a robustness study: recalibrated a structural-break detector (false alarms 11.9% on a seasonal null; 63.5% of items with a real shift, 95% CI 59.8–67.2%), tested four retraining strategies with Holm-corrected paired tests (none helped), and replicated all 14 conclusion checks in two other states.
+- Shipped a 10-page Streamlit dashboard whose verdicts and README numbers are generated from a single facts file and checked by tests, including a planner watchlist that cut items below a 95% target from 95 to 38 with conformal safety stock.

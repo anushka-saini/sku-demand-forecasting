@@ -2,7 +2,8 @@
 Start the dashboard, open every page in a headless browser with Playwright, and save full-page screenshots
 to docs/screenshots/. Uses Playwright's Chromium if installed, otherwise the system Microsoft Edge.
 
-Run: python scripts/screenshots.py
+Run: python scripts/screenshots.py          (light theme, docs/screenshots/)
+     python scripts/screenshots.py --dark   (dark theme, docs/screenshots/dark/)
 """
 import subprocess
 import sys
@@ -40,7 +41,9 @@ def launch(p):
 
 def main():
     from playwright.sync_api import sync_playwright
-    OUT.mkdir(parents=True, exist_ok=True)
+    dark = "--dark" in sys.argv
+    out = OUT / "dark" if dark else OUT
+    out.mkdir(parents=True, exist_ok=True)
     server = subprocess.Popen([sys.executable, "-m", "streamlit", "run", str(ROOT / "dashboard" / "app.py"),
                                "--server.port", str(PORT), "--server.headless", "true"], cwd=ROOT,
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -49,13 +52,13 @@ def main():
         with sync_playwright() as p:
             browser = launch(p)
             for name, (path, height) in PAGES.items():
-                page = browser.new_page(viewport={"width": 1440, "height": height}, color_scheme="light")
+                page = browser.new_page(viewport={"width": 1440, "height": height}, color_scheme="dark" if dark else "light")
                 page.goto(f"http://localhost:{PORT}/{path}", wait_until="networkidle")
                 page.wait_for_selector("h1", timeout=60000)
                 # wait until Streamlit has finished running the script
                 page.wait_for_function("!document.querySelector('[data-testid=\"stStatusWidget\"]')", timeout=60000)
                 time.sleep(2)                                   # let Plotly finish drawing
-                page.screenshot(path=str(OUT / f"{name}.png"))
+                page.screenshot(path=str(out / f"{name}.png"))
                 page.close()
                 print("saved", name)
             browser.close()
