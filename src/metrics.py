@@ -62,3 +62,19 @@ def standardized_mean_diff(a, b):
     a, b = np.asarray(a, dtype=float), np.asarray(b, dtype=float)
     pooled = np.sqrt((a.var(ddof=1) + b.var(ddof=1)) / 2)
     return (a.mean() - b.mean()) / pooled if pooled > 0 else np.nan
+
+
+def holm_adjust(p_values):
+    """
+    Holm step-down adjusted p-values (controls the family-wise error rate).
+    NaN inputs stay NaN and are not counted in the family size.
+    """
+    p = np.asarray(p_values, dtype=float)
+    out = np.full(len(p), np.nan)
+    idx = np.flatnonzero(~np.isnan(p))
+    order = idx[np.argsort(p[idx])]
+    m, running = len(idx), 0.0
+    for rank, i in enumerate(order):
+        running = max(running, (m - rank) * p[i])
+        out[i] = min(1.0, running)
+    return out

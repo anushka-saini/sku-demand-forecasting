@@ -111,3 +111,19 @@ def policy_kpis(sim, demand, price, holding_rate_annual, stockout_multiple):
             'avg_inventory_value': np.mean(sim['on_hand'] * price),
             'n_orders': int(np.sum(sim['order_qty'] > 0)),
             'holding_cost': holding, 'stockout_cost': stockout, 'total_cost': holding + stockout}
+
+
+def cycle_service_level(sim, lead_time):
+    """
+    Achieved cycle service level: share of replenishment orders whose lead-time window
+    (the lead_time days after the order is placed) had no lost sales. Orders whose
+    window runs past the end of the simulation are left out. Returns (cycles without
+    a stockout, cycles counted).
+    """
+    lost, orders = np.asarray(sim['lost']), np.flatnonzero(np.asarray(sim['order_qty']) > 0)
+    ok = n = 0
+    for t in orders:
+        if t + lead_time < len(lost):
+            n += 1
+            ok += lost[t + 1:t + lead_time + 1].sum() == 0
+    return int(ok), int(n)

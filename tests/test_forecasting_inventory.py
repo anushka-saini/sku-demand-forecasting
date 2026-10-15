@@ -97,3 +97,16 @@ def test_simulation_underforecast_causes_lost_sales():
     sim = simulate_policy(demand, [np.full(28, 5.0)] * 2, safety_stocks=[0.0, 0.0], lead_time=3)
     assert sim['lost'].sum() > 0
     assert np.all(sim['on_hand'] >= 0)
+
+
+def test_holm_adjust():
+    from metrics import holm_adjust
+    adj = holm_adjust([0.01, 0.04, 0.03, np.nan])
+    assert np.allclose(adj[:3], [0.03, 0.06, 0.06]) and np.isnan(adj[3])
+    assert holm_adjust([0.5, 0.9]).max() <= 1.0
+
+
+def test_cycle_service_level_counts_lead_time_windows():
+    from inventory import cycle_service_level
+    sim = {'order_qty': np.array([5, 0, 0, 5, 0, 0, 5, 0]), 'lost': np.array([0, 0, 0, 0, 2, 0, 0, 0])}
+    assert cycle_service_level(sim, lead_time=2) == (1, 2)     # order at t=6 runs past the end
