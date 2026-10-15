@@ -1,6 +1,13 @@
+# One accent colour in both themes. Setting colours at the top level of [theme] locks the app to the light
+# theme, so they are set per theme and the app follows the viewer's light/dark system setting.
 [theme]
-primaryColor = "#0072B2"
 font = "sans serif"
+
+[theme.light]
+primaryColor = "#0072B2"
+
+[theme.dark]
+primaryColor = "#4FA3E0"
 
 [server]
 headless = true

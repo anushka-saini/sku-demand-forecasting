@@ -108,3 +108,52 @@ def base_cost_assumptions(inventory):
 
 def is_small(n):
     return n < SMALL_N
+
+
+# Planner watchlist reason thresholds (DERIVED display rules, shown on the page)
+BIAS_FLAG = 0.05          # |forecast / actual - 1| above this is flagged as under- or over-forecast
+BAND_FLAG = 0.80          # 90% band covering fewer than this share of days is flagged as "band misses often"
+
+
+def build_watchlist(cal_items, item_bias, item_cov, items, hc_items, method, service_level,
+                    model="lightgbm", variant="static"):
+    """
+    Items whose simulated fill rate fell below the target, for one forecast policy and safety-stock method,
+    with plain-language reasons. Only filters and joins pre-computed tables.
+    """
+    w = cal_items[(cal_items["model"] == model) & (cal_items["variant"] == variant) &
+                  (cal_items["method"] == method) & (cal_items["service_level"] == service_level)]
+    w = w[w["fill_rate"] < service_level].copy()
+    b = item_bias[(item_bias["model"] == model) & (item_bias["variant"] == variant)].set_index("item_id")["bias"]
+    cov_col = "coverage90_after" if method == "conformal" else "coverage90_before"
+    c = item_cov[(item_cov["model"] == model) & (item_cov["variant"] == variant)].set_index("item_id")[cov_col]
+    meta = items.set_index("item_id")
+    hc = hc_items.set_index("item_id")["high_confidence"].fillna(False).astype(bool)
+    w["category"] = w["item_id"].map(meta["category"])
+    w["segment"] = w["item_id"].map(meta["segment"])
+    w["forecast_bias"] = w["item_id"].map(b)
+    w["band_coverage_90"] = w["item_id"].map(c)
+    w["shift_detected"] = w["item_id"].map(meta["break_at_last_origin"]).fillna(False).astype(bool)
+    w["high_confidence_shift"] = w["item_id"].map(hc).fillna(False).astype(bool)
+    w["intermittent"] = w["item_id"].map(meta["intermittent"]).fillna(False).astype(bool)
+
+    def reasons(r):
+        out = []
+        if r["forecast_bias"] < -BIAS_FLAG:
+            out.append(f"under-forecast {r['forecast_bias']:+.1%}")
+        elif r["forecast_bias"] > BIAS_FLAG:
+            out.append(f"over-forecast {r['forecast_bias']:+.1%}")
+        if r["band_coverage_90"] < BAND_FLAG:
+            out.append(f"90% band covers only {r['band_coverage_90']:.0%} of days")
+        if r["high_confidence_shift"]:
+            out.append("high-confidence demand shift")
+        elif r["shift_detected"]:
+            out.append("demand shift flagged")
+        if r["intermittent"]:
+            out.append("intermittent demand")
+        return "; ".join(out) if out else "no single cause flagged"
+
+    w["reasons"] = w.apply(reasons, axis=1) if len(w) else []
+    cols = ["item_id", "category", "segment", "fill_rate", "lost_units", "stockout_days", "total_cost", "mean_safety_stock",
+            "forecast_bias", "band_coverage_90", "shift_detected", "high_confidence_shift", "intermittent", "reasons"]
+    return w[cols].sort_values("lost_units", ascending=False).reset_index(drop=True)

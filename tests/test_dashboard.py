@@ -118,7 +118,8 @@ def test_app_per_item_medians_match_notebook_tests():
 
 # ---------------------------------------------------------------- every page renders without an exception
 
-PAGES = ["overview", "data_method", "segmentation", "breaks", "forecasts", "inventory", "limitations"]
+PAGES = ["overview", "data_method", "segmentation", "breaks", "forecasts", "retraining", "inventory", "planner",
+         "replication", "limitations"]
 
 
 @pytest.mark.parametrize("page", PAGES)

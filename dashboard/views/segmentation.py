@@ -4,7 +4,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.kpis import abc_xyz_matrix, filter_items
-from utils.ui import chart, header, n_note, style
+from utils.ui import chart, filters, header, n_note, style
 
 items = get("items")
 
@@ -12,7 +12,9 @@ header("Segmentation",
        "Items are grouped by how much they sell (ABC) and how erratic their sales are (XYZ). Only the high-volume, "
        "reasonably predictable AX and AY items were modelled.")
 
-cats = st.multiselect("Category", sorted(items["category"].unique()), default=sorted(items["category"].unique()))
+cats, _, _ = filters()
+st.caption("Category filter: sidebar. The segment filter does not apply here, because this page "
+           "shows every segment.")
 sub = filter_items(items, categories=cats)
 if sub.empty:
     st.info("No items match the selected categories.")

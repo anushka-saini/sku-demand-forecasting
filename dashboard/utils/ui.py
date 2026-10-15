@@ -94,8 +94,33 @@ h4 {margin-top: 1.4rem; margin-bottom: 0.1rem;}
 .pipeline .step b {display: block; margin-bottom: 0.2rem;}
 .pipeline .step span {opacity: 0.75;}
 .pipeline .arrow {align-self: center; opacity: 0.5;}
+.verdict {border: 1px solid rgba(128,128,128,0.3); border-radius: 8px; padding: 0.9rem 1rem; height: 100%;}
+.verdict .q {font-size: 0.85rem; opacity: 0.75; margin-bottom: 0.35rem;}
+.verdict .badge {display: inline-block; font-weight: 700; font-size: 1.15rem; padding: 0.1rem 0.6rem; border-radius: 4px;
+                 border: 2px solid currentColor; margin-right: 0.4rem;}
+.verdict .yes {color: #0072B2;} .verdict .no {color: #B45F00;} .verdict .partly {color: #7F7F7F;}
+.verdict .strength {font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.8;}
+.verdict .ans {margin: 0.55rem 0 0.35rem 0; line-height: 1.4;}
+.verdict .cav {font-size: 0.82rem; opacity: 0.75;}
+.footer {font-size: 0.78rem; opacity: 0.7; border-top: 1px solid rgba(128,128,128,0.3); margin-top: 2.5rem; padding-top: 0.6rem;}
 </style>
 """
+
+
+def sidebar_filters(categories, segments):
+    """Global filters, kept in session state across pages (widgets live in the entry point)."""
+    with st.sidebar:
+        st.markdown("**Filters (all pages)**")
+        st.multiselect("Category", categories, default=categories, key="g_cat")
+        st.multiselect("Segment", segments, default=segments, key="g_seg", help="Only AX and AY items were modelled.")
+        st.radio("Target service level", [0.90, 0.95, 0.99], index=1, key="g_sl", horizontal=True,
+                 format_func=lambda x: f"{x:.0%}")
+
+
+def filters():
+    """(categories, segments, service level) from the global sidebar filters."""
+    return (st.session_state.get("g_cat") or None, st.session_state.get("g_seg") or None,
+            st.session_state.get("g_sl", 0.95))
 
 
 def sidebar_glossary():
@@ -124,3 +149,33 @@ def empty_figure(message):
     fig.update_xaxes(visible=False)
     fig.update_yaxes(visible=False)
     return style(fig, height=200, legend=False)
+
+
+def assumed_chart(fig):
+    """Distinct style for charts driven by ASSUMED costs: dashed frame and a persistent label."""
+    fig.add_shape(type="rect", xref="paper", yref="paper", x0=0, y0=0, x1=1, y1=1,
+                  line=dict(color="#B45F00", width=1.5, dash="dash"), layer="below")
+    fig.add_annotation(text="ASSUMED COSTS", xref="paper", yref="paper", x=1, y=1, xanchor="right", yanchor="bottom",
+                       showarrow=False, font=dict(size=10, color="#B45F00"))
+    return fig
+
+
+def verdict_card(v):
+    cls = {"Yes": "yes", "No": "no", "Partly": "partly"}.get(v["verdict"], "yes")
+    st.markdown(f"<div class='verdict'><div class='q'>{v['question']}</div>"
+                f"<span class='badge {cls}'>{v['verdict']}</span><span class='strength'>{v['strength']} evidence</span>"
+                f"<div class='ans'>{v['answer']}</div><div class='cav'>Caveat: {v['caveat']}</div></div>",
+                unsafe_allow_html=True)
+
+
+def footer(f):
+    """Scope line on every page, built from the facts file."""
+    sc = f["scope"]
+    w = sc["windows"]
+    rep = f.get("replication_scope", {})
+    rep_txt = ", ".join(f"{k} ({v['value']} items)" for k, v in rep.items())
+    st.markdown(
+        f"<div class='footer'>Scope: California, {sc['ax_ay_items']['value']} high-volume (AX/AY) items, sales summed "
+        f"across stores. Forecast evaluation {w['W1']['first_eval_day']} to {w['W1']['last_eval_day']}; inventory also "
+        f"checked on two earlier 168-day windows. Replicated in {rep_txt}. M5 ends {w['W1']['last_eval_day']}, so there "
+        f"is no COVID-era data.</div>", unsafe_allow_html=True)

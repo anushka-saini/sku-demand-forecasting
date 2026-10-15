@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data import get
+from utils.facts import facts, value
 from utils.ui import ACCENT, NEUTRAL, chart, header, style, vline
 
 cat = get("category_summary")
@@ -26,6 +27,14 @@ steps = [("Raw M5 data", "sales, calendar, prices"),
 boxes = "<span class='arrow'>→</span>".join(
     f"<div class='step'><b>{i}. {name}</b><span>{detail}</span></div>" for i, (name, detail) in enumerate(steps, 1))
 st.markdown(f"<div class='pipeline'>{boxes}</div>", unsafe_allow_html=True)
+f = facts()
+c1, c2, c3 = st.columns(3)
+c1.metric("Items modelled", f"{value(f, 'scope', 'ax_ay_items'):,}", help="AX and AY items in California")
+c2.metric("Share of all California items", f"{value(f, 'scope', 'ax_ay_share_of_items'):.1%}",
+          help=f"of {value(f, 'scope', 'ca_items'):,} items")
+c3.metric("Share of units sold", f"{value(f, 'scope', 'ax_ay_share_of_units'):.1%}")
+st.caption("How to read this: a minority of items carries most of the volume, so modelling the high-volume, "
+           "reasonably steady items covers most of what a planner stocks.")
 
 # Leading-zero example
 item = lz["item_id"].iloc[0]
