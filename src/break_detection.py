@@ -288,9 +288,9 @@ def step_vs_trend_bic(values, burn_in=8, min_size=8):
 
 # ---------------------------------------------------------------- event alignment
 
-def weekly_ca_prices(prices, calendar, item_ids):
-    """Median CA sell price per item per Walmart week, indexed by week start (Saturday)."""
-    p = prices[prices['store_id'].str.startswith('CA') & prices['item_id'].isin(item_ids)]
+def weekly_ca_prices(prices, calendar, item_ids, state='CA'):
+    """Median sell price across a state's stores per item per Walmart week, indexed by week start (Saturday)."""
+    p = prices[prices['store_id'].str.startswith(state) & prices['item_id'].isin(item_ids)]
     p = p.groupby(['item_id', 'wm_yr_wk'])['sell_price'].median().reset_index()
     week_start = calendar.groupby('wm_yr_wk')['date'].min()
     p['week_start'] = p['wm_yr_wk'].map(week_start)

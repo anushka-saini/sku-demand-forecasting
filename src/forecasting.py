@@ -70,7 +70,7 @@ def is_intermittent(series, adi_cut=1.32):
     return n_nonzero == 0 or len(y) / n_nonzero > adi_cut
 
 
-def local_forecasts(item_id, dates, sales, origins, starts, run_tsb=False, h=HORIZON):
+def local_forecasts(item_id, dates, sales, origins, starts, run_tsb=False, h=HORIZON, run_ets=True):
     """
     All local-model forecasts for one item across origins and training-window
     variants. starts: dict origin -> {variant: start_date or None}; a variant
@@ -91,7 +91,9 @@ def local_forecasts(item_id, dates, sales, origins, starts, run_tsb=False, h=HOR
             if key not in fitted:
                 i0 = dates.searchsorted(start)
                 train = sales[i0:n_train]
-                fitted[key] = {'seasonal_naive': seasonal_naive(train, h), 'ets': ets_forecast(train, h)}
+                fitted[key] = {'seasonal_naive': seasonal_naive(train, h)}
+                if run_ets:
+                    fitted[key]['ets'] = ets_forecast(train, h)
                 if run_tsb:
                     fitted[key]['tsb'] = tsb_forecast(train, h)
             for model, fc in fitted[key].items():
@@ -151,12 +153,12 @@ def training_windows(daily_by_item, origins, h_cusum, k=1.0, burn_in=8, ref_len=
 
 # ---------------------------------------------------------------- global LightGBM
 
-LGB_FEATURES = ['item_code', 'dept_code', 'dow', 'month', 'snap_CA', 'is_event', 'days_since_launch',
+LGB_FEATURES = ['item_code', 'dept_code', 'dow', 'month', 'snap', 'is_event', 'days_since_launch',
                 'sell_price', 'price_rel_365', 'lag_28', 'lag_35', 'lag_42', 'lag_49',
                 'rmean_7_l28', 'rmean_28_l28', 'rmean_56_l28', 'rstd_28_l28']
 
 
-def build_lgb_panel(long_df, calendar, price_wk):
+def build_lgb_panel(long_df, calendar, price_wk, snap_col='snap_CA'):
     """
     Daily item panel with features that only use sales lagged >= 28 days, so one
     model forecasts all 28 days ahead with no recursion and no lookahead.
@@ -164,9 +166,9 @@ def build_lgb_panel(long_df, calendar, price_wk):
     as in the M5 competition.
     """
     df = long_df[['item_id', 'date', 'sales']].sort_values(['item_id', 'date']).reset_index(drop=True)
-    cal = calendar[['date', 'snap_CA', 'event_name_1']].copy()
+    cal = calendar[['date', snap_col, 'event_name_1']].rename(columns={snap_col: 'snap'})
     cal['is_event'] = cal['event_name_1'].notna().astype(int)
-    df = df.merge(cal[['date', 'snap_CA', 'is_event']], on='date', how='left')
+    df = df.merge(cal[['date', 'snap', 'is_event']], on='date', how='left')
 
     df['dow'] = df['date'].dt.dayofweek
     df['month'] = df['date'].dt.month
@@ -199,22 +201,39 @@ LGB_PARAMS = {'objective': 'tweedie', 'tweedie_variance_power': 1.1, 'learning_r
               'force_row_wise': True, 'num_threads': 8}
 
 
-def lgb_forecast(panel, origin, train_start_by_item=None, num_rounds=300, h=HORIZON):
+def lgb_forecast(panel, origin, train_start_by_item=None, num_rounds=300, h=HORIZON,
+                 decay_break_by_item=None, half_life_days=182, shift_break_by_item=None):
     """
     Train one global LightGBM on rows dated <= origin and forecast origin+1..origin+h.
-    train_start_by_item: optional dict item_id -> earliest training date for that
-    item (used for the adaptive / placebo variants). Returns DataFrame
-    (item_id, date, forecast).
+
+    train_start_by_item : dict item_id -> earliest training date (truncate / placebo variants).
+    decay_break_by_item : dict item_id -> break date. Rows before it get sample weight
+                          0.5 ** (days before break / half_life_days); all other rows weight 1.
+    shift_break_by_item : dict item_id -> break date. Adds two features, `post_break`
+                          (1 from the break date) and `weeks_since_break` (capped at 104).
+    The break dates must have been detected from data up to `origin` only.
+    Returns (DataFrame item_id, date, forecast; fitted model).
     """
     import lightgbm as lgb
-    train = panel[(panel['date'] <= origin) & panel['rmean_56_l28'].notna()]
+    frame = panel[panel['date'] <= origin + pd.Timedelta(days=h)]
+    features = list(LGB_FEATURES)
+    if shift_break_by_item is not None:
+        days = (frame['date'] - frame['item_id'].map(shift_break_by_item)).dt.days
+        frame = frame.assign(post_break=(days >= 0).astype(int),
+                             weeks_since_break=(days // 7).clip(lower=0, upper=104).fillna(0))
+        features += ['post_break', 'weeks_since_break']
+    train = frame[(frame['date'] <= origin) & frame['rmean_56_l28'].notna()]
     if train_start_by_item:
         starts = train['item_id'].map(train_start_by_item)
         train = train[starts.isna() | (train['date'] >= starts)]
-    test = panel[(panel['date'] > origin) & (panel['date'] <= origin + pd.Timedelta(days=h))]
-    ds = lgb.Dataset(train[LGB_FEATURES], label=train['sales'],
+    weight = None
+    if decay_break_by_item is not None:
+        before = (train['item_id'].map(decay_break_by_item) - train['date']).dt.days
+        weight = np.where(before > 0, 0.5 ** (before / half_life_days), 1.0)
+    test = frame[frame['date'] > origin]
+    ds = lgb.Dataset(train[features], label=train['sales'], weight=weight,
                      categorical_feature=['item_code', 'dept_code'], free_raw_data=True)
     model = lgb.train(LGB_PARAMS, ds, num_boost_round=num_rounds)
     out = test[['item_id', 'date']].copy()
-    out['forecast'] = np.maximum(model.predict(test[LGB_FEATURES]), 0.0)
+    out['forecast'] = np.maximum(model.predict(test[features]), 0.0)
     return out, model
