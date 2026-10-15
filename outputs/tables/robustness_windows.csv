@@ -1,0 +1,4 @@
+window,seasonal_coverage,warm_up_origin,first_eval_day,last_eval_day,n_items,cusum_h
+W1,"Dec-May, includes Christmas",2015-11-08,2015-12-07,2016-05-22,723,
+W2,"Jun-Dec, includes Thanksgiving",2015-05-24,2015-06-22,2015-12-06,718,12.80921214123941
+W3,"Jan-Jun, no Christmas",2014-12-07,2015-01-05,2015-06-21,709,12.314226473871756
