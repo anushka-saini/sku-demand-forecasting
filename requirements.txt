@@ -1,40 +1,35 @@
-# Core data analysis
-pandas
-numpy
+# Pinned to the versions the published results were produced with (Python 3.12.9).
+# Unused packages listed earlier (pmdarima, seaborn, openpyxl, scikit-learn) were removed.
 
-# Visualization
-matplotlib
-seaborn
+# Core
+numpy==2.5.3
+pandas==3.0.6
+pyarrow==25.0.1
+scipy==1.18.1
+statsmodels==0.15.0
+joblib==1.6.0
 
-# Statistics and time-series analysis
-scipy
-statsmodels
+# Models and break detection
+lightgbm==4.7.0
+ruptures==1.1.10
 
-# Machine learning
-scikit-learn
-lightgbm
+# Plots
+matplotlib==3.11.2
 
-# Structural break detection
-ruptures
-
-# Forecasting
-pmdarima
-
-# Jupyter
-jupyter
-notebook
-ipykernel
-
-# Data/file handling
-openpyxl
-pyarrow
-
-# Notebook utilities
-nbformat
-
-# Testing
-pytest
+# Notebooks
+jupyter==1.1.1
+notebook==7.6.2
+ipykernel==7.3.0
+nbformat==5.11.1
+nbconvert==7.17.1
+nbclient==0.11.0
 
 # Dashboard
-streamlit
-plotly
+streamlit==1.65.0
+plotly==7.1.0
+
+# Testing
+pytest==9.1.1
+
+# Screenshots and PDF summary (scripts/screenshots.py, scripts/build_summary.py)
+playwright==1.64.0
