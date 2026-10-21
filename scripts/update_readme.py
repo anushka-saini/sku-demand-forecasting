@@ -56,6 +56,9 @@ def render(f):
         f"{len(windows)} time periods tested. Setting safety stock from realistic error ranges cut the cost by a further "
         f"**{abs(calc['value']):.0%}**. These costs use assumed prices for storage and lost sales, not real Walmart figures.",
         "",
+    ]
+    lines += m2_lines(f)
+    lines += [
         "<details><summary><b>Technical details</b> (verdicts, confidence intervals, test statistics)</summary>",
         "",
         "| Question | Verdict | Evidence | Caveat |",
@@ -88,6 +91,35 @@ def render(f):
         END,
     ]
     return "\n".join(lines)
+
+
+def m2_lines(f):
+    """Milestone 2 summary in plain words, or nothing if notebooks 12-16 have not been run."""
+    if "m2" not in f:
+        return []
+    m = f["m2"]
+    mase = lambda k: m["metrics"][f"{k}|ALL|mase"]["value"]
+    n = m["sample"]["value"]
+    sar, hw = m["tests"]["H1|sarima-seasonal_naive"], m["tests"]["H1|hw_add-seasonal_naive"]
+    best = m["h2_lowest_median_mase"]["model"]
+    names = {"lightgbm": "LightGBM", "sarima": "SARIMA", "hw_add": "Holt-Winters", "ets": "damped Holt-Winters (ETS)",
+             "arima": "ARIMA", "seasonal_naive": "seasonal naive", "hw_mul": "multiplicative Holt-Winters"}
+    r, d = m["shift_aware"]["all break item-origins|restart"], m["shift_aware"]["all break item-origins|dummy"]
+    st = m["stationarity"]["stationary|ALL"]
+    yes = lambda b: "Yes" if b else "No"
+    return [
+        "### Milestone 2: classical time-series models",
+        "",
+        f"On a sample of {n} items, with the same backtest as above: **{st['value']:.0%}** of the 726 items test as "
+        f"stationary (ADF and KPSS agree). SARIMA (median MASE {mase('sarima'):.3f}) and Holt-Winters ({mase('hw_add'):.3f}) "
+        f"against seasonal naive ({mase('seasonal_naive'):.3f}): SARIMA better: **{yes(sar['a_better'])}** "
+        f"(median difference {sar['value']:+.3f}, 95% CI {sar['ci95'][0]:+.3f} to {sar['ci95'][1]:+.3f}); Holt-Winters "
+        f"better: **{yes(hw['a_better'])}** ({hw['value']:+.3f}, 95% CI {hw['ci95'][0]:+.3f} to {hw['ci95'][1]:+.3f}). "
+        f"The lowest median error is **{names[best]}** ({m['h2_lowest_median_mase']['value']:.3f}). Reacting to a detected "
+        f"break helps SARIMA: **{yes(not m['h3_supported'])}** (restart {r['value']:+.4f}, level-shift dummy "
+        f"{d['value']:+.4f} MASE, n = {r['n']} items). Details: `docs/midsem/INTERIM_FINDINGS.md`.",
+        "",
+    ]
 
 
 def updated_readme(text, facts):

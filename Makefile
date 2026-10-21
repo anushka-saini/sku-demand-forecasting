@@ -1,5 +1,5 @@
 # Reproduce everything from the raw M5 files (see docs/DATA.md for the download).
-# On Windows, run from Git Bash or install make (e.g. `choco install make`); or run the commands by hand.
+# On Windows without make, use: python scripts/run_all.py   (same steps; see its --help text)
 
 PY ?= python
 RUN = $(PY) -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=20000
@@ -16,7 +16,12 @@ NOTEBOOKS = \
 	notebooks/08_adaptation_variants.ipynb \
 	notebooks/09_forecast_calibration.ipynb \
 	notebooks/10_inventory_robustness.ipynb \
-	notebooks/11_replication_tx_wi.ipynb
+	notebooks/11_replication_tx_wi.ipynb \
+	notebooks/12_stationarity_decomposition.ipynb \
+	notebooks/13_classical_models.ipynb \
+	notebooks/14_model_diagnostics.ipynb \
+	notebooks/15_shift_aware_classical.ipynb \
+	notebooks/16_classical_stock_link.ipynb
 
 .PHONY: all notebooks facts test dashboard
 
@@ -27,6 +32,7 @@ notebooks:
 
 facts:
 	$(PY) scripts/build_facts.py
+	$(PY) scripts/update_readme.py
 
 test:
 	$(PY) -m pytest tests -q

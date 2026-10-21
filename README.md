@@ -26,6 +26,10 @@ A test fails if the text and the results ever disagree.
 3. **Does retraining the model after a change help? No.** We tried 4 different ways. None made forecasts better, and the simplest one made them slightly worse. The same was true in Texas and Wisconsin.
 4. **Does a better forecast save money on stock? Yes.** Using the better forecast to decide when to reorder means holding **17% less stock** at **10% lower cost** than the simple method, and it was clearly cheaper in 3 of 3 time periods tested. Setting safety stock from realistic error ranges cut the cost by a further **31%**. These costs use assumed prices for storage and lost sales, not real Walmart figures.
 
+### Milestone 2: classical time-series models
+
+On a sample of 150 items, with the same backtest as above: **17%** of the 726 items test as stationary (ADF and KPSS agree). SARIMA (median MASE 0.755) and Holt-Winters (0.757) against seasonal naive (0.973): SARIMA better: **Yes** (median difference -0.223, 95% CI -0.237 to -0.200); Holt-Winters better: **Yes** (-0.218, 95% CI -0.233 to -0.207). The lowest median error is **LightGBM** (0.747). Reacting to a detected break helps SARIMA: **No** (restart +0.0000, level-shift dummy +0.0000 MASE, n = 75 items). Details: `docs/midsem/INTERIM_FINDINGS.md`.
+
 <details><summary><b>Technical details</b> (verdicts, confidence intervals, test statistics)</summary>
 
 | Question | Verdict | Evidence | Caveat |
@@ -50,7 +54,7 @@ not help. What does help is a better forecasting model and setting safety stock 
 
 ## The dashboard
 
-An interactive website lets you explore all the results. It has ten pages, each answering one question in plain
+An interactive website lets you explore all the results. It has thirteen pages (ten for Milestone 1, three for the Milestone 2 classical models), each answering one question in plain
 words, with charts that say what they show and how to read them. The pictures below switch between light and dark
 to match your GitHub theme.
 
@@ -65,6 +69,10 @@ to match your GitHub theme.
 | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/inventory.png"><img alt="Inventory simulator page" src="docs/screenshots/inventory.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/planner.png"><img alt="Planner: what to check on Monday page" src="docs/screenshots/planner.png"></picture> |
 | **Texas and Wisconsin** | **Assumptions and limits** |
 | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/replication.png"><img alt="Texas and Wisconsin page" src="docs/screenshots/replication.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/limitations.png"><img alt="Assumptions and limits page" src="docs/screenshots/limitations.png"></picture> |
+| **Milestone 2: stationarity and decomposition** | **Milestone 2: classical models** |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/stationarity.png"><img alt="Stationarity and decomposition page" src="docs/screenshots/stationarity.png"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/classical.png"><img alt="Classical models page" src="docs/screenshots/classical.png"></picture> |
+| **Milestone 2: mid-sem demo walkthrough** | |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark/demo.png"><img alt="Mid-sem demo walkthrough page" src="docs/screenshots/demo.png"></picture> | |
 
 ### Run it yourself
 ```bash
@@ -112,17 +120,18 @@ The first version of this analysis, including what did not work along the way, i
 pip install -r requirements.txt   # exact package versions
 # download the M5 data into data/raw/ (see docs/DATA.md)
 make all                          # runs every notebook, rebuilds the results file, runs the tests
+python scripts/run_all.py         # the same on Windows without make (--m2 for notebooks 12-16 only)
 python scripts/update_readme.py   # refreshes "What we found"
 ```
 
 ## What is in the repository
 ```
-notebooks/   the analysis, step by step (00b-05 first version, 06-11 extra checks and other states)
+notebooks/   the analysis, step by step (00-11 Milestone 1; 12-16 Milestone 2 classical models; see docs/ROADMAP.md)
 src/         reusable code: finding changes, forecasting, stock simulation
 dashboard/   the interactive website
 scripts/     build the results file, README numbers, screenshots and PDF summary
 tests/       automatic checks for the code, the dashboard and the README numbers
 outputs/     result tables, charts and results_facts.json
-docs/        results, pre-registration, run log, data download, dashboard guide, demo script
+docs/        roadmap, results, pre-registrations, run log, data download, dashboard guide, demo script, midsem/ (Milestone 2)
 powerbi/     notes for building a Power BI version
 ```

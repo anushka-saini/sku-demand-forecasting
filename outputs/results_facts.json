@@ -2533,5 +2533,1908 @@
       "value": 598,
       "source": "replication_scope.csv"
     }
+  },
+  "m2": {
+    "sample": {
+      "value": 150,
+      "source": "m2/tables/m2_sample_items.csv",
+      "break_items": 75
+    },
+    "stationarity": {
+      "stationary|FOODS": {
+        "value": 0.1869436201780415,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "trend-stationary|FOODS": {
+        "value": 0.115727002967359,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "difference-stationary|FOODS": {
+        "value": 0.1513353115727003,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "conflicting|FOODS": {
+        "value": 0.5459940652818991,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "d=0|FOODS": {
+        "value": 0.0504451038575667,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "d=1|FOODS": {
+        "value": 0.9495548961424332,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "D=1|FOODS": {
+        "value": 0.0,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 337
+      },
+      "stationary|HOBBIES": {
+        "value": 0.1698113207547169,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "trend-stationary|HOBBIES": {
+        "value": 0.0283018867924528,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "difference-stationary|HOBBIES": {
+        "value": 0.1226415094339622,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "conflicting|HOBBIES": {
+        "value": 0.6792452830188679,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "d=0|HOBBIES": {
+        "value": 0.0471698113207547,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "d=1|HOBBIES": {
+        "value": 0.9528301886792452,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "D=1|HOBBIES": {
+        "value": 0.0,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 106
+      },
+      "stationary|HOUSEHOLD": {
+        "value": 0.1484098939929328,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "trend-stationary|HOUSEHOLD": {
+        "value": 0.0671378091872791,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "difference-stationary|HOUSEHOLD": {
+        "value": 0.1766784452296819,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "conflicting|HOUSEHOLD": {
+        "value": 0.607773851590106,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "d=0|HOUSEHOLD": {
+        "value": 0.0671378091872791,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "d=1|HOUSEHOLD": {
+        "value": 0.9328621908127208,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "D=1|HOUSEHOLD": {
+        "value": 0.0,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 283
+      },
+      "stationary|ALL": {
+        "value": 0.1694214876033057,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "trend-stationary|ALL": {
+        "value": 0.0840220385674931,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "difference-stationary|ALL": {
+        "value": 0.1570247933884297,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "conflicting|ALL": {
+        "value": 0.5895316804407713,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "d=0|ALL": {
+        "value": 0.0564738292011019,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "d=1|ALL": {
+        "value": 0.943526170798898,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      },
+      "D=1|ALL": {
+        "value": 0.0,
+        "source": "m2/tables/stationarity_summary.csv",
+        "n": 726
+      }
+    },
+    "metrics": {
+      "seasonal_naive|ALL|rmse": {
+        "value": 6.0388680091839815,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 8.385323707178058
+      },
+      "seasonal_naive|ALL|mae": {
+        "value": 4.720238095238095,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.548214285714286
+      },
+      "seasonal_naive|ALL|mape": {
+        "value": 0.7533097201222178,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7974309776075488
+      },
+      "seasonal_naive|ALL|smape": {
+        "value": 0.6155140218436739,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.6459339906322793
+      },
+      "seasonal_naive|ALL|wape": {
+        "value": 0.5811153065986258,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.6440660173571685
+      },
+      "seasonal_naive|ALL|mase": {
+        "value": 0.9726106942673498,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.9917115038181618
+      },
+      "ets|ALL|rmse": {
+        "value": 4.4984342852994095,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.684751104838569
+      },
+      "ets|ALL|mae": {
+        "value": 3.51059550042455,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.265192313478035
+      },
+      "ets|ALL|mape": {
+        "value": 0.5946112069300593,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.6428946182249863
+      },
+      "ets|ALL|smape": {
+        "value": 0.4711841311117221,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5184632458139761
+      },
+      "ets|ALL|wape": {
+        "value": 0.4372325537523972,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5468416251387364
+      },
+      "ets|ALL|mase": {
+        "value": 0.7564397113973151,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7736479515027535
+      },
+      "hw_add|ALL|rmse": {
+        "value": 4.5601761639593175,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.668947901481473
+      },
+      "hw_add|ALL|mae": {
+        "value": 3.560306055864403,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.261008856363796
+      },
+      "hw_add|ALL|mape": {
+        "value": 0.5948297482081428,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.6395801129947487
+      },
+      "hw_add|ALL|smape": {
+        "value": 0.480309338008725,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5207333430248016
+      },
+      "hw_add|ALL|wape": {
+        "value": 0.4418322752412407,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5226137883787151
+      },
+      "hw_add|ALL|mase": {
+        "value": 0.756593811146852,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7752123778558134
+      },
+      "hw_mul|ALL|rmse": {
+        "value": 4.553974764344241,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.78683556223829
+      },
+      "hw_mul|ALL|mae": {
+        "value": 3.586298461009592,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.359981091847888
+      },
+      "hw_mul|ALL|mape": {
+        "value": 0.5950919661744976,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.638972530760959
+      },
+      "hw_mul|ALL|smape": {
+        "value": 0.4822063906409077,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.522759339984323
+      },
+      "hw_mul|ALL|wape": {
+        "value": 0.4389163170674034,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5051137533422455
+      },
+      "hw_mul|ALL|mase": {
+        "value": 0.7614909678997697,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7809450489091823
+      },
+      "arima|ALL|rmse": {
+        "value": 4.82234654514658,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 7.00255440278687
+      },
+      "arima|ALL|mae": {
+        "value": 3.7752689120407377,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.549919176621852
+      },
+      "arima|ALL|mape": {
+        "value": 0.6384896734883243,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7397561023401323
+      },
+      "arima|ALL|smape": {
+        "value": 0.4841417656469524,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5245804485650725
+      },
+      "arima|ALL|wape": {
+        "value": 0.4584801193366971,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7183694648504231
+      },
+      "arima|ALL|mase": {
+        "value": 0.7940600117285688,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.8130854666041195
+      },
+      "sarima|ALL|rmse": {
+        "value": 4.444982316412452,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.60108414183706
+      },
+      "sarima|ALL|mae": {
+        "value": 3.522296087238338,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.204524890948425
+      },
+      "sarima|ALL|mape": {
+        "value": 0.6027536460719713,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7221776638323408
+      },
+      "sarima|ALL|smape": {
+        "value": 0.4743228645343595,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5109046092742803
+      },
+      "sarima|ALL|wape": {
+        "value": 0.4346882180867861,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 1.2348203732427083
+      },
+      "sarima|ALL|mase": {
+        "value": 0.7546915385609304,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7696175750707435
+      },
+      "lightgbm|ALL|rmse": {
+        "value": 4.4835746004524335,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 6.648398626900482
+      },
+      "lightgbm|ALL|mae": {
+        "value": 3.5475542738220764,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 5.246895705035351
+      },
+      "lightgbm|ALL|mape": {
+        "value": 0.5735605651292073,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.754152063024066
+      },
+      "lightgbm|ALL|smape": {
+        "value": 0.4702274084190317,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.5057241316100843
+      },
+      "lightgbm|ALL|wape": {
+        "value": 0.4255235695789494,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 1.6963733733750097
+      },
+      "lightgbm|ALL|mase": {
+        "value": 0.7467717596502159,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 150,
+        "mean": 0.7683232719389982
+      },
+      "seasonal_naive|FOODS|rmse": {
+        "value": 10.317588998650011,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 11.68995693758683
+      },
+      "seasonal_naive|FOODS|mae": {
+        "value": 8.032738095238095,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.063214285714286
+      },
+      "seasonal_naive|FOODS|mape": {
+        "value": 0.6615726736517809,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7395902307260682
+      },
+      "seasonal_naive|FOODS|smape": {
+        "value": 0.538479717859967,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5806475457299087
+      },
+      "seasonal_naive|FOODS|wape": {
+        "value": 0.5045549316450811,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6421504308852479
+      },
+      "seasonal_naive|FOODS|mase": {
+        "value": 0.9306533940618172,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.9675594871314483
+      },
+      "ets|FOODS|rmse": {
+        "value": 8.067181801535845,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.689074360162016
+      },
+      "ets|FOODS|mae": {
+        "value": 6.422563871660764,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.628723374815456
+      },
+      "ets|FOODS|mape": {
+        "value": 0.5333163994828536,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6186633576881718
+      },
+      "ets|FOODS|smape": {
+        "value": 0.4050222167035137,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.484469301797136
+      },
+      "ets|FOODS|wape": {
+        "value": 0.3955131145121239,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6084896178857067
+      },
+      "ets|FOODS|mase": {
+        "value": 0.7596315213076626,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7855751134851497
+      },
+      "hw_add|FOODS|rmse": {
+        "value": 8.070055614937388,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.62453559035801
+      },
+      "hw_add|FOODS|mae": {
+        "value": 6.406095654495092,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.592713627327455
+      },
+      "hw_add|FOODS|mape": {
+        "value": 0.5194893486700757,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6108904312323113
+      },
+      "hw_add|FOODS|smape": {
+        "value": 0.4073253721939959,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4871145535976934
+      },
+      "hw_add|FOODS|wape": {
+        "value": 0.3994800571435609,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5472101865756477
+      },
+      "hw_add|FOODS|mase": {
+        "value": 0.7532450681587737,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7856529381383384
+      },
+      "hw_mul|FOODS|rmse": {
+        "value": 8.165736000741619,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.932274470135498
+      },
+      "hw_mul|FOODS|mae": {
+        "value": 6.421598017944167,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.865349731647826
+      },
+      "hw_mul|FOODS|mape": {
+        "value": 0.517640133970117,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6146246480505865
+      },
+      "hw_mul|FOODS|smape": {
+        "value": 0.4141205800287896,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4961048829718602
+      },
+      "hw_mul|FOODS|wape": {
+        "value": 0.39985487093449,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5052886464406218
+      },
+      "hw_mul|FOODS|mase": {
+        "value": 0.7632737438503729,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.8023682585386013
+      },
+      "arima|FOODS|rmse": {
+        "value": 8.94832312660261,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 10.140772918682268
+      },
+      "arima|FOODS|mae": {
+        "value": 7.082492864918031,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 8.04502938658693
+      },
+      "arima|FOODS|mape": {
+        "value": 0.5506710819478647,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.8272309625421255
+      },
+      "arima|FOODS|smape": {
+        "value": 0.398540156259789,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4834975657602207
+      },
+      "arima|FOODS|wape": {
+        "value": 0.3840471719725187,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 1.0554097046842836
+      },
+      "arima|FOODS|mase": {
+        "value": 0.8040707815946231,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.8261063260784709
+      },
+      "sarima|FOODS|rmse": {
+        "value": 7.998390256170001,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.448905315118616
+      },
+      "sarima|FOODS|mae": {
+        "value": 6.300981651855318,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.449270128238178
+      },
+      "sarima|FOODS|mape": {
+        "value": 0.4891889999218075,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.847031259759627
+      },
+      "sarima|FOODS|smape": {
+        "value": 0.3906648194854182,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4654610694506846
+      },
+      "sarima|FOODS|wape": {
+        "value": 0.3612049345034035,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 2.6739034892385565
+      },
+      "sarima|FOODS|mase": {
+        "value": 0.7406959669376908,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7719865251593729
+      },
+      "lightgbm|FOODS|rmse": {
+        "value": 8.263630967783492,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 9.724183056559944
+      },
+      "lightgbm|FOODS|mae": {
+        "value": 6.385176815850796,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.703881001124317
+      },
+      "lightgbm|FOODS|mape": {
+        "value": 0.4738179975721844,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.9420889561639436
+      },
+      "lightgbm|FOODS|smape": {
+        "value": 0.3866740571812701,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.465909303802006
+      },
+      "lightgbm|FOODS|wape": {
+        "value": 0.3601406292755407,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.863487111910615
+      },
+      "lightgbm|FOODS|mase": {
+        "value": 0.7538594866629686,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7825079136025102
+      },
+      "seasonal_naive|HOBBIES|rmse": {
+        "value": 4.221284842109163,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 7.681774735799758
+      },
+      "seasonal_naive|HOBBIES|mae": {
+        "value": 3.345238095238096,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 6.026190476190476
+      },
+      "seasonal_naive|HOBBIES|mape": {
+        "value": 0.8955290853872262,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.9176913423882204
+      },
+      "seasonal_naive|HOBBIES|smape": {
+        "value": 0.6426333316119968,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7129343060889475
+      },
+      "seasonal_naive|HOBBIES|wape": {
+        "value": 0.6074636655857906,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6979380201249971
+      },
+      "seasonal_naive|HOBBIES|mase": {
+        "value": 0.9776076137188944,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 1.023118603074973
+      },
+      "ets|HOBBIES|rmse": {
+        "value": 3.202443526995456,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.838564858779612
+      },
+      "ets|HOBBIES|mae": {
+        "value": 2.57175055387574,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.575770779749913
+      },
+      "ets|HOBBIES|mape": {
+        "value": 0.6803519290368996,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7357735589554733
+      },
+      "ets|HOBBIES|smape": {
+        "value": 0.49752715920271,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5550088529178435
+      },
+      "ets|HOBBIES|wape": {
+        "value": 0.4683021319223727,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.539043952921482
+      },
+      "ets|HOBBIES|mase": {
+        "value": 0.7588340211738401,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7758230104904564
+      },
+      "hw_add|HOBBIES|rmse": {
+        "value": 3.230122952024989,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.859252472607879
+      },
+      "hw_add|HOBBIES|mae": {
+        "value": 2.519965621255064,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.600545464805402
+      },
+      "hw_add|HOBBIES|mape": {
+        "value": 0.6922176922257461,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7430519468057242
+      },
+      "hw_add|HOBBIES|smape": {
+        "value": 0.5000266187384336,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5559786408958327
+      },
+      "hw_add|HOBBIES|wape": {
+        "value": 0.4678892331597088,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5410665007574122
+      },
+      "hw_add|HOBBIES|mase": {
+        "value": 0.7716506344463925,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7804343261984102
+      },
+      "hw_mul|HOBBIES|rmse": {
+        "value": 3.2346117302562645,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.910056723997958
+      },
+      "hw_mul|HOBBIES|mae": {
+        "value": 2.5313329135650435,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.64112468050363
+      },
+      "hw_mul|HOBBIES|mape": {
+        "value": 0.6937794659324028,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7405778130140876
+      },
+      "hw_mul|HOBBIES|smape": {
+        "value": 0.5013475846788534,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5572694417654502
+      },
+      "hw_mul|HOBBIES|wape": {
+        "value": 0.4682329537933902,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5428925077767004
+      },
+      "hw_mul|HOBBIES|mase": {
+        "value": 0.7722547793204184,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7844502511280049
+      },
+      "arima|HOBBIES|rmse": {
+        "value": 3.2639027845771285,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.943270499897475
+      },
+      "arima|HOBBIES|mae": {
+        "value": 2.535758056224262,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.672185774975031
+      },
+      "arima|HOBBIES|mape": {
+        "value": 0.6977249804973364,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7580389495277124
+      },
+      "arima|HOBBIES|smape": {
+        "value": 0.5083990147651158,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5543875369658867
+      },
+      "arima|HOBBIES|wape": {
+        "value": 0.4776139212547498,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5484164959802386
+      },
+      "arima|HOBBIES|mase": {
+        "value": 0.7771106076389233,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7904658751072903
+      },
+      "sarima|HOBBIES|rmse": {
+        "value": 3.178951060327406,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.851419895921436
+      },
+      "sarima|HOBBIES|mae": {
+        "value": 2.509810356675992,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.596047192786695
+      },
+      "sarima|HOBBIES|mape": {
+        "value": 0.6765076027680889,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7428428027953131
+      },
+      "sarima|HOBBIES|smape": {
+        "value": 0.5062098042786928,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5504675528897498
+      },
+      "sarima|HOBBIES|wape": {
+        "value": 0.4753025486435347,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5403920870403811
+      },
+      "sarima|HOBBIES|mase": {
+        "value": 0.770711430900904,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7787971005020282
+      },
+      "lightgbm|HOBBIES|rmse": {
+        "value": 3.092659215051105,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.82874162442963
+      },
+      "lightgbm|HOBBIES|mae": {
+        "value": 2.489811147963924,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.545228801555139
+      },
+      "lightgbm|HOBBIES|mape": {
+        "value": 0.675126435650262,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7227214093642731
+      },
+      "lightgbm|HOBBIES|smape": {
+        "value": 0.4981303474371744,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.549192540353473
+      },
+      "lightgbm|HOBBIES|wape": {
+        "value": 0.4634459009026963,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5358091543751182
+      },
+      "lightgbm|HOBBIES|mase": {
+        "value": 0.7718028567907476,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7694876953809525
+      },
+      "seasonal_naive|HOUSEHOLD|rmse": {
+        "value": 4.710523414147588,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 5.784239448147583
+      },
+      "seasonal_naive|HOUSEHOLD|mae": {
+        "value": 3.729166666666667,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.555238095238096
+      },
+      "seasonal_naive|HOUSEHOLD|mape": {
+        "value": 0.7301288407416308,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7350113597083576
+      },
+      "seasonal_naive|HOUSEHOLD|smape": {
+        "value": 0.6183680388586956,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6442201200779817
+      },
+      "seasonal_naive|HOUSEHOLD|wape": {
+        "value": 0.5637508407498799,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5921096010612603
+      },
+      "seasonal_naive|HOUSEHOLD|mase": {
+        "value": 0.9708885143082592,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.984456421248064
+      },
+      "ets|HOUSEHOLD|rmse": {
+        "value": 3.670548673896601,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.52661409557408
+      },
+      "ets|HOUSEHOLD|mae": {
+        "value": 2.939674062176655,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.591082785868735
+      },
+      "ets|HOUSEHOLD|mape": {
+        "value": 0.574323086666843,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5742469380313137
+      },
+      "ets|HOUSEHOLD|smape": {
+        "value": 0.4747616624365013,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5159115827269484
+      },
+      "ets|HOUSEHOLD|wape": {
+        "value": 0.4208627521351171,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4929913046090203
+      },
+      "ets|HOUSEHOLD|mase": {
+        "value": 0.7426799798842303,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.759545730532654
+      },
+      "hw_add|HOUSEHOLD|rmse": {
+        "value": 3.702584617316144,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.523055641478528
+      },
+      "hw_add|HOUSEHOLD|mae": {
+        "value": 2.8982515994767737,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.5897674769585333
+      },
+      "hw_add|HOUSEHOLD|mape": {
+        "value": 0.5580471267069194,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.564797960946211
+      },
+      "hw_add|HOUSEHOLD|smape": {
+        "value": 0.4621592268477755,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5191068345808783
+      },
+      "hw_add|HOUSEHOLD|wape": {
+        "value": 0.4190913277954301,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4795646778030851
+      },
+      "hw_add|HOUSEHOLD|mase": {
+        "value": 0.756593811146852,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7595498692306916
+      },
+      "hw_mul|HOUSEHOLD|rmse": {
+        "value": 3.6129800551394826,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.518175492581416
+      },
+      "hw_mul|HOUSEHOLD|mae": {
+        "value": 2.8615789954401256,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.573468863392206
+      },
+      "hw_mul|HOUSEHOLD|mape": {
+        "value": 0.5613408603910848,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5617151312182027
+      },
+      "hw_mul|HOUSEHOLD|smape": {
+        "value": 0.4642052774146291,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5149036952156587
+      },
+      "hw_mul|HOUSEHOLD|wape": {
+        "value": 0.4209245047681254,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4671601058094145
+      },
+      "hw_mul|HOUSEHOLD|mase": {
+        "value": 0.7560890143660086,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7560166370609405
+      },
+      "arima|HOUSEHOLD|rmse": {
+        "value": 3.957968044261955,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.923619789780865
+      },
+      "arima|HOUSEHOLD|mae": {
+        "value": 3.1116510054510664,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.932542368303598
+      },
+      "arima|HOUSEHOLD|mape": {
+        "value": 0.6452189525222402,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6339983949505591
+      },
+      "arima|HOUSEHOLD|smape": {
+        "value": 0.4892303312835412,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5358562429691098
+      },
+      "arima|HOUSEHOLD|wape": {
+        "value": 0.46810170570079,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5512821938867467
+      },
+      "arima|HOUSEHOLD|mase": {
+        "value": 0.8254334162159329,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.822684198626597
+      },
+      "sarima|HOUSEHOLD|rmse": {
+        "value": 3.6455546880717575,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.502927214471128
+      },
+      "sarima|HOUSEHOLD|mae": {
+        "value": 2.867659396043601,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.568257351820403
+      },
+      "sarima|HOUSEHOLD|mape": {
+        "value": 0.5975801368067686,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5766589289420826
+      },
+      "sarima|HOUSEHOLD|smape": {
+        "value": 0.4626957671645557,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5167852054824065
+      },
+      "sarima|HOUSEHOLD|wape": {
+        "value": 0.4256826984947069,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.4901655434491877
+      },
+      "sarima|HOUSEHOLD|mase": {
+        "value": 0.7407585081733775,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7580690995508292
+      },
+      "lightgbm|HOUSEHOLD|rmse": {
+        "value": 3.6599381821041295,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 4.392271199711874
+      },
+      "lightgbm|HOUSEHOLD|mae": {
+        "value": 2.872270843990665,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 3.4915773124265974
+      },
+      "lightgbm|HOUSEHOLD|mape": {
+        "value": 0.5669226037592381,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5976458235439813
+      },
+      "lightgbm|HOUSEHOLD|smape": {
+        "value": 0.4752286769657357,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.5020705506747738
+      },
+      "lightgbm|HOUSEHOLD|wape": {
+        "value": 0.4265070919221668,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.6898238538392948
+      },
+      "lightgbm|HOUSEHOLD|mase": {
+        "value": 0.7316055673757509,
+        "source": "m2/tables/classical_metrics_summary.csv",
+        "n": 50,
+        "mean": 0.7529742068335318
+      }
+    },
+    "mape_excluded_share": {
+      "value": 0.0539682539682539,
+      "source": "m2/tables/classical_metrics_summary.csv"
+    },
+    "tests": {
+      "H1|sarima-seasonal_naive": {
+        "value": -0.2234347167929871,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.2370149828223974,
+          -0.2000260558305566
+        ],
+        "p_value": 5.934552883749839e-25,
+        "p_holm": 5.934552883749839e-25,
+        "a_better": true
+      },
+      "H1|hw_add-seasonal_naive": {
+        "value": -0.2183927850368744,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.2327652515868062,
+          -0.2070783868979619
+        ],
+        "p_value": 5.228881250595094e-26,
+        "p_holm": 1.0457762501190187e-25,
+        "a_better": true
+      },
+      "H2|lightgbm-seasonal_naive": {
+        "value": -0.2368290647576103,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.2528330745593489,
+          -0.2103369504227706
+        ],
+        "p_value": 4.614945100986824e-24,
+        "p_holm": 2.3074725504934122e-23,
+        "a_better": true
+      },
+      "H2|lightgbm-ets": {
+        "value": -0.007791082731003,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.0120153364692187,
+          -0.0026719865259632
+        ],
+        "p_value": 0.0044367221230395,
+        "p_holm": 0.0088734442460791,
+        "a_better": true
+      },
+      "H2|lightgbm-hw_add": {
+        "value": -0.0083422294406266,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.0139721886005464,
+          -0.0019886048246815
+        ],
+        "p_value": 0.0016901314820624,
+        "p_holm": 0.0050703944461874,
+        "a_better": true
+      },
+      "H2|lightgbm-arima": {
+        "value": -0.0342295309542555,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.0456816430312831,
+          -0.0258669844861828
+        ],
+        "p_value": 4.5125769180418154e-14,
+        "p_holm": 1.8050307672167261e-13,
+        "a_better": true
+      },
+      "H2|lightgbm-sarima": {
+        "value": -0.0069818637071183,
+        "source": "m2/tables/classical_tests.csv",
+        "n": 150,
+        "ci95": [
+          -0.0136646599334762,
+          -0.0015215989239696
+        ],
+        "p_value": 0.0363540521965402,
+        "p_holm": 0.0363540521965402,
+        "a_better": true
+      }
+    },
+    "h1_supported": {
+      "sarima": true,
+      "hw_add": true
+    },
+    "h2_lowest_median_mase": {
+      "model": "lightgbm",
+      "value": 0.7467717596502159,
+      "source": "m2/tables/classical_metrics_summary.csv",
+      "significant_vs_all": true
+    },
+    "h4": {
+      "zero-heavy": {
+        "value": 0.7626045991744553,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 74,
+        "hw_mul": 0.7618196676614682,
+        "share_items_add_better": 0.527027027027027,
+        "mul_within_5pct": null
+      },
+      "not zero-heavy": {
+        "value": 0.7539547587255024,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 76,
+        "hw_mul": 0.7614909678997697,
+        "share_items_add_better": 0.5394736842105263,
+        "mul_within_5pct": null
+      },
+      "all": {
+        "value": 0.756593811146852,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 150,
+        "hw_mul": 0.7614909678997697,
+        "share_items_add_better": 0.5333333333333333,
+        "mul_within_5pct": null
+      },
+      "CA_TOTAL": {
+        "value": 0.7905216603598023,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 1,
+        "hw_mul": 0.7697975754811776,
+        "share_items_add_better": null,
+        "mul_within_5pct": true
+      },
+      "FOODS": {
+        "value": 0.8494181349020691,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 1,
+        "hw_mul": 0.8520966170680305,
+        "share_items_add_better": null,
+        "mul_within_5pct": true
+      },
+      "HOBBIES": {
+        "value": 0.6608277214409389,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 1,
+        "hw_mul": 0.6704909577629697,
+        "share_items_add_better": null,
+        "mul_within_5pct": true
+      },
+      "HOUSEHOLD": {
+        "value": 0.9066552415866148,
+        "source": "m2/tables/classical_h4.csv",
+        "n": 1,
+        "hw_mul": 0.8887622164737451,
+        "share_items_add_better": null,
+        "mul_within_5pct": true
+      }
+    },
+    "aggregate_mase": {
+      "CA_TOTAL|arima": {
+        "value": 0.986078448977482,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "CA_TOTAL|ets": {
+        "value": 0.7688147407415903,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "CA_TOTAL|hw_add": {
+        "value": 0.7905216603598023,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "CA_TOTAL|hw_mul": {
+        "value": 0.7697975754811776,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "CA_TOTAL|lightgbm": {
+        "value": 0.7534804730167357,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "CA_TOTAL|sarima": {
+        "value": 0.8489550731743599,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "CA_TOTAL|seasonal_naive": {
+        "value": 0.9201126335981646,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "FOODS|arima": {
+        "value": 0.8879495368596396,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "FOODS|ets": {
+        "value": 0.8129920018442665,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "FOODS|hw_add": {
+        "value": 0.8494181349020691,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "FOODS|hw_mul": {
+        "value": 0.8520966170680305,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "FOODS|lightgbm": {
+        "value": 0.7366503083396522,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "FOODS|sarima": {
+        "value": 1.975823614446761,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "FOODS|seasonal_naive": {
+        "value": 0.9127894513800028,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOBBIES|arima": {
+        "value": 0.757241269334084,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOBBIES|ets": {
+        "value": 0.6629918108613951,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOBBIES|hw_add": {
+        "value": 0.6608277214409389,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOBBIES|hw_mul": {
+        "value": 0.6704909577629697,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOBBIES|lightgbm": {
+        "value": 0.6784102567950566,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOBBIES|sarima": {
+        "value": 0.6744101218840873,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOBBIES|seasonal_naive": {
+        "value": 0.9666882088623032,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOUSEHOLD|arima": {
+        "value": 1.1718370940080929,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOUSEHOLD|ets": {
+        "value": 0.8968592293095138,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOUSEHOLD|hw_add": {
+        "value": 0.9066552415866148,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOUSEHOLD|hw_mul": {
+        "value": 0.8887622164737451,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOUSEHOLD|lightgbm": {
+        "value": 0.785077538821536,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      },
+      "HOUSEHOLD|sarima": {
+        "value": 1.144514191994002,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "fitted on total"
+      },
+      "HOUSEHOLD|seasonal_naive": {
+        "value": 1.1560580251250734,
+        "source": "m2/tables/aggregate_metrics.csv",
+        "how": "sum of items"
+      }
+    },
+    "run_stats": {
+      "hw_add|item": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 1050,
+        "not_converged_rate": 0.0
+      },
+      "hw_add|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 28,
+        "not_converged_rate": 0.0
+      },
+      "hw_mul|item": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 1050,
+        "not_converged_rate": 0.1419047619047619
+      },
+      "hw_mul|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 28,
+        "not_converged_rate": 0.0357142857142857
+      },
+      "arima|item": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 1050,
+        "not_converged_rate": 0.0504761904761904
+      },
+      "arima|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 28,
+        "not_converged_rate": 1.0
+      },
+      "sarima|item": {
+        "value": 0.0,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 1050,
+        "not_converged_rate": 0.299047619047619
+      },
+      "sarima|aggregate": {
+        "value": 0.1785714285714285,
+        "source": "m2/tables/classical_run_stats.csv",
+        "n": 28,
+        "not_converged_rate": 0.6785714285714286
+      }
+    },
+    "diagnostics": {
+      "arima|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 4,
+        "normality_pass": 0.0,
+        "roots_ok": 1.0
+      },
+      "ets|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 4,
+        "normality_pass": 0.0,
+        "roots_ok": null
+      },
+      "hw_add|aggregate": {
+        "value": 0.25,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 4,
+        "normality_pass": 0.0,
+        "roots_ok": null
+      },
+      "hw_mul|aggregate": {
+        "value": 0.25,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 4,
+        "normality_pass": 0.0,
+        "roots_ok": null
+      },
+      "sarima|aggregate": {
+        "value": 0.0,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 4,
+        "normality_pass": 0.0,
+        "roots_ok": 0.75
+      },
+      "arima|item": {
+        "value": 0.2866666666666667,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 150,
+        "normality_pass": 0.0,
+        "roots_ok": 1.0
+      },
+      "ets|item": {
+        "value": 0.2933333333333333,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 150,
+        "normality_pass": 0.0,
+        "roots_ok": null
+      },
+      "hw_add|item": {
+        "value": 0.4733333333333333,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 150,
+        "normality_pass": 0.0066666666666666,
+        "roots_ok": null
+      },
+      "hw_mul|item": {
+        "value": 0.4866666666666667,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 150,
+        "normality_pass": 0.0066666666666666,
+        "roots_ok": null
+      },
+      "sarima|item": {
+        "value": 0.82,
+        "source": "m2/tables/diagnostics_summary.csv",
+        "n": 150,
+        "normality_pass": 0.0066666666666666,
+        "roots_ok": 1.0
+      }
+    },
+    "shift_aware": {
+      "all break item-origins|restart": {
+        "value": 0.0,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 75,
+        "ci95": [
+          0.0,
+          0.0015136350584022
+        ],
+        "p_value": 0.0013049791611194,
+        "p_holm": 0.0026099583222389,
+        "helps": false,
+        "practical_threshold": 0.0076032850419312
+      },
+      "all break item-origins|dummy": {
+        "value": 0.0,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 75,
+        "ci95": [
+          0.0,
+          5.52652055132811e-05
+        ],
+        "p_value": 0.0287255449114667,
+        "p_holm": 0.0287255449114667,
+        "helps": false,
+        "practical_threshold": 0.0076032850419312
+      },
+      "high-confidence breaks|restart": {
+        "value": 0.0,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 33,
+        "ci95": [
+          0.0,
+          0.0107356527089894
+        ],
+        "p_value": 0.0300869941711425,
+        "p_holm": 0.0601739883422851,
+        "helps": false,
+        "practical_threshold": 0.0072914908130747
+      },
+      "high-confidence breaks|dummy": {
+        "value": 0.0,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 33,
+        "ci95": [
+          0.0,
+          0.0012231950869682
+        ],
+        "p_value": 0.0605182647705078,
+        "p_holm": 0.0605182647705078,
+        "helps": false,
+        "practical_threshold": 0.0072914908130747
+      },
+      "only where the variant differs|restart": {
+        "value": 0.0061765418188737,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 47,
+        "ci95": [
+          0.0015136350584022,
+          0.0107356527089894
+        ],
+        "p_value": 0.000862019619106,
+        "p_holm": 0.001724039238212,
+        "helps": false,
+        "practical_threshold": 0.0082945165992895
+      },
+      "only where the variant differs|dummy": {
+        "value": 0.0010421553173008,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 47,
+        "ci95": [
+          -0.000297632117722,
+          0.0058394174478085
+        ],
+        "p_value": 0.0209755434252656,
+        "p_holm": 0.0209755434252656,
+        "helps": false,
+        "practical_threshold": 0.0082945165992895
+      },
+      "placebo (no-break item-origins)|placebo": {
+        "value": 0.0025471312485679,
+        "source": "m2/tables/shift_aware_tests.csv",
+        "n": 76,
+        "ci95": [
+          6.192411268909903e-06,
+          0.007159183876603
+        ],
+        "p_value": 0.0054766556162238,
+        "p_holm": null,
+        "helps": null,
+        "practical_threshold": null
+      }
+    },
+    "h3_supported": true,
+    "stock": {
+      "conformal|ets": {
+        "value": 9143.271707097638,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9879611746134151,
+        "cycle_service_level": 0.9006979695431472,
+        "avg_inventory_value": 38977.86757408589
+      },
+      "conformal|hw_add": {
+        "value": 9311.812193986065,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9876571875437188,
+        "cycle_service_level": 0.8905362776025236,
+        "avg_inventory_value": 39399.75152963588
+      },
+      "conformal|lightgbm": {
+        "value": 8089.377963575412,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.991152691575584,
+        "cycle_service_level": 0.9302619122751656,
+        "avg_inventory_value": 36972.56970067991
+      },
+      "conformal|sarima": {
+        "value": 7856.546818278231,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.991547146439962,
+        "cycle_service_level": 0.9044871794871796,
+        "avg_inventory_value": 36983.06278331023
+      },
+      "conformal|seasonal_naive": {
+        "value": 8973.543865784912,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9886634755315442,
+        "cycle_service_level": 0.8860839381508362,
+        "avg_inventory_value": 40272.005810658855
+      },
+      "normal formula|ets": {
+        "value": 12354.081616337877,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9766538850644688,
+        "cycle_service_level": 0.8375651041666666,
+        "avg_inventory_value": 34266.97102631011
+      },
+      "normal formula|hw_add": {
+        "value": 12425.08092614763,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.97673418001429,
+        "cycle_service_level": 0.8293393782383419,
+        "avg_inventory_value": 35197.676030909504
+      },
+      "normal formula|lightgbm": {
+        "value": 11971.866469101707,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9795165670801748,
+        "cycle_service_level": 0.844849648112604,
+        "avg_inventory_value": 30253.48324556837
+      },
+      "normal formula|sarima": {
+        "value": 10631.369441711946,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9830856265808308,
+        "cycle_service_level": 0.8574705111402359,
+        "avg_inventory_value": 32866.08446665972
+      },
+      "normal formula|seasonal_naive": {
+        "value": 11437.057599571122,
+        "source": "m2/tables/stock_summary.csv",
+        "n": 150,
+        "fill_rate": 0.9809456335109976,
+        "cycle_service_level": 0.8668390433096316,
+        "avg_inventory_value": 37897.08222955138
+      }
+    },
+    "stock_tests": {
+      "conformal|sarima-ets": {
+        "value": -0.1407291536377031,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -1286.7248888194074,
+        "total_ci_dollars": [
+          -2877.822568925938,
+          -70.45977695188026
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.462614965676414
+      },
+      "conformal|sarima-lightgbm": {
+        "value": -0.0287823299078823,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -232.8311452971808,
+        "total_ci_dollars": [
+          -1432.636514785832,
+          804.0317856019069
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.9364439038781356
+      },
+      "conformal|sarima-seasonal_naive": {
+        "value": -0.1244766910613388,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -1116.9970475066807,
+        "total_ci_dollars": [
+          -2498.7803291421837,
+          -87.00292083709128
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.0468254358024498
+      },
+      "conformal|hw_add-ets": {
+        "value": 0.0184332799338768,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 168.5404868884265,
+        "total_ci_dollars": [
+          -237.22700298102703,
+          620.4681956852287
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.1602101132601555
+      },
+      "conformal|hw_add-lightgbm": {
+        "value": 0.1511159740483125,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 1222.434230410653,
+        "total_ci_dollars": [
+          -582.2540886102979,
+          3217.633770240317
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.142061474961431
+      },
+      "conformal|hw_add-seasonal_naive": {
+        "value": 0.0376961803787388,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 338.2683282011535,
+        "total_ci_dollars": [
+          -227.6101558723952,
+          942.2242207429258
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.5071700336180645
+      },
+      "normal formula|sarima-ets": {
+        "value": -0.1394447785052431,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -1722.712174625932,
+        "total_ci_dollars": [
+          -3735.3333866507455,
+          -172.89249127010817
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.2428232729661866
+      },
+      "normal formula|sarima-lightgbm": {
+        "value": -0.1119705963017096,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -1340.4970273897611,
+        "total_ci_dollars": [
+          -3640.759880790347,
+          572.2251675753764
+        ],
+        "median_fill_rate_diff": 0.0012864465498128,
+        "p_value_cost": 0.0641824665204717
+      },
+      "normal formula|sarima-seasonal_naive": {
+        "value": -0.0704454052840819,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": -805.6881578591774,
+        "total_ci_dollars": [
+          -2788.8211202773778,
+          679.102303849888
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.5011815318090782
+      },
+      "normal formula|hw_add-ets": {
+        "value": 0.0057470326014243,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 70.9993098097516,
+        "total_ci_dollars": [
+          -1099.4016840648258,
+          935.499460320332
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.0529484614905526
+      },
+      "normal formula|hw_add-lightgbm": {
+        "value": 0.0378566247974472,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 453.2144570459224,
+        "total_ci_dollars": [
+          -2733.765952924776,
+          3215.81860132199
+        ],
+        "median_fill_rate_diff": 0.0,
+        "p_value_cost": 0.2827567567411801
+      },
+      "normal formula|hw_add-seasonal_naive": {
+        "value": 0.0863878946114213,
+        "source": "m2/tables/stock_tests.csv",
+        "n": 150,
+        "total_cost_diff": 988.0233265765064,
+        "total_ci_dollars": [
+          254.48980239498343,
+          1759.473097661372
+        ],
+        "median_fill_rate_diff": -0.0010452145161725,
+        "p_value_cost": 0.0730134160688579
+      }
+    }
   }
 }
