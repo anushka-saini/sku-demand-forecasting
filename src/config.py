@@ -1,4 +1,4 @@
-"""Paths and fixed settings shared by the Milestone 2 notebooks (12 onwards)."""
+"""Paths and fixed settings shared by the notebooks."""
 from pathlib import Path
 
 import pandas as pd
@@ -7,11 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 INTERIM = ROOT / "data" / "interim"
 PROCESSED = ROOT / "data" / "processed"
-TABLES = ROOT / "outputs" / "tables"          # Milestone 1 results (read only)
-M2 = ROOT / "outputs" / "m2"
-M2_TABLES = M2 / "tables"
-M2_FIGS = M2 / "figures"
-M2_CHECKPOINTS = PROCESSED / "m2"            # per-item results, so a rerun can pick up where it stopped
+TABLES = ROOT / "outputs" / "tables"          # every result table
+FIGS = ROOT / "outputs" / "figures"          # every figure
+CHECKPOINTS = PROCESSED / "classical_fits"     # per-item fits, so a rerun can pick up where it stopped
 
 SEED = 42
 CATEGORIES = ["FOODS", "HOBBIES", "HOUSEHOLD"]
@@ -28,7 +26,7 @@ PERIOD = 7                                   # weekly season in daily data
 FIT_DAYS = 730                               # two years: the yearly cycle twice, and fits stay fast
 SAMPLE_PER_GROUP = 25                        # per category: 25 items with a break, 25 without
 
-# Inventory base case (same as Milestone 1)
+# Inventory base case
 LEAD_TIME = 7
 HOLDING_RATE = 0.25
 STOCKOUT_MULTIPLE = 0.5
@@ -49,5 +47,5 @@ NAMES = {"seasonal_naive": "Seasonal naive", "ets": "Damped Holt-Winters (ETS)",
 
 def make_dirs():
     """Create the output folders used by the new notebooks."""
-    for p in [M2_TABLES, M2_FIGS, M2_CHECKPOINTS]:
+    for p in [TABLES, FIGS, CHECKPOINTS]:
         p.mkdir(parents=True, exist_ok=True)

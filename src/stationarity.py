@@ -1,4 +1,4 @@
-"""Stationarity tests, outlier counts and decomposition helpers for Milestone 2 (notebook 12)."""
+"""Stationarity tests, outlier counts and decomposition helpers."""
 import warnings
 
 import numpy as np

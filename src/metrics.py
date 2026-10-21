@@ -64,7 +64,7 @@ def standardized_mean_diff(a, b):
     return (a.mean() - b.mean()) / pooled if pooled > 0 else np.nan
 
 
-# ---------------------------------------------------------------- point-forecast errors (Milestone 2)
+# ---------------------------------------------------------------- point-forecast errors
 
 def rmse(actual, forecast):
     """Root mean squared error, in units sold."""

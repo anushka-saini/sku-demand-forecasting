@@ -1,4 +1,4 @@
-"""Classical models for Milestone 2: Holt-Winters, ARIMA and SARIMA, backtested like notebook 02."""
+"""Classical models: Holt-Winters, ARIMA and SARIMA, on the same rolling backtest as every other model."""
 import warnings
 
 import numpy as np
@@ -104,7 +104,7 @@ def pick_orders(y0, pq=range(3), PQ=range(2)):
 
 
 def draw_sample(has_break, categories, per_group=25, seed=42):
-    """The Milestone 2 item sample: per category, per_group items with a break and per_group without.
+    """The classical-model item sample: per category, per_group items with a break and per_group without.
     has_break maps item_id -> True/False (break at any scored origin)."""
     rng = np.random.default_rng(seed)
     picked = []
