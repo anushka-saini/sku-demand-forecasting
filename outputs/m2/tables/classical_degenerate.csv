@@ -1,0 +1,9 @@
+level,model,windows,all_zero,above_3x_peak
+aggregate,arima,28,0,0
+aggregate,hw_add,28,0,0
+aggregate,hw_mul,28,0,0
+aggregate,sarima,28,4,1
+item,arima,1050,2,0
+item,hw_add,1050,1,0
+item,hw_mul,1050,8,0
+item,sarima,1050,1,0
