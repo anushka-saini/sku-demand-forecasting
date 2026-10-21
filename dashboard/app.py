@@ -19,6 +19,9 @@ pages = [
     st.Page("views/planner.py", title="Planner: what to check Monday"),
     st.Page("views/replication.py", title="Replication: Texas & Wisconsin"),
     st.Page("views/limitations.py", title="Assumptions & limitations"),
+    st.Page("views/stationarity.py", title="M2: Stationarity & decomposition"),
+    st.Page("views/classical.py", title="M2: Classical models"),
+    st.Page("views/demo.py", title="M2: Mid-sem demo walkthrough"),
 ]
 nav = st.navigation(pages)
 

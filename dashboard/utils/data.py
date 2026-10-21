@@ -107,6 +107,45 @@ SCHEMA = {
                          ["lead_time", "holding_rate", "stockout_multiple", "policy", "service_level", "total_cost"], []),
 }
 
+# Milestone 2 (notebooks 12-16)
+M2 = ROOT / "outputs" / "m2" / "tables"
+SCHEMA.update({
+    "m2_sample": (M2 / "m2_sample_items.csv", ["item_id", "category", "break_item"], []),
+    "m2_stationarity": (M2 / "stationarity_items.csv", ["item_id", "category", "adf_c", "kpss_c", "adf_ct", "kpss_ct",
+                                                        "label", "d", "D"], []),
+    "m2_stationarity_summary": (M2 / "stationarity_summary.csv", ["category", "n_items", "stationary", "trend-stationary",
+                                                                  "difference-stationary", "conflicting", "d=0", "d=1", "D=1"], []),
+    "m2_stationarity_totals": (M2 / "stationarity_aggregates.csv", ["series", "label", "d", "D", "adf_c", "kpss_c"], []),
+    "m2_quality": (M2 / "data_quality.csv", ["category", "items", "raw_empty_cells", "leading_zero_days_trimmed",
+                                             "missing_days_inside_series", "zero_days_kept_share", "outlier_days", "outlier_share"], []),
+    "m2_decomp_choice": (M2 / "decomposition_choice.csv", ["series", "level", "zero_handling", "spearman_level_vs_swing",
+                                                           "rule_choice", "resid_cv_additive", "resid_cv_multiplicative",
+                                                           "lower_residual"], []),
+    "m2_demo_series": (M2 / "demo_series.parquet", ["item_id", "date", "sales_raw", "kept_after_trim"], ["date"]),
+    "m2_demo_decomp": (M2 / "demo_decomposition.parquet", ["series", "date", "observed", "trend", "seasonal", "resid"], ["date"]),
+    "m2_orders": (M2 / "classical_orders.csv", ["series", "level", "d", "D", "sarima_order", "sarima_sorder", "arima_order"], []),
+    "m2_forecasts": (M2 / "classical_forecasts.parquet", ["item_id", "origin", "date", "model", "forecast", "actual", "category"],
+                     ["origin", "date"]),
+    "m2_item_metrics": (M2 / "classical_metrics_item_origin.csv", ["item_id", "origin", "model", "rmse", "mae", "mape",
+                                                                   "smape", "wape", "mase", "category"], ["origin"]),
+    "m2_summary": (M2 / "classical_metrics_summary.csv", ["category", "model", "n_items", "median_rmse", "median_mae",
+                                                          "median_mape", "median_mase", "mape_excluded_share"], []),
+    "m2_tests": (M2 / "classical_tests.csv", ["hypothesis", "model_a", "model_b", "n", "median_diff", "ci_low", "ci_high",
+                                              "p_holm", "a_better"], []),
+    "m2_h4": (M2 / "classical_h4.csv", ["group", "n_items", "median_mase_hw_add", "median_mase_hw_mul"], []),
+    "m2_aggregate": (M2 / "aggregate_metrics.csv", ["series", "model", "how", "rmse", "mae", "mape", "mase"], []),
+    "m2_run_stats": (M2 / "classical_run_stats.csv", ["model", "level", "fits", "fallback_rate", "not_converged_rate"], []),
+    "m2_diagnostics": (M2 / "diagnostics_summary.csv", ["level", "model", "n", "ljung_box_pass", "normality_pass", "roots_ok"], []),
+    "m2_diag_items": (M2 / "diagnostics_items.csv", ["series", "model", "lb_p7", "lb_p14", "jb_p", "lb_pass", "jb_pass"], []),
+    "m2_params": (M2 / "parameters_items.csv", ["series", "model", "level"], []),
+    "m2_shift": (M2 / "shift_aware_tests.csv", ["group", "variant", "n", "median_diff", "ci_low", "ci_high", "p_value"], []),
+    "m2_stock_items": (M2 / "stock_items.csv", ["item_id", "model", "method", "total_cost", "fill_rate", "avg_inventory_value"], []),
+    "m2_stock": (M2 / "stock_summary.csv", ["method", "model", "n_items", "fill_rate", "cycle_service_level",
+                                            "avg_inventory_value", "total_cost"], []),
+    "m2_stock_tests": (M2 / "stock_tests.csv", ["method", "model_a", "model_b", "total_diff_pct", "total_ci_low",
+                                                "total_ci_high"], []),
+})
+
 
 class DataError(RuntimeError):
     """A required results file or column is missing."""

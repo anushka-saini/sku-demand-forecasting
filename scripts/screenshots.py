@@ -4,6 +4,7 @@ to docs/screenshots/. Uses Playwright's Chromium if installed, otherwise the sys
 
 Run: python scripts/screenshots.py          (light theme, docs/screenshots/)
      python scripts/screenshots.py --dark   (dark theme, docs/screenshots/dark/)
+     python scripts/screenshots.py --pages overview,classical   (only these pages)
 """
 import subprocess
 import sys
@@ -19,7 +20,8 @@ PORT = 8599
 PAGES = {"overview": ("", 1500), "data_method": ("data_method", 2200), "segmentation": ("segmentation", 2000),
          "breaks": ("breaks", 4400), "forecasts": ("forecasts", 4600), "retraining": ("retraining", 3800),
          "inventory": ("inventory", 4600), "planner": ("planner", 1700), "replication": ("replication", 2300),
-         "limitations": ("limitations", 2600)}
+         "limitations": ("limitations", 2600),
+         "stationarity": ("stationarity", 3000), "classical": ("classical", 5200), "demo": ("demo", 5200)}
 
 
 def wait_for_server(timeout=90):
@@ -42,6 +44,10 @@ def launch(p):
 def main():
     from playwright.sync_api import sync_playwright
     dark = "--dark" in sys.argv
+    pages = PAGES
+    if "--pages" in sys.argv:
+        wanted = sys.argv[sys.argv.index("--pages") + 1].split(",")
+        pages = {k: v for k, v in PAGES.items() if k in wanted}
     out = OUT / "dark" if dark else OUT
     out.mkdir(parents=True, exist_ok=True)
     server = subprocess.Popen([sys.executable, "-m", "streamlit", "run", str(ROOT / "dashboard" / "app.py"),
@@ -51,7 +57,7 @@ def main():
         wait_for_server()
         with sync_playwright() as p:
             browser = launch(p)
-            for name, (path, height) in PAGES.items():
+            for name, (path, height) in pages.items():
                 page = browser.new_page(viewport={"width": 1440, "height": height}, color_scheme="dark" if dark else "light")
                 page.goto(f"http://localhost:{PORT}/{path}", wait_until="networkidle")
                 page.wait_for_selector("h1", timeout=60000)

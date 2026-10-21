@@ -101,3 +101,42 @@ def stock(f):
 
 def all_verdicts(f):
     return [shifts(f), best_model(f), retraining(f), stock(f)]
+
+
+# ---------------------------------------------------------------- Milestone 2 (classical models)
+
+def classical_vs_naive(f):
+    """H1: do SARIMA and Holt-Winters additive beat seasonal naive? Yes if both, Partly if one."""
+    m2 = f['m2']
+    ok = m2['h1_supported']
+    n_ok = sum(bool(v) for v in ok.values())
+    verdict = 'Yes' if n_ok == len(ok) else ('Partly' if n_ok else 'No')
+    med = {m: m2['metrics'][f'{m}|ALL|mase']['value'] for m in ('sarima', 'hw_add', 'seasonal_naive')}
+    n = m2['metrics']['sarima|ALL|mase']['n']
+    return {
+        'question': 'Do classical models beat the simple baseline?', 'verdict': verdict,
+        'strength': 'moderate' if verdict != 'No' else 'weak',
+        'answer': f"Median MASE: SARIMA {med['sarima']:.3f}, Holt-Winters {med['hw_add']:.3f}, seasonal naive "
+                  f"{med['seasonal_naive']:.3f} (n = {n} items, Holm-corrected Wilcoxon).",
+        'caveat': "150-item sample in California only; classical models fit on the last 730 days.",
+        'page': 'views/classical.py'}
+
+
+def classical_shift(f):
+    """H3: does a shift-aware SARIMA (restart or level dummy) meet the pre-registered 'helps' rule?"""
+    m2 = f['m2']
+    sa = m2['shift_aware']
+    r, d = sa['all break item-origins|restart'], sa['all break item-origins|dummy']
+    verdict = 'No' if m2['h3_supported'] else 'Yes'
+    return {
+        'question': 'Does a shift-aware SARIMA help?', 'verdict': verdict, 'strength': 'moderate',
+        'answer': f"Restart from the break: {r['value']:+.4f} MASE; level-shift dummy: {d['value']:+.4f} "
+                  f"(median per item, n = {r['n']} items with a break).",
+        'caveat': ("The same answer as for LightGBM in Milestone 1. " if verdict == 'No' else "Unlike LightGBM in Milestone 1. ")
+                  + "Breaks older than the 730-day fit window leave the model unchanged.",
+        'page': 'views/classical.py'}
+
+
+def m2_verdicts(f):
+    """Milestone 2 cards, or [] if notebooks 12-16 have not been run."""
+    return [classical_vs_naive(f), classical_shift(f)] if 'm2' in f else []
