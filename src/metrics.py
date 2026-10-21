@@ -64,6 +64,60 @@ def standardized_mean_diff(a, b):
     return (a.mean() - b.mean()) / pooled if pooled > 0 else np.nan
 
 
+# ---------------------------------------------------------------- point-forecast errors (Milestone 2)
+
+def rmse(actual, forecast):
+    """Root mean squared error, in units sold."""
+    a, f = np.asarray(actual, dtype=float), np.asarray(forecast, dtype=float)
+    return float(np.sqrt(np.mean((a - f) ** 2)))
+
+
+def mae(actual, forecast):
+    """Mean absolute error, in units sold."""
+    a, f = np.asarray(actual, dtype=float), np.asarray(forecast, dtype=float)
+    return float(np.mean(np.abs(a - f)))
+
+
+def mape(actual, forecast):
+    """Mean absolute percentage error over days with sales > 0 (a zero day would divide by zero)."""
+    a, f = np.asarray(actual, dtype=float), np.asarray(forecast, dtype=float)
+    keep = a > 0
+    if not keep.any():
+        return np.nan
+    return float(np.mean(np.abs(a[keep] - f[keep]) / a[keep]))
+
+
+def mape_excluded(actual):
+    """Share of days left out of MAPE because nothing sold."""
+    a = np.asarray(actual, dtype=float)
+    return float(np.mean(a <= 0)) if len(a) else np.nan
+
+
+def smape(actual, forecast):
+    """Symmetric MAPE, 0 to 2. Days where both actual and forecast are 0 are skipped."""
+    a, f = np.asarray(actual, dtype=float), np.asarray(forecast, dtype=float)
+    den = np.abs(a) + np.abs(f)
+    keep = den > 0
+    if not keep.any():
+        return np.nan
+    return float(np.mean(2 * np.abs(a[keep] - f[keep]) / den[keep]))
+
+
+def wape(actual, forecast):
+    """Total absolute error divided by total sales, so busy days count more."""
+    a, f = np.asarray(actual, dtype=float), np.asarray(forecast, dtype=float)
+    total = np.sum(np.abs(a))
+    return float(np.sum(np.abs(a - f)) / total) if total > 0 else np.nan
+
+
+def all_errors(actual, forecast, scale):
+    """Every point metric for one forecast window. scale is the MASE denominator."""
+    m = mae(actual, forecast)
+    return {'rmse': rmse(actual, forecast), 'mae': m, 'mape': mape(actual, forecast),
+            'mape_excluded': mape_excluded(actual), 'smape': smape(actual, forecast),
+            'wape': wape(actual, forecast), 'mase': m / scale if scale and scale > 0 else np.nan}
+
+
 def holm_adjust(p_values):
     """
     Holm step-down adjusted p-values (controls the family-wise error rate).

@@ -1,5 +1,5 @@
 # Pinned to the versions the published results were produced with (Python 3.12.9).
-# Unused packages listed earlier (pmdarima, seaborn, openpyxl, scikit-learn) were removed.
+# Unused packages listed earlier (seaborn, openpyxl, scikit-learn) were removed. pmdarima is back for Milestone 2 (ndiffs / nsdiffs).
 
 # Core
 numpy==2.5.3
@@ -12,6 +12,9 @@ joblib==1.6.0
 # Models and break detection
 lightgbm==4.7.0
 ruptures==1.1.10
+
+# Milestone 2: recommended differencing orders (src/stationarity.py)
+pmdarima==2.1.1
 
 # Plots
 matplotlib==3.11.2

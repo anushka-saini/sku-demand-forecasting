@@ -200,7 +200,94 @@ def build():
     rs = read("replication_scope.csv")
     F['replication_scope'] = {r.state: fact(int(rs[rs['state'] == r.state]['ax_ay_candidates'].sum()), 'replication_scope.csv')
                               for r in rs.drop_duplicates('state').itertuples()}
+    m2 = build_m2()
+    if m2:
+        F['m2'] = m2
     return F
+
+
+# ---------------------------------------------------------------- Milestone 2 (notebooks 12-16)
+
+M2T = ROOT / "outputs" / "m2" / "tables"
+M2_FILES = ["m2_sample_items.csv", "stationarity_summary.csv", "classical_metrics_summary.csv", "classical_tests.csv",
+            "classical_h4.csv", "aggregate_metrics.csv", "classical_run_stats.csv", "diagnostics_summary.csv",
+            "shift_aware_tests.csv", "stock_summary.csv", "stock_tests.csv"]
+
+
+def build_m2():
+    """Milestone 2 headline numbers. Returns {} if notebooks 12-16 have not been run yet."""
+    if not all((M2T / f).exists() for f in M2_FILES):
+        return {}
+    r = {f: pd.read_csv(M2T / f) for f in M2_FILES}
+    src = lambda f: f"m2/tables/{f}"
+    M = {}
+
+    s = r["m2_sample_items.csv"]
+    M['sample'] = fact(len(s), src("m2_sample_items.csv"), break_items=int(s['break_item'].sum()))
+
+    st = r["stationarity_summary.csv"].set_index("category")
+    M['stationarity'] = {f"{lab}|{cat}": fact(st.loc[cat, lab], src("stationarity_summary.csv"), n=st.loc[cat, 'n_items'])
+                         for cat in st.index for lab in ['stationary', 'trend-stationary', 'difference-stationary',
+                                                         'conflicting', 'd=0', 'd=1', 'D=1']}
+
+    sm = r["classical_metrics_summary.csv"]
+    M['metrics'] = {f"{row.model}|{row.category}|{k}": fact(getattr(row, f"median_{k}"), src("classical_metrics_summary.csv"),
+                                                          n=row.n_items, mean=getattr(row, f"mean_{k}"))
+                    for row in sm.itertuples() for k in ['rmse', 'mae', 'mape', 'smape', 'wape', 'mase']}
+    M['mape_excluded_share'] = fact(sm.loc[sm['category'] == 'ALL', 'mape_excluded_share'].iloc[0], src("classical_metrics_summary.csv"))
+
+    M['tests'] = {f"{row['hypothesis']}|{row['model_a']}-{row['model_b']}":
+                  fact(row['median_diff'], src("classical_tests.csv"), n=row['n'], ci=(row['ci_low'], row['ci_high']),
+                       p_value=row['p_value'], p_holm=row['p_holm'], a_better=bool(row['a_better']))
+                  for _, row in r["classical_tests.csv"].iterrows()}
+    t = r["classical_tests.csv"]
+    M['h1_supported'] = {row['model_a']: bool(row['a_better']) for _, row in t[t['hypothesis'] == 'H1'].iterrows()}
+    alls = sm[sm['category'] == 'ALL'].set_index('model')['median_mase']
+    M['h2_lowest_median_mase'] = {'model': str(alls.idxmin()), 'value': num(alls.min()), 'source': src("classical_metrics_summary.csv"),
+                                  'significant_vs_all': bool(t[t['hypothesis'] == 'H2']['a_better'].all())}
+
+    h4 = r["classical_h4.csv"]
+    M['h4'] = {row['group']: fact(row['median_mase_hw_add'], src("classical_h4.csv"), n=row['n_items'],
+                                  hw_mul=row['median_mase_hw_mul'],
+                                  share_items_add_better=row.get('share_items_add_better'),
+                                  mul_within_5pct=row.get('mul_within_5pct'))
+               for _, row in h4.iterrows()}
+
+    ag = r["aggregate_metrics.csv"]
+    M['aggregate_mase'] = {f"{row.series}|{row.model}": fact(row.mase, src("aggregate_metrics.csv"), how=row.how)
+                           for row in ag.itertuples()}
+
+    rs = r["classical_run_stats.csv"]
+    M['run_stats'] = {f"{row.model}|{row.level}": fact(row.fallback_rate, src("classical_run_stats.csv"), n=row.fits,
+                                                      not_converged_rate=row.not_converged_rate)
+                      for row in rs.itertuples()}
+
+    dg = r["diagnostics_summary.csv"]
+    M['diagnostics'] = {f"{row.model}|{row.level}": fact(row.ljung_box_pass, src("diagnostics_summary.csv"), n=row.n,
+                                                        normality_pass=row.normality_pass, roots_ok=row.roots_ok)
+                        for row in dg.itertuples()}
+
+    sa = r["shift_aware_tests.csv"]
+    M['shift_aware'] = {f"{row['group']}|{row['variant']}":
+                        fact(row['median_diff'], src("shift_aware_tests.csv"), n=row['n'], ci=(row['ci_low'], row['ci_high']),
+                             p_value=row['p_value'], p_holm=row.get('p_holm'), helps=row.get('helps'),
+                             practical_threshold=row.get('practical_threshold'))
+                        for _, row in sa.iterrows()}
+    main = sa[sa['group'] == 'all break item-origins']
+    M['h3_supported'] = not bool(main['helps'].astype(bool).any())
+
+    ss = r["stock_summary.csv"]
+    M['stock'] = {f"{row.method}|{row.model}": fact(row.total_cost, src("stock_summary.csv"), n=row.n_items,
+                                                   fill_rate=row.fill_rate, cycle_service_level=row.cycle_service_level,
+                                                   avg_inventory_value=row.avg_inventory_value)
+                  for row in ss.itertuples()}
+    stt = r["stock_tests.csv"]
+    M['stock_tests'] = {f"{row.method}|{row.model_a}-{row.model_b}":
+                        fact(row.total_diff_pct, src("stock_tests.csv"), n=row.n_items, total_cost_diff=row.total_cost_diff,
+                             total_ci_dollars=[num(row.total_ci_low), num(row.total_ci_high)],
+                             median_fill_rate_diff=row.median_fill_rate_diff, p_value_cost=row.p_value_cost)
+                        for row in stt.itertuples()}
+    return M
 
 
 if __name__ == '__main__':

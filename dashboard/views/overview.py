@@ -1,7 +1,7 @@
 import streamlit as st
 
 from utils.facts import facts, lookup, value
-from utils.verdicts import POWER_FOR_YES, all_verdicts
+from utils.verdicts import POWER_FOR_YES, all_verdicts, m2_verdicts
 from utils.ui import verdict_card
 
 f = facts()
@@ -25,6 +25,14 @@ for col, v in zip(cols, verdicts):
     with col:
         verdict_card(v)
         st.page_link(v["page"], label="See the evidence")
+
+extra = m2_verdicts(f)
+if extra:
+    st.markdown("#### Milestone 2: classical time-series models")
+    for col, v in zip(st.columns(4), extra):
+        with col:
+            verdict_card(v)
+            st.page_link(v["page"], label="See the evidence")
 
 st.markdown("#### Key numbers")
 adj = lookup(f, "breaks", "adjusted_share_with_real_shift", "CUSUM")
@@ -63,4 +71,8 @@ with st.expander("How the verdicts are decided"):
         "- **Retraining:** *No* if none of the four methods meets the pre-registered 'helps' rule, on all breaks or on "
         "high-confidence breaks. *Strong* if truncation also fails to help in Texas and Wisconsin.\n"
         "- **Stock cost:** *Yes* if the better forecast is cheaper with a 95% CI below 0 in at least 2 of 3 time windows "
-        "and cheaper in both other states. *Strong* if all 3 windows qualify.")
+        "and cheaper in both other states. *Strong* if all 3 windows qualify.\n"
+        "- **Classical vs baseline (Milestone 2, H1):** *Yes* if both SARIMA and Holt-Winters additive beat seasonal "
+        "naive (Holm p < 0.05, median difference below 0); *Partly* if one does.\n"
+        "- **Shift-aware SARIMA (Milestone 2, H3):** *No* if neither restart nor the level-shift dummy meets the "
+        "pre-registered 'helps' rule (Holm p < 0.05 and at least 1% of the static SARIMA error).")
