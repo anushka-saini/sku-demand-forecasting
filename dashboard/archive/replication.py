@@ -3,7 +3,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.facts import facts
-from utils.ui import ACCENT, NEUTRAL, SECOND, chart, header, style
+from utils.ui import ACCENT, NEUTRAL, SECOND, chart, header, insight, style
 
 f = facts()
 concl = get("rep_conclusions")
@@ -12,9 +12,9 @@ brk = get("rep_breaks")
 mase = get("rep_mase")
 inv = get("rep_inventory")
 
-header("Replication: Texas and Wisconsin",
+header("Texas and Wisconsin",
        "The whole pipeline was rerun on two other states with every threshold and setting frozen at the California "
-       "values. A conclusion 'holds' if it passes the same pre-registered test there.")
+       "values. A conclusion holds if it passes the same test, written down before the run, there.")
 
 n_hold = int(concl["holds"].sum())
 st.markdown(f"<div class='headline'><b>{n_hold} of {len(concl)}</b> state-by-conclusion checks hold"
@@ -69,3 +69,7 @@ cheapest = i95.loc[i95.groupby("state")["total_cost"].idxmin()]
 chart(fig, "The static forecast is the cheapest in both states" if (cheapest["policy"] == "lightgbm_static").all()
       else "Cheapest policy by state: " + ", ".join(f"{r.state} {r.policy}" for r in cheapest.itertuples()),
       "Total holding + lost-sale cost over 168 days at a 95% target and 7-day lead time, with the assumed base costs.")
+
+insight(f"{n_hold} of {len(concl)} checks hold in the two other states, with every setting frozen at its California "
+        f"value. Shifts are about as common, LightGBM still beats seasonal naive, and retraining after a shift still "
+        f"does not help, so the California findings are not a quirk of one state.")

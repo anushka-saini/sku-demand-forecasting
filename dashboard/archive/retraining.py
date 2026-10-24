@@ -6,7 +6,7 @@ from utils.data import get
 from utils.facts import facts, lookup
 from utils.kpis import per_item_variant_diff
 from utils.verdicts import retraining
-from utils.ui import ACCENT, DARK, NEUTRAL, SECOND, chart, filters, header, n_note, style
+from utils.ui import ACCENT, DARK, NEUTRAL, SECOND, chart, filters, header, insight, n_note, style
 
 f = facts()
 var = get("variants")
@@ -32,7 +32,7 @@ st.markdown(
     f"**In plain English.** Restarting the model from the shift made typical error *worse* by {trunc['median_diff']:+.4f} "
     f"(on an error of about {lookup(f, 'forecasts', 'median_item_mase', 'lightgbm_ALL')['value']:.2f}). The gentlest "
     f"option, averaging old and new models, moved error by {blend['median_diff']:+.4f}, too small to matter and not "
-    f"significant after correcting for testing four methods. A pre-registered rule required an improvement of at least "
+    f"significant after correcting for testing four methods. A rule written down before the test required an improvement of at least "
     f"{PRACTICAL} with a corrected p-value below 0.05; nothing met it, even on the clearest, high-confidence shifts. "
     "A likely reason (not tested here) is that the static model's rolling averages already track level changes, so "
     "throwing away history loses more (seasonality, price effects) than it gains.")
@@ -125,3 +125,8 @@ st.dataframe(bc[["group", "variant", "category", "n", "median_diff", "ci_low", "
 st.caption("Descriptive only: the pre-registered decision used all categories together. Rows with n below 20 are not reliable.")
 if (bc["n"] < 20).any():
     st.warning(f"{int((bc['n'] < 20).sum())} rows have fewer than 20 items.")
+
+insight(f"None of the four ways of reacting to a shift met the rule, and restarting from the shift made LightGBM "
+        f"worse ({trunc['median_diff']:+.4f} MASE). A random short window on products without a shift changes almost "
+        f"nothing ({pl['median_diff']:+.4f}), so the detected shifts give retraining no useful signal; our guess, not "
+        f"tested, is that the static model's recent averages already follow a change in level.")

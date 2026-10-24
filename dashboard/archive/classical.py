@@ -2,28 +2,26 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data import get
-from utils.m2 import COLORS, ORDER, name
-from utils.ui import chart, header, n_note, style
+from utils.models import COLORS, ORDER, name
+from utils.ui import chart, header, insight, n_note, style
 
 header("Classical models",
-       "Milestone 2, notebooks 13-15. Holt-Winters, ARIMA and SARIMA on the same backtest as Milestone 1 (7 origins, "
-       "28-day forecasts, origins 1-6 scored), on a 150-item sample, compared with seasonal naive, damped Holt-Winters "
-       "(the Milestone 1 ETS) and LightGBM.")
+       "Seasonal naive, Holt-Winters, ARIMA and SARIMA on the same backtest as every other model (7 origins, 28-day "
+       "forecasts, origins 1-6 scored), on a 150-product sample, with LightGBM alongside for reference.")
 
-summ = get("m2_summary")
-tests = get("m2_tests")
-agg = get("m2_aggregate")
-fc = get("m2_forecasts")
-im = get("m2_item_metrics")
-orders = get("m2_orders")
-diag = get("m2_diagnostics")
-diag_items = get("m2_diag_items")
-params = get("m2_params")
-stats = get("m2_run_stats")
-shift = get("m2_shift")
-h4 = get("m2_h4")
+summ = get("classical_summary")
+tests = get("classical_tests")
+agg = get("aggregate_metrics")
+fc = get("classical_forecasts")
+im = get("classical_item_metrics")
+orders = get("classical_orders")
+diag = get("residual_checks")
+diag_items = get("residual_checks_items")
+params = get("classical_params")
+stats = get("classical_run_stats")
+h4 = get("classical_h4")
 
-cat = st.radio("Category", ["ALL", "FOODS", "HOBBIES", "HOUSEHOLD"], horizontal=True, key="m2_cat")
+cat = st.radio("Category", ["ALL", "FOODS", "HOBBIES", "HOUSEHOLD"], horizontal=True, key="cl_cat")
 s = summ[summ["category"] == cat].set_index("model").loc[ORDER].reset_index()
 best = s.loc[s["median_mase"].idxmin(), "model"]
 st.markdown(f"#### {name(best)} has the lowest median MASE ({s['median_mase'].min():.3f}) in {cat.lower() if cat != 'ALL' else 'all categories'}")
@@ -41,7 +39,7 @@ st.caption(f"Median across items of each item's mean over origins 1-6. MAPE leav
            f"{s['mape_excluded_share'].iloc[0]:.1%} of days with no sales. Lower is better for every column.")
 n_note(int(s["n_items"].iloc[0]))
 
-st.markdown("#### Pre-registered tests (paired Wilcoxon on per-item MASE, Holm-corrected)")
+st.markdown("#### Tests written down before scoring (paired Wilcoxon on per-product MASE, Holm-corrected)")
 t = tests.assign(model_a=tests["model_a"].map(name), model_b=tests["model_b"].map(name))
 st.dataframe(t[["hypothesis", "model_a", "model_b", "n", "median_diff", "ci_low", "ci_high", "p_holm", "a_better"]],
              hide_index=True, width="stretch",
@@ -74,10 +72,10 @@ st.markdown("---")
 st.markdown("### One item, all models")
 items = sorted(fc["item_id"].unique())
 c1, c2 = st.columns([2, 1])
-item = c1.selectbox("Item", items, key="m2_item")
+item = c1.selectbox("Item", items, key="cl_item")
 origins = sorted(fc["origin"].unique())[1:]
-origin = c2.selectbox("Forecast origin", origins, index=len(origins) - 1, format_func=lambda o: str(o.date()), key="m2_origin")
-show = st.multiselect("Models", ORDER, default=["seasonal_naive", "hw_add", "sarima", "lightgbm"], format_func=name, key="m2_models")
+origin = c2.selectbox("Forecast origin", origins, index=len(origins) - 1, format_func=lambda o: str(o.date()), key="cl_origin")
+show = st.multiselect("Models", ORDER, default=["seasonal_naive", "hw_add", "sarima", "lightgbm"], format_func=name, key="cl_models")
 g = fc[(fc["item_id"] == item) & (fc["origin"] == origin)]
 fig = go.Figure()
 a = g[g["model"] == "sarima"].sort_values("date")
@@ -118,18 +116,10 @@ rs = stats.assign(model=stats["model"].map(name))
 st.caption("Fallbacks to seasonal naive and convergence warnings, per fit:")
 st.dataframe(rs[["model", "level", "fits", "fallback_rate", "not_converged_rate"]], hide_index=True, width="stretch")
 
-st.markdown("---")
-st.markdown("### Does a shift-aware SARIMA help? (H3)")
-fig = go.Figure()
-lab = shift["variant"] + ": " + shift["group"]
-fig.add_scatter(x=shift["median_diff"], y=lab, mode="markers", marker=dict(color="#D55E00", size=10),
-                error_x=dict(type="data", symmetric=False, array=shift["ci_high"] - shift["median_diff"],
-                             arrayminus=shift["median_diff"] - shift["ci_low"], color="#999999"),
-                hovertemplate="%{y}: %{x:+.4f}<extra></extra>", showlegend=False)
-fig.add_vline(x=0, line_color="#666666")
-main = shift[shift["group"] == "all break item-origins"]
-helps = main["helps"].astype(str).str.lower().eq("true").any()
-chart(style(fig, height=330, legend=False),
-      "A shift-aware SARIMA variant meets the 'helps' rule" if helps else "No shift-aware SARIMA variant meets the 'helps' rule",
-      "Each dot is the median per-item change in MASE versus static SARIMA, with a 95% bootstrap CI. Negative = better. "
-      "Restart = fit only after the detected break; dummy = a level-shift regressor; placebo = a random cut on items without a break.")
+sar = summ[(summ["category"] == "ALL")].set_index("model")["median_mase"]
+lb = diag[(diag["level"] == "item")].set_index("model")["ljung_box_pass"]
+insight(f"Every classical model with a weekly season cuts the error of seasonal naive by about a quarter (SARIMA "
+        f"{sar['sarima']:.3f} against {sar['seasonal_naive']:.3f}), and SARIMA comes within "
+        f"{sar['sarima'] - sar['lightgbm']:.3f} MASE of LightGBM. ARIMA without the season is clearly worse "
+        f"({sar['arima']:.3f}). SARIMA also leaves the cleanest residuals ({lb['sarima']:.0%} pass Ljung-Box), "
+        f"which makes it the classical model we would explain to a planner.")

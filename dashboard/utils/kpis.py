@@ -32,7 +32,7 @@ def headline(tests, model="lightgbm"):
 
 def per_item_variant_diff(errors, model, variant):
     """
-    Per-item mean of (variant - static) MASE over eval origins, as in notebook 02:
+    Per-item mean of (variant - static) MASE over eval origins, as in 09a_lightgbm:
     adaptive -> origins where a break had been detected; placebo -> origins without a break.
     Placebo rows that equal static (no truncation was possible) are dropped.
     """

@@ -6,7 +6,7 @@ import streamlit as st
 from utils.data import get
 from utils.facts import facts, lookup
 from utils.kpis import break_share_by_category, filter_items
-from utils.ui import ACCENT, DARK, NEUTRAL, SECOND, chart, filters, header, n_note, style
+from utils.ui import ACCENT, DARK, NEUTRAL, SECOND, chart, filters, header, insight, n_note, style
 
 f = facts()
 items = get("items")
@@ -18,7 +18,7 @@ inj = get("injection")
 fun = get("hc_funnel").rename(columns={"Unnamed: 0": "group"})
 cats, segs, _ = filters()
 
-header("Shift detection",
+header("Breaks",
        "A weekly CUSUM compares each item's sales with its own first year (after an 8-week launch period); PELT, a "
        "second method, cross-checks it. This page shows how often shifts are flagged, and how far the detector can be trusted.")
 
@@ -148,3 +148,30 @@ chart(fig, f"Price changes explain few shifts: {p4['aligned_pct']:.1f}% of break
       "Blue: share of breaks with the event within the window. Grey hatched: the share expected if break dates were random. "
       "SNAP days fall on the 1st-10th of every month in every year, so they cannot cause a lasting shift.")
 n_note(int(al["n_breaks"].iloc[0]), "breaks")
+
+# ---------------------------------------------------------------- shift-aware classical models
+st.divider()
+st.markdown("## Does a shift-aware SARIMA forecast better?")
+shift = get("shift_aware_tests")
+fig = go.Figure()
+lab = shift["variant"] + ": " + shift["group"]
+fig.add_scatter(x=shift["median_diff"], y=lab, mode="markers", marker=dict(color="#D55E00", size=10),
+                error_x=dict(type="data", symmetric=False, array=shift["ci_high"] - shift["median_diff"],
+                             arrayminus=shift["median_diff"] - shift["ci_low"], color="#999999"),
+                hovertemplate="%{y}: %{x:+.4f}<extra></extra>", showlegend=False)
+fig.add_vline(x=0, line_color="#666666")
+style(fig, height=330, legend=False).update_xaxes(title="median change in MASE against static SARIMA (negative = better)")
+main = shift[shift["group"] == "all break item-origins"]
+helps = main["helps"].astype(str).str.lower().eq("true").any()
+chart(fig, "A shift-aware SARIMA variant meets the 'helps' rule" if helps else "No shift-aware SARIMA variant meets the 'helps' rule",
+      "Each dot is the median per-product change in MASE against static SARIMA, with a 95% bootstrap interval. "
+      "Restart = fit only after the detected break; dummy = a level-shift input; placebo = a random cut on products "
+      "without a break.")
+n_note(int(main["n"].iloc[0]), "products with a break in the 150-product sample")
+
+share_all = scope["cusum_first_break"].mean()      # follows the sidebar filters
+hc_share = fa["hc_share_of_breaks"]
+insight(f"Shifts are common: {share_all:.0%} of the products in view are flagged, and after removing chance alarms "
+        f"{sn.loc['CUSUM', 'adjusted']:.0%} still have a real one. But the detector only sees large shifts, only "
+        f"{hc_share:.0%} of flags pass every quality check, and reacting to a shift does not make SARIMA (or ETS, or "
+        f"LightGBM) forecast better.")

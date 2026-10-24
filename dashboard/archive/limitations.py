@@ -4,7 +4,7 @@ import streamlit as st
 from utils.data import get
 from utils.facts import facts, lookup, value
 from utils.kpis import base_cost_assumptions
-from utils.ui import GLOSSARY, header
+from utils.ui import GLOSSARY, header, insight
 
 f = facts()
 inv = get("inventory_policy")
@@ -13,7 +13,7 @@ items = get("items")
 H_BASE, M_BASE = base_cost_assumptions(inv)
 w = f["scope"]["windows"]
 
-header("Assumptions, limitations and how to reproduce", "What this analysis can and cannot tell you.")
+header("Assumptions and limitations", "What this analysis can and cannot tell you, what we assumed, and how to rerun it.")
 
 st.markdown("#### Scope")
 st.markdown(
@@ -75,12 +75,18 @@ st.markdown(
 st.markdown("#### How to reproduce")
 st.code("pip install -r requirements.txt\n"
         "# put the M5 files in data/raw/ (see docs/DATA.md)\n"
-        "make all          # runs every notebook, rebuilds outputs/results_facts.json, runs the tests\n"
-        "streamlit run dashboard/app.py", language="bash")
-st.markdown("Analyses after the first version were pre-registered (`docs/PREREGISTRATION.md`); every run, including a "
+        "python scripts/run_all.py     # runs every notebook in order, rebuilds outputs/results_facts.json, runs the tests\n"
+        "python -m streamlit run dashboard/app.py", language="bash")
+st.markdown("The tests and decision rules were written down before the results (`docs/PREREGISTRATION.md`, "
+            "`docs/PREREGISTRATION_CLASSICAL.md`); every run, including a "
             "failed one, is in `docs/RUN_LOG.md`; full results are in `docs/RESULTS.md`. Every number on these pages is "
             "read from `outputs/results_facts.json` or `outputs/tables/`.")
 
 st.markdown("#### Glossary")
 st.dataframe(pd.DataFrame(list(GLOSSARY.items()), columns=["Term", "Meaning"]), hide_index=True, width="stretch",
              column_config={"Meaning": st.column_config.TextColumn(width="large")})
+
+insight("The findings are about high-volume products in three US states, five years of data before COVID, and "
+        "costs we assumed rather than measured. Within those limits the main findings held in the other states and "
+        "seasons we checked; outside them, "
+        "slow or erratic products and real cost data are the first things to test.")

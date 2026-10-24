@@ -13,7 +13,8 @@ SCHEMA = {
     "items": (APP / "items.csv",
               ["item_id", "category", "abc_class", "xyz_class", "segment", "mean_sales", "cv", "total_sales",
                "in_scope", "cusum_first_break", "first_break_week", "first_break_direction", "first_break_shift_sd",
-               "break_at_last_origin", "last_break_week", "intermittent", "adf_p_value", "is_stationary"],
+               "break_at_last_origin", "last_break_week", "intermittent", "adf_p_value", "is_stationary",
+               "break_group"],
               ["first_break_week", "last_break_week"]),
     "category_summary": (APP / "category_summary.csv",
                          ["category", "total_items", "items_with_leading_zeros", "pct_items_with_leading_zeros",
@@ -107,43 +108,65 @@ SCHEMA = {
                          ["lead_time", "holding_rate", "stockout_multiple", "policy", "service_level", "total_cost"], []),
 }
 
-# Milestone 2 (notebooks 12-16)
-M2 = ROOT / "outputs" / "m2" / "tables"
+# Exploration, classical models, stationarity and decomposition
 SCHEMA.update({
-    "m2_sample": (M2 / "m2_sample_items.csv", ["item_id", "category", "break_item"], []),
-    "m2_stationarity": (M2 / "stationarity_items.csv", ["item_id", "category", "adf_c", "kpss_c", "adf_ct", "kpss_ct",
+    "weekday_index": (TABLES / "explore_weekday_index.csv", ["weekday", "FOODS", "HOBBIES", "HOUSEHOLD"], []),
+    "month_index": (TABLES / "explore_month_index.csv", ["month", "FOODS", "HOBBIES", "HOUSEHOLD"], []),
+    "calendar_effects": (TABLES / "explore_calendar_effects.csv", ["category", "snap_vs_other_days", "event_vs_normal_days",
+                                                                   "event_vs_normal_no_christmas"], []),
+    "price_correlation": (TABLES / "explore_price_correlation.csv", ["item_id", "spearman_units_vs_price"], []),
+    "comparison_overview": (TABLES / "comparison_overview.csv", ["model", "n_items", "median_mase", "median_rmse", "median_mae",
+                                                                 "median_smape", "median_wape", "median_mase_726",
+                                                                 "beats_naive_share", "beats_lightgbm_share"], []),
+    "classical_sample": (TABLES / "classical_sample_items.csv", ["item_id", "category", "break_item"], []),
+    "stationarity_items": (TABLES / "stationarity_items.csv", ["item_id", "category", "adf_c", "kpss_c", "adf_ct", "kpss_ct",
                                                         "label", "d", "D"], []),
-    "m2_stationarity_summary": (M2 / "stationarity_summary.csv", ["category", "n_items", "stationary", "trend-stationary",
+    "stationarity_summary": (TABLES / "stationarity_summary.csv", ["category", "n_items", "stationary", "trend-stationary",
                                                                   "difference-stationary", "conflicting", "d=0", "d=1", "D=1"], []),
-    "m2_stationarity_totals": (M2 / "stationarity_aggregates.csv", ["series", "label", "d", "D", "adf_c", "kpss_c"], []),
-    "m2_quality": (M2 / "data_quality.csv", ["category", "items", "raw_empty_cells", "leading_zero_days_trimmed",
+    "stationarity_totals": (TABLES / "stationarity_aggregates.csv", ["series", "label", "d", "D", "adf_c", "kpss_c"], []),
+    "data_quality": (TABLES / "data_quality.csv", ["category", "items", "raw_empty_cells", "leading_zero_days_trimmed",
                                              "missing_days_inside_series", "zero_days_kept_share", "outlier_days", "outlier_share"], []),
-    "m2_decomp_choice": (M2 / "decomposition_choice.csv", ["series", "level", "zero_handling", "spearman_level_vs_swing",
+    "decomposition_choice": (TABLES / "decomposition_choice.csv", ["series", "level", "zero_handling", "spearman_level_vs_swing",
                                                            "rule_choice", "resid_cv_additive", "resid_cv_multiplicative",
                                                            "lower_residual"], []),
-    "m2_demo_series": (M2 / "demo_series.parquet", ["item_id", "date", "sales_raw", "kept_after_trim"], ["date"]),
-    "m2_demo_decomp": (M2 / "demo_decomposition.parquet", ["series", "date", "observed", "trend", "seasonal", "resid"], ["date"]),
-    "m2_orders": (M2 / "classical_orders.csv", ["series", "level", "d", "D", "sarima_order", "sarima_sorder", "arima_order"], []),
-    "m2_forecasts": (M2 / "classical_forecasts.parquet", ["item_id", "origin", "date", "model", "forecast", "actual", "category"],
+    "demo_series": (TABLES / "demo_series.parquet", ["item_id", "date", "sales_raw", "kept_after_trim"], ["date"]),
+    "demo_decomposition": (TABLES / "demo_decomposition.parquet", ["series", "date", "observed", "trend", "seasonal", "resid"], ["date"]),
+    "classical_orders": (TABLES / "classical_orders.csv", ["series", "level", "d", "D", "sarima_order", "sarima_sorder", "arima_order"], []),
+    "classical_forecasts": (TABLES / "comparison_forecasts.parquet", ["item_id", "origin", "date", "model", "forecast", "actual", "category"],
                      ["origin", "date"]),
-    "m2_item_metrics": (M2 / "classical_metrics_item_origin.csv", ["item_id", "origin", "model", "rmse", "mae", "mape",
+    "classical_item_metrics": (TABLES / "comparison_metrics_item_origin.csv", ["item_id", "origin", "model", "rmse", "mae", "mape",
                                                                    "smape", "wape", "mase", "category"], ["origin"]),
-    "m2_summary": (M2 / "classical_metrics_summary.csv", ["category", "model", "n_items", "median_rmse", "median_mae",
+    "classical_summary": (TABLES / "comparison_metrics_summary.csv", ["category", "model", "n_items", "median_rmse", "median_mae",
                                                           "median_mape", "median_mase", "mape_excluded_share"], []),
-    "m2_tests": (M2 / "classical_tests.csv", ["hypothesis", "model_a", "model_b", "n", "median_diff", "ci_low", "ci_high",
+    "classical_tests": (TABLES / "comparison_tests.csv", ["hypothesis", "model_a", "model_b", "n", "median_diff", "ci_low", "ci_high",
                                               "p_holm", "a_better"], []),
-    "m2_h4": (M2 / "classical_h4.csv", ["group", "n_items", "median_mase_hw_add", "median_mase_hw_mul"], []),
-    "m2_aggregate": (M2 / "aggregate_metrics.csv", ["series", "model", "how", "rmse", "mae", "mape", "mase"], []),
-    "m2_run_stats": (M2 / "classical_run_stats.csv", ["model", "level", "fits", "fallback_rate", "not_converged_rate"], []),
-    "m2_diagnostics": (M2 / "diagnostics_summary.csv", ["level", "model", "n", "ljung_box_pass", "normality_pass", "roots_ok"], []),
-    "m2_diag_items": (M2 / "diagnostics_items.csv", ["series", "model", "lb_p7", "lb_p14", "jb_p", "lb_pass", "jb_pass"], []),
-    "m2_params": (M2 / "parameters_items.csv", ["series", "model", "level"], []),
-    "m2_shift": (M2 / "shift_aware_tests.csv", ["group", "variant", "n", "median_diff", "ci_low", "ci_high", "p_value"], []),
-    "m2_stock_items": (M2 / "stock_items.csv", ["item_id", "model", "method", "total_cost", "fill_rate", "avg_inventory_value"], []),
-    "m2_stock": (M2 / "stock_summary.csv", ["method", "model", "n_items", "fill_rate", "cycle_service_level",
+    "classical_h4": (TABLES / "classical_h4.csv", ["group", "n_items", "median_mase_hw_add", "median_mase_hw_mul"], []),
+    "aggregate_metrics": (TABLES / "comparison_totals_metrics.csv", ["series", "model", "how", "rmse", "mae", "mape", "mase"], []),
+    "classical_run_stats": (TABLES / "classical_run_stats.csv", ["model", "level", "fits", "fallback_rate", "not_converged_rate"], []),
+    "residual_checks": (TABLES / "diagnostics_summary.csv", ["level", "model", "n", "ljung_box_pass", "normality_pass", "roots_ok"], []),
+    "residual_checks_items": (TABLES / "diagnostics_items.csv", ["series", "model", "lb_p7", "lb_p14", "jb_p", "lb_pass", "jb_pass"], []),
+    "classical_params": (TABLES / "parameters_items.csv", ["series", "model", "level"], []),
+    "shift_aware_tests": (TABLES / "shift_aware_tests.csv", ["group", "variant", "n", "median_diff", "ci_low", "ci_high", "p_value"], []),
+    "classical_stock_items": (TABLES / "stock_items.csv", ["item_id", "model", "method", "total_cost", "fill_rate", "avg_inventory_value"], []),
+    "classical_stock": (TABLES / "stock_summary.csv", ["method", "model", "n_items", "fill_rate", "cycle_service_level",
                                             "avg_inventory_value", "total_cost"], []),
-    "m2_stock_tests": (M2 / "stock_tests.csv", ["method", "model_a", "model_b", "total_diff_pct", "total_ci_low",
+    "classical_stock_tests": (TABLES / "stock_tests.csv", ["method", "model_a", "model_b", "total_diff_pct", "total_ci_low",
                                                 "total_ci_high"], []),
+})
+
+# Tables the planning pages read in full
+SCHEMA.update({
+    "hc_breaks_items": (TABLES / "hc_breaks_items.csv", ["item_id", "category", "cusum_break", "change_week", "alarm_week",
+                                                        "direction", "high_confidence", "relative_change"],
+                        ["change_week", "alarm_week"]),
+    "shift_aware_items": (TABLES / "shift_aware_item_origin.csv", ["item_id", "origin", "variant", "mase_variant", "static"],
+                          ["origin"]),
+    "variants_items": (TABLES / "adaptation_variants_item_origin_mase.csv",
+                       ["item_id", "origin", "static", "truncate", "decay", "level_shift", "blend", "has_break"], ["origin"]),
+    "classical_726": (TABLES / "classical_726_scores.csv", ["item_id", "model", "mase", "category", "intermittent"], []),
+    "advanced_wip": (TABLES / "advanced_wip_summary.csv", ["model", "mase"], []),
+    "advanced_wip_items": (TABLES / "advanced_wip_item_scores.csv", ["item_id", "model", "mase"], []),
+    "funnel": (TABLES / "hc_breaks_funnel.csv", ["cusum_breaks", "4_high_confidence"], []),
 })
 
 
@@ -157,7 +180,7 @@ def read_table(path, required, dates=()):
     if not path.exists():
         raise DataError(
             f"Missing results file: {path.relative_to(ROOT) if path.is_relative_to(ROOT) else path}. "
-            "Run the notebooks in order (01 to 05) to regenerate it.")
+            "Run the notebooks in order (python scripts/run_all.py) to regenerate it.")
     df = pd.read_parquet(path) if path.suffix == ".parquet" else pd.read_csv(path)
     missing = [c for c in required if c not in df.columns]
     if missing:
@@ -177,6 +200,9 @@ def load(name):
     df = read_table(path, required, dates)
     for c in BOOL_FILL.get(name, []):
         df[c] = df[c].fillna(False).astype(bool)
+    if name == "items":
+        # shift known at the forecast dates (the definition every forecasting test uses)
+        df["has_shift"] = df["break_group"].eq("break detected")
     return df
 
 

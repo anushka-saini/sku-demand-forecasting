@@ -1,29 +1,28 @@
-import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data import get
 from utils.facts import facts, value
-from utils.ui import ACCENT, NEUTRAL, chart, header, style, vline
+from utils.ui import figure, header, insight
 
 cat = get("category_summary")
-lz = get("leading_zero_example")
 items = get("items")
 
-header("Data & method",
-       "From raw Walmart sales to an inventory policy in seven steps. Each step's item count comes from the result files.")
+header("Data",
+       "Walmart's M5 data records daily unit sales of every product in its California stores from 2011 to 2016; this "
+       "page shows what is in it and which products we chose to model.")
 
 n_total = int(cat["total_items"].sum())
 n_lz = int(cat["items_with_leading_zeros"].sum())
 n_axay = int(cat["ax_ay_candidates"].sum())
 
 st.markdown("#### Pipeline")
-steps = [("Raw M5 data", "sales, calendar, prices"),
-         ("Scope", f"California, 4 stores summed · {n_total:,} items"),
-         ("Trim pre-launch zeros", f"{n_lz:,} items had >30 leading zero days"),
-         ("ABC-XYZ segmentation", f"{n_axay} AX/AY items kept"),
-         ("Break detection", "weekly CUSUM, PELT cross-check"),
-         ("Forecasting", "static vs adaptive vs placebo, 7 rolling origins"),
-         ("Inventory policy", "safety stock and reorder point, 168 simulated days")]
+steps = [("Meet the data", "sales, calendar, prices"),
+         ("Choose scope", f"California, 4 stores summed · {n_total:,} products, {n_axay} AX/AY kept"),
+         ("Explore", "weekly and yearly patterns, price, SNAP, events"),
+         ("Zeros and trimming", f"{n_lz:,} products had >30 zero days before their first sale"),
+         ("Stationarity and decomposition", "ADF + KPSS, differencing, weekly and yearly patterns"),
+         ("Classical models, breaks, LightGBM", "same backtest: 7 origins, 28-day forecasts"),
+         ("Uncertainty and stock", "calibrated bands, reorder-point simulation over 168 days")]
 boxes = "<span class='arrow'>→</span>".join(
     f"<div class='step'><b>{i}. {name}</b><span>{detail}</span></div>" for i, (name, detail) in enumerate(steps, 1))
 st.markdown(f"<div class='pipeline'>{boxes}</div>", unsafe_allow_html=True)
@@ -36,24 +35,13 @@ c3.metric("Share of units sold", f"{value(f, 'scope', 'ax_ay_share_of_units'):.1
 st.caption("How to read this: a minority of items carries most of the volume, so modelling the high-volume, "
            "reasonably steady items covers most of what a planner stocks.")
 
-# Leading-zero example
-item = lz["item_id"].iloc[0]
-removed = lz[~lz["kept_after_trim"]]
-kept = lz[lz["kept_after_trim"]]
-first_sale = kept["date"].min()
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=removed["date"], y=removed["sales"], mode="lines", name="removed (not yet on sale)",
-                         line=dict(color=NEUTRAL, width=1, dash="dot"),
-                         hovertemplate="%{x|%Y-%m-%d}: %{y} units (removed)<extra></extra>"))
-fig.add_trace(go.Scatter(x=kept["date"], y=kept["sales"], mode="lines", name="kept for analysis",
-                         line=dict(color=ACCENT, width=1),
-                         hovertemplate="%{x|%Y-%m-%d}: %{y} units<extra></extra>"))
-vline(fig, first_sale, f" first sale {first_sale.date()}")
-style(fig).update_yaxes(title="units per day (CA total)")
-chart(fig, f"{item} showed {len(removed)} days of zero sales before it was ever sold, so they are not real demand",
-      f"Grey dotted: days before the first sale, which were removed. Blue: the series used from then on. Treating "
-      f"the grey part as demand would make the item look like it had a huge structural break at launch. Zeros "
-      f"*after* the first sale (stockouts, delistings) are kept.")
+st.markdown("#### The three files")
+c1, c2 = st.columns(2)
+with c1:
+    figure("snapshot_sales.png", "Sales: one row per product and store, one column per day.")
+with c2:
+    figure("snapshot_prices.png", "Prices: one row per product, store and week.")
+figure("snapshot_calendar.png", "Calendar: dates, weekdays, events and SNAP days for each state.")
 
 st.markdown("#### Category summary")
 st.caption("How to read this: one row per category. 'Stationary' is the share of AX/AY items whose ADF test "
@@ -78,3 +66,8 @@ st.markdown(
     "detected only from data up to that date (no lookahead).\n"
     "- **Inventory.** A daily-review reorder-point policy with lost sales was simulated on the 168 evaluation "
     "days. Safety stock was estimated from past forecast errors only.")
+
+insight(f"A minority of products carries most of the volume: the {n_axay} high-volume, reasonably steady AX/AY products "
+        f"are {value(f, 'scope', 'ax_ay_share_of_items'):.0%} of California's products but "
+        f"{value(f, 'scope', 'ax_ay_share_of_units'):.0%} of the units sold. Modelling them covers most of what a planner "
+        f"stocks, and every one of them has at least 500 days of sales history to learn from.")

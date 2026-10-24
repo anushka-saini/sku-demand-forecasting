@@ -3,7 +3,7 @@ import streamlit as st
 from utils.data import get
 from utils.facts import facts, lookup
 from utils.kpis import BAND_FLAG, BIAS_FLAG, build_watchlist
-from utils.ui import assumed, derived, filters, header, n_note
+from utils.ui import assumed, derived, filters, header, insight, n_note
 
 f = facts()
 cal_items = get("calibrated_items")
@@ -68,3 +68,7 @@ else:
               "shift flagged": wl["shift_detected"].sum(),
               "intermittent": wl["intermittent"].sum()}
     st.markdown("**Most common reasons on this list:** " + ", ".join(f"{k} {int(v)}" for k, v in counts.items()))
+
+insight("The watchlist is short with the calibrated safety stock and long with the textbook one, which is the "
+        "stock result in a single list: the forecasts are the same, only the safety stock differs. The likely "
+        "reasons point to what a planner can act on, such as a forecast that runs low or a band that is too narrow.")

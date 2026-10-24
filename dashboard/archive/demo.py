@@ -3,21 +3,21 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 from utils.data import get
-from utils.m2 import COLORS, ORDER, name
-from utils.ui import assumed, chart, header, style
+from utils.models import COLORS, ORDER, name
+from utils.ui import assumed, chart, header, insight, style
 
-header("Mid-sem demo walkthrough",
-       "One item from raw data to a stock decision, in seven steps. Pick any of the 150 items in the Milestone 2 sample; "
+header("One product, start to finish",
+       "One product from raw data to a stock decision, in seven steps. Pick any of the 150 products in the classical-model sample; "
        "every number below is read from the notebook outputs.")
 
-sample = get("m2_sample")
-raw = get("m2_demo_series")
-decomp = get("m2_demo_decomp")
-stat = get("m2_stationarity")
-orders = get("m2_orders")
-fc = get("m2_forecasts")
-im = get("m2_item_metrics")
-stock = get("m2_stock_items")
+sample = get("classical_sample")
+raw = get("demo_series")
+decomp = get("demo_decomposition")
+stat = get("stationarity_items")
+orders = get("classical_orders")
+fc = get("classical_forecasts")
+im = get("classical_item_metrics")
+stock = get("classical_stock_items")
 
 items = sorted(sample["item_id"])
 # Start on a typical item: the one whose SARIMA error is closest to the sample median
@@ -105,3 +105,7 @@ cheap = sk["conformal"].idxmin()
 chart(style(fig), f"With calibrated safety stock, {name(cheap)} is cheapest for this item (${sk.loc[cheap, 'conformal']:,.0f})",
       "Simulated holding + lost-sale cost over 168 days. Hatched bars use safety stock sized from past forecast errors "
       "(conformal) instead of the textbook formula.")
+
+insight("One product shows the whole chain: trim the zeros, check stationarity, fit the models on the same "
+        "backtest, and turn the forecast into a stock decision. For most products the error differences between "
+        "good models are small, while the safety-stock method changes the cost a lot.")

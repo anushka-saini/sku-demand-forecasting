@@ -7,7 +7,7 @@ from utils.data import get
 from utils.facts import facts
 from utils.kpis import base_cost_assumptions, pct_change, tradeoff
 from utils.ui import (ACCENT, DARK, NEUTRAL, POLICY_STYLE, SECOND, assumed, assumed_chart, chart, filters, header,
-                      n_note, style)
+                      insight, n_note, style)
 
 f = facts()
 kpi = get("kpi_all")
@@ -17,16 +17,41 @@ cal = get("calibrated_inv")
 wsum = get("window_summary")
 wdiff = get("window_diffs")
 wmeta = get("windows")
+cov = get("coverage")
 nv = get("newsvendor")
 be = get("breakeven")
 cats, _, sl = filters()
 H_BASE, M_BASE = base_cost_assumptions(inv)
 ORDER = list(POLICY_STYLE)
 
-header("Inventory simulator",
-       "Each item's stock was simulated day by day over 168 days with a reorder-point policy: when stock on hand plus "
-       "on order falls to the reorder point, order up to it plus a week of forecast demand; unmet demand is lost. "
-       "Every selector below only filters simulations that were run in advance.")
+header("Uncertainty and stock",
+       "A forecast only matters if it changes how much stock a store holds, so we put an honest error band around "
+       "each forecast and then simulate restocking every product day by day over 168 days.")
+
+# the key figure: how often the actual sales fall inside the band, before and after calibration
+MODEL_NAMES = {"lightgbm": "LightGBM", "seasonal_naive": "Seasonal naive"}
+c = cov[(cov["origins"] == "origins 2-6")].copy()
+c["label"] = c["model"].map(MODEL_NAMES) + " " + c["variant"] + " · " + c["level"].astype(str) + "%"
+fig = go.Figure()
+fig.add_trace(go.Bar(x=c["label"], y=100 * c["coverage_before"], name="before (each product's own past errors)",
+                     marker=dict(color=NEUTRAL, pattern_shape="/"), hovertemplate="%{x}: %{y:.1f}% covered<extra>before</extra>"))
+fig.add_trace(go.Bar(x=c["label"], y=100 * c["coverage_after"], name="after (conformal, pooled by category)", marker_color=ACCENT,
+                     hovertemplate="%{x}: %{y:.1f}% covered<extra>after</extra>"))
+for lvl in sorted(c["level"].unique()):
+    fig.add_hline(y=lvl, line_dash="dot", line_color=DARK, annotation_text=f"{lvl}% target", annotation_position="right")
+fig.update_layout(barmode="group")
+style(fig, height=360).update_yaxes(title="share of days inside the band", ticksuffix="%", range=[60, 100])
+fig.update_xaxes(title="forecast and band level")
+band = c[(c["model"] == "lightgbm") & (c["variant"] == "static") & (c["level"] == 90)].iloc[0]
+chart(fig, f"Calibrated bands hit their targets: LightGBM's 90% band covers {band['coverage_after']:.1%} of days, up from {band['coverage_before']:.1%}",
+      f"Share of scored days (origins 2-6, {int(band['n_days']):,} product-days per model) on which actual sales fell "
+      "inside the band. The dotted lines are the targets.")
+
+st.divider()
+st.markdown("## The stock simulation")
+st.markdown("Each day, if stock on hand plus stock on order falls to the reorder point, we order up to it plus a week "
+            "of forecast demand; unmet demand is lost. Every selector below only filters simulations that were run "
+            "in advance.")
 assumed("Lead time, holding cost and stockout cost are assumptions, not observed data. Charts that depend on them "
         "have a dashed orange frame.")
 
@@ -161,3 +186,10 @@ c1.download_button("Download item results (this lead time and target)",
                    mime="text/csv")
 c2.download_button("Download cost scenarios", sens.to_csv(index=False).encode(), file_name="inventory_cost_scenarios.csv",
                    mime="text/csv")
+
+cl = cal[(cal["service_level"] == 0.95) & (cal["policy"] == "lightgbm_static")].set_index("method")
+saving = 1 - cl.loc["conformal", "total_cost"] / cl.loc["normal formula", "total_cost"]
+insight(f"The textbook safety stock promises more than it delivers, because forecast errors are neither normal nor "
+        f"independent. Sizing it from the real errors instead brings the achieved service close to the target and, "
+        f"at our assumed costs, cuts total cost by {saving:.0%} at a 95% target. How the safety stock is sized "
+        f"matters more than which good forecast feeds it.")

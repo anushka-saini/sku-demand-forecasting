@@ -4,7 +4,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.kpis import abc_xyz_matrix, filter_items
-from utils.ui import chart, filters, header, n_note, style
+from utils.ui import chart, filters, header, insight, n_note, style
 
 items = get("items")
 
@@ -73,3 +73,7 @@ if rows:
             st.switch_page("views/forecasts.py")
     else:
         st.info(f"{chosen['item_id']} is outside the modelled AX/AY scope, so there are no forecasts for it.")
+
+insight("ABC-XYZ is how we chose what to model: the AX and AY cells hold few products but most of the units, and "
+        "their sales are steady enough to forecast. The slow and erratic products (Z and C) would need different "
+        "methods, which we leave for later.")
