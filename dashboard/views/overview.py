@@ -1,78 +1,95 @@
+import plotly.graph_objects as go
 import streamlit as st
 
+from utils.data import get
 from utils.facts import facts, lookup, value
-from utils.verdicts import POWER_FOR_YES, all_verdicts, m2_verdicts
-from utils.ui import verdict_card
+from utils.models import COLORS, ORDER, SHORT, name
+from utils.ui import chart, kpis, page, style, tells
 
 f = facts()
-verdicts = all_verdicts(f)
+mase = get("mase_unrounded")
+overview = get("comparison_overview")
+cal = get("calibrated_inv")
+variants = get("variants")
+adaptive = get("adaptive_tests")
+shift_sarima = get("shift_aware_tests")
 
-st.title("Do demand shifts matter for forecasting and stock?")
-st.markdown(
-    "<p class='intro'>Walmart's M5 data records daily unit sales for every item in its California stores from 2011 "
-    "to 2016. This project asks whether individual items' demand shifts in lasting ways, whether retraining the "
-    "forecast after a shift helps, and what that means for how much stock to hold. Every answer below is computed "
-    "from the results files, not typed in.</p>", unsafe_allow_html=True)
+page("Overview", "Can better forecasts, or reacting to shifts in demand, cut the cost of keeping these items in stock?")
 
-retrain = verdicts[2]
-if retrain["verdict"] == "No":
-    st.markdown("<div class='headline'><b>Retraining after a detected shift does not help.</b> That negative result "
-                "is the main finding: the gains come from a better static forecast and better-calibrated safety "
-                "stock, not from reacting to shifts.</div>", unsafe_allow_html=True)
-
-cols = st.columns(4)
-for col, v in zip(cols, verdicts):
-    with col:
-        verdict_card(v)
-        st.page_link(v["page"], label="See the evidence")
-
-extra = m2_verdicts(f)
-if extra:
-    st.markdown("#### Milestone 2: classical time-series models")
-    for col, v in zip(st.columns(4), extra):
-        with col:
-            verdict_card(v)
-            st.page_link(v["page"], label="See the evidence")
-
-st.markdown("#### Key numbers")
+n_items = int(value(f, "scope", "ax_ay_items"))
+ca_items = int(value(f, "scope", "ca_items"))
+units_share = value(f, "scope", "ax_ay_share_of_units")
+all_rows = mase[(mase["category"] == "ALL") & mase["model"].isin(["seasonal_naive", "ets", "lightgbm"])].set_index("model")
+naive = all_rows.loc["seasonal_naive", "median_item_mase"]
+best = all_rows["median_item_mase"].idxmin()
+best_val = all_rows.loc[best, "median_item_mase"]
+gain = 1 - best_val / naive
 adj = lookup(f, "breaks", "adjusted_share_with_real_shift", "CUSUM")
-lgb, naive = value(f, "forecasts", "median_item_mase", "lightgbm_ALL"), value(f, "forecasts", "median_item_mase", "seasonal_naive_ALL")
-trunc = lookup(f, "forecasts", "adaptation_variants", "all detected breaks|truncate")
-cal = lookup(f, "inventory", "conformal_vs_normal_cost_change", "0.95")
-c1, c2, c3, c4 = st.columns(4)
-with c1:
-    st.metric("Items with a real demand shift", f"{adj['value']:.1%}",
-              help=f"95% CI {adj['ci95'][0]:.1%} to {adj['ci95'][1]:.1%}; n = {adj['n']} items")
-    st.caption(f"What this means: {adj['value']:.0%} of high-volume items changed their typical sales level at some "
-               f"point, after discounting alarms that would happen by chance.")
-with c2:
-    st.metric("LightGBM forecast error (MASE)", f"{lgb:.3f}", delta=f"{lgb - naive:+.3f} vs baseline {naive:.3f}",
-              delta_color="inverse", help="Median MASE across items (lower is better; below 1 beats repeating last week in-sample).")
-    st.caption(f"What this means: the machine-learning model's typical error is {1 - lgb / naive:.0%} lower than "
-               f"repeating last week's sales.")
-with c3:
-    st.metric("Retraining effect (MASE)", f"{trunc['value']:+.4f}",
-              help=f"Median per-item change, 95% CI {trunc['ci95'][0]:+.4f} to {trunc['ci95'][1]:+.4f}; n = {trunc['n']} items")
-    st.caption("What this means: restarting the model from the shift made forecasts "
-               + ("slightly worse." if trunc["ci95"][0] > 0 else "slightly better." if trunc["ci95"][1] < 0 else "neither better nor worse."))
-with c4:
-    st.metric("Cost, calibrated safety stock", f"{cal['value']:+.1%}",
-              help=f"Total cost at a 95% target, lead time 7 days, assumed costs; n = {cal['n']} items")
-    st.caption("What this means: sizing safety stock from realistic error bands, rather than a textbook formula, "
-               "cut simulated cost. Costs are assumptions.")
+stock = lookup(f, "inventory", "static_vs_naive_base_95")
+c95 = cal[(cal["policy"] == "lightgbm_static") & (cal["service_level"] == 0.95)].set_index("method")
+fr_text, fr_cal = c95.loc["normal formula", "fill_rate"], c95.loc["conformal", "fill_rate"]
 
-with st.expander("How the verdicts are decided"):
-    st.markdown(
-        f"- **Shifts:** *Yes* if the chance-adjusted share's 95% CI is above 0 **and** a sudden 20% shift is detected "
-        f"at least {POWER_FOR_YES:.0%} of the time; *Partly* if only the first holds. *Strong* if it also replicates "
-        f"in Texas and Wisconsin.\n"
-        "- **Best forecast:** the model with the lowest median error. *Strong* if it beats every other model "
-        "significantly in all three states, otherwise *moderate*.\n"
-        "- **Retraining:** *No* if none of the four methods meets the pre-registered 'helps' rule, on all breaks or on "
-        "high-confidence breaks. *Strong* if truncation also fails to help in Texas and Wisconsin.\n"
-        "- **Stock cost:** *Yes* if the better forecast is cheaper with a 95% CI below 0 in at least 2 of 3 time windows "
-        "and cheaper in both other states. *Strong* if all 3 windows qualify.\n"
-        "- **Classical vs baseline (Milestone 2, H1):** *Yes* if both SARIMA and Holt-Winters additive beat seasonal "
-        "naive (Holm p < 0.05, median difference below 0); *Partly* if one does.\n"
-        "- **Shift-aware SARIMA (Milestone 2, H3):** *No* if neither restart nor the level-shift dummy meets the "
-        "pre-registered 'helps' rule (Holm p < 0.05 and at least 1% of the static SARIMA error).")
+# every version that reacts to a shift, and whether any of them met the "helps" rule
+lgb_all = variants[variants["group"] == "all detected breaks"]
+reacting = len(lgb_all) + len(adaptive[(adaptive["comparison"].str.startswith("adaptive")) & (adaptive["category"] == "ALL")
+                                      & adaptive["model"].isin(["ets", "tsb"])]) \
+    + len(shift_sarima[shift_sarima["group"] == "all break item-origins"])
+any_better = bool(lgb_all["helps"].astype(str).str.lower().eq("true").any()) or bool(
+    shift_sarima.loc[shift_sarima["group"] == "all break item-origins", "helps"].astype(str).str.lower().eq("true").any())
+
+kpis([
+    {"label": "Items analysed", "value": f"{n_items:,}", "compare": f"of {ca_items:,} items; {units_share:.0%} of units sold",
+     "help": "The high-volume, fairly steady items in California's four stores."},
+    {"label": f"{name(best)} forecast error", "value": f"{best_val:.3f}", "compare": f"{gain:.0%} lower than the baseline ({naive:.3f})",
+     "tone": "good", "help": "MASE: average error divided by the error of repeating last week. Lower is better; below 1 beats that rule."},
+    {"label": "Items with a lasting shift", "value": f"{adj['value']:.0%}",
+     "compare": f"range {adj['ci95'][0]:.0%} to {adj['ci95'][1]:.0%}, chance alarms removed",
+     "help": "Share of items whose normal sales level changed for good at some point."},
+    {"label": "Stock cost, better forecast", "value": f"{stock['value']:+.1%}",
+     "compare": f"vs the baseline forecast; {stock['inventory_change']:+.0%} stock held", "tone": "good",
+     "help": "Simulated over 168 days at a 95% target and a 7-day lead time, with assumed costs."},
+    {"label": "Fill rate, safety stock from past errors", "value": f"{fr_cal:.1%}",
+     "compare": f"vs {fr_text:.1%} with the textbook formula", "tone": "good",
+     "help": "Share of demand served from stock in the simulation, 95% target."},
+])
+
+st.markdown("#### The answer")
+s1 = (f"Lasting shifts are common: after removing chance alarms, about {adj['value']:.0%} of the {n_items:,} items "
+      f"changed their normal sales level at some point.")
+s2 = (f"{name(best)} forecasts best, with a typical error {gain:.0%} below the simple baseline, "
+      + (f"and reacting to a detected shift made none of the {reacting} versions we tried more accurate."
+         if not any_better else "and at least one version that reacts to shifts improved accuracy."))
+s3 = (f"In the stock simulation the better forecast holds {abs(stock['inventory_change']):.0%} less stock at "
+      f"{abs(stock['value']):.0%} lower cost, and sizing safety stock from past errors lifts the fill rate from "
+      f"{fr_text:.1%} to {fr_cal:.1%}.")
+st.markdown(f"{s1} {s2} {s3}")
+todo = (f"**What to do with this:** plan with {name(best)} forecasts as they are"
+        + (", do not retrain them after a detected shift," if not any_better else ",")
+        + " and size safety stock from past forecast errors rather than the textbook formula.")
+st.markdown(todo)
+
+# small model comparison: the 150-item sample, where every model was run
+ov = overview.set_index("model")
+key_by_name = {name(k): k for k in ORDER}
+rows = [(key_by_name.get(m, m), ov.loc[m, "median_mase"]) for m in ov.index]
+rows.sort(key=lambda r: r[1], reverse=True)
+fig = go.Figure(go.Bar(x=[v for _, v in rows], y=[SHORT.get(k, k) for k, _ in rows], orientation="h",
+                       marker_color=[COLORS.get(k, "#888") for k, _ in rows],
+                       text=[f"{v:.3f}" for _, v in rows], textposition="outside", cliponaxis=False,
+                       hovertemplate="%{y}: MASE %{x:.3f}<extra></extra>"))
+style(fig, height=300, legend=False).update_xaxes(title="typical forecast error (MASE, lower is better)",
+                                                   range=[0, max(v for _, v in rows) * 1.15])
+best_s = min(rows, key=lambda r: r[1])
+second = sorted(rows, key=lambda r: r[1])[1]
+chart(fig, f"{SHORT.get(best_s[0], best_s[0])} is lowest, but the good models sit close together",
+      f"On the {int(ov['n_items'].iloc[0])} items where every model ran, {SHORT.get(best_s[0], best_s[0])} "
+      f"({best_s[1]:.3f}) is ahead of {SHORT.get(second[0], second[0])} ({second[1]:.3f}) by {second[1] - best_s[1]:.3f}; "
+      f"the baseline is at {ov.loc[name('seasonal_naive'), 'median_mase']:.3f}.")
+
+cal_save = lookup(f, "inventory", "conformal_vs_normal_cost_change", "0.95")["value"]
+bigger = "how safety stock is sized" if abs(cal_save) > abs(stock["value"]) else "the better forecast"
+tells(f"{name(best)} cuts the typical error by {gain:.0%}, "
+      + ("while reacting to shifts did not help. " if not any_better else "and some shift-aware versions helped. ")
+      + f"In the simulation the larger saving comes from {bigger} ({cal_save:+.0%} cost from safety stock sized on past "
+      f"errors, {stock['value']:+.0%} from the better forecast). The costs behind these numbers are assumptions; the "
+      f"Stock impact page lets you change them.")

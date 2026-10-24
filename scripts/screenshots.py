@@ -4,7 +4,7 @@ to docs/screenshots/. Uses Playwright's Chromium if installed, otherwise the sys
 
 Run: python scripts/screenshots.py          (light theme, docs/screenshots/)
      python scripts/screenshots.py --dark   (dark theme, docs/screenshots/dark/)
-     python scripts/screenshots.py --pages overview,classical   (only these pages)
+     python scripts/screenshots.py --pages overview,accuracy   (only these pages)
 """
 import subprocess
 import sys
@@ -17,11 +17,9 @@ OUT = ROOT / "docs" / "screenshots"
 PORT = 8599
 # page -> (url path, window height). Streamlit scrolls inside its own container, so a tall window is used
 # instead of a "full page" screenshot.
-PAGES = {"overview": ("", 1500), "data_method": ("data_method", 2200), "segmentation": ("segmentation", 2000),
-         "breaks": ("breaks", 4400), "forecasts": ("forecasts", 4600), "retraining": ("retraining", 3800),
-         "inventory": ("inventory", 4600), "planner": ("planner", 1700), "replication": ("replication", 2300),
-         "limitations": ("limitations", 2600),
-         "stationarity": ("stationarity", 3000), "classical": ("classical", 5200), "demo": ("demo", 5200)}
+PAGES = {"overview": ("", 1500), "data_scope": ("data_scope", 2300), "demand_patterns": ("demand_patterns", 2700),
+         "accuracy": ("accuracy", 3300), "item_explorer": ("item_explorer", 2200), "demand_shifts": ("demand_shifts", 2700),
+         "stock_impact": ("stock_impact", 2900), "method_limits": ("method_limits", 1700)}
 
 
 def wait_for_server(timeout=90):
