@@ -1,0 +1,9 @@
+model,level,fits,fallback_rate,not_converged_rate
+hw_add,item,1050,0.0,0.0
+hw_add,aggregate,28,0.0,0.0
+hw_mul,item,1050,0.0,0.1419047619047619
+hw_mul,aggregate,28,0.0,0.03571428571428571
+arima,item,1050,0.0,0.05047619047619047
+arima,aggregate,28,0.0,1.0
+sarima,item,1050,0.0,0.29904761904761906
+sarima,aggregate,28,0.17857142857142858,0.6785714285714286
