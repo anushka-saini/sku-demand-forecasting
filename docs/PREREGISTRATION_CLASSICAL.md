@@ -1,6 +1,7 @@
-# Pre-registration: Milestone 2 (classical models, stationarity, decomposition)
+# Pre-registration: classical models, stationarity and decomposition
 
-Written 2026-10-21, before any classical model was scored.
+Written 2026-10-21, before any classical model was scored. The notebook names and file paths have since been
+updated to the current layout (`docs/RESTRUCTURE_MAP.md`); the rules, definitions and thresholds are as written.
 
 ## What was already known when this was written
 This is not blind. Everything in `docs/RESULTS.md` had been seen, including: median MASE 0.976 / 0.755 / 0.744
@@ -12,12 +13,12 @@ orders picked by the grid. **No forecast was scored**, so no accuracy number for
 ## Rules
 1. The rules in `docs/PREREGISTRATION.md` still apply (no lookahead, no tuning on evaluation windows, raw data never
    modified, every run logged, seed 42, two-sided tests, α = 0.05).
-2. Nothing in notebooks 00–11, the saved forecasts or the published numbers is changed. New work goes in notebooks 12+,
-   new modules, and new result files.
+2. Nothing in the earlier analysis, the saved forecasts or the published numbers is changed. New work goes in new
+   notebooks, new modules and new result files.
 3. Definitions and thresholds here are not changed after results are seen. Any deviation is logged with its reason,
    and the original analysis is still reported.
 
-## Frozen backtest design (same as notebook 02)
+## Frozen backtest design (the same as for LightGBM and ETS)
 | Setting | Value |
 |---|---|
 | Origins | 7, 28 days apart, last test day 2016-05-22 (`pipeline.make_origins`) |
@@ -29,8 +30,8 @@ orders picked by the grid. **No forecast was scored**, so no accuracy number for
 
 ## Item subset
 - **Sample:** 150 items, 50 per category. Within each category, 25 items with a detected break at any scored origin
-  and 25 without (same definition as notebook 02: 488 vs 238 items). Drawn with `numpy.random.default_rng(42)`,
-  sorted item ids, without replacement. The list is saved to `outputs/tables/m2_sample_items.csv` before any fit.
+  and 25 without (the same definition as for the LightGBM backtest: 488 against 238 items). Drawn with `numpy.random.default_rng(42)`,
+  sorted item ids, without replacement. The list is saved to `outputs/tables/classical_sample_items.csv` before any fit.
 - **Aggregates:** FOODS, HOBBIES, HOUSEHOLD totals and the CA total, each summed over the 726 items.
 - 150 instead of the minimum 60 was chosen from the timing run (about 25–35 min with 12 workers).
 
@@ -67,11 +68,11 @@ for decomposition only; forecasting always uses the unmodified series.
 | Model | Specification | Scope |
 |---|---|---|
 | Holt-Winters additive | additive trend, additive weekly season (m = 7), not damped | 150 items, 4 aggregates |
-| Holt-Winters damped additive | **the existing ETS** (notebook 02, full history), relabelled; not refitted | reused |
+| Holt-Winters damped additive | **the existing ETS** (full history), relabelled; not refitted | reused |
 | Holt-Winters multiplicative | additive trend, multiplicative season (m = 7); on items only with sales + 1, and only for H4 | 4 aggregates; 150 items (H4) |
 | ARIMA | (p, d, q), no seasonal part | 150 items, 4 aggregates |
 | SARIMA | (p, d, q)(P, D, Q)₇ | 150 items, 4 aggregates |
-| Seasonal naive, ETS, LightGBM | saved forecasts from notebook 02, not retrained | reused |
+| Seasonal naive, ETS, LightGBM | saved forecasts, not retrained | reused |
 
 - **Fit window:** the last 730 days up to each origin. Two years contain the yearly cycle twice; ARMA terms are short
   memory, so older data adds little, and it keeps fits fast and stable. The reused ETS and LightGBM use all history;
@@ -81,7 +82,7 @@ for decomposition only; forecasting always uses the unmodified series.
   re-estimated at every origin. ARIMA uses the same rule without the seasonal part.
 - **Fallback:** if a fit raises an error or gives a non-finite forecast, that item-origin uses the seasonal-naive
   forecast. Fallback rate and non-convergence rate (convergence warning, forecast kept) are reported per model.
-- All forecasts are clipped at 0. Parallel with joblib; results checkpointed per item in `data/processed/m2/`.
+- All forecasts are clipped at 0. Parallel with joblib; results checkpointed per item in `data/processed/classical_fits/`.
 - **No lookahead test:** a forecast at an origin must be unchanged when every value after that origin is replaced by
   noise. This is a unit test on the backtest function.
 
@@ -113,7 +114,7 @@ the origin (the saved `has_break`):
 - **dummy:** SARIMAX, same order, exogenous level-shift dummy = 1 from the latest change week, and 1 over the horizon.
 
 Control (descriptive, outside the Holm family): **placebo** = SARIMA fit from the saved `placebo_start` on items
-without a break, exactly as notebook 02.
+without a break, exactly as for LightGBM.
 A variant **helps** if Holm p < 0.05 (family of 2), median difference < 0, and |median difference| ≥ 1% of the median
 static SARIMA MASE on the same items. H3 is supported if neither variant helps.
 
@@ -124,10 +125,10 @@ failures count as fallbacks and are reported). H4b: on the 4 aggregates, multipl
 ## Step 8: stock link (descriptive)
 SARIMA and Holt-Winters additive forecasts go into the existing simulation (`pipeline.simulate_inventory`) on the
 150 items, 7-day lead time, 95% target, base costs (25%/yr, 0.5 × price), normal-formula and conformal safety stock
-(the notebook 09 rule, pooled within category over the 150 items). Compared with ETS, LightGBM static and seasonal
+(the conformal rule from `11c_calibrated_safety_stock`, pooled within category over the 150 items). Compared with ETS, LightGBM static and seasonal
 naive on the same items: per-item total cost and fill rate, paired Wilcoxon and bootstrap 95% CI of the total
 difference. No decision rule; descriptive.
 
-## Not part of Milestone 2
-XGBoost, Prophet and a GRU (Step 13) are Milestone 3 groundwork, run only after the Milestone 2 acceptance checks
-pass, and never reported as Milestone 2 results.
+## Not part of this plan
+XGBoost, Prophet and a GRU are a later start (`12_advanced_models_wip`), run only after these checks pass, and
+never reported as results of this plan.
