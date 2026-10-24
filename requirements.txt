@@ -1,5 +1,5 @@
 # Pinned to the versions the published results were produced with (Python 3.12.9).
-# Unused packages listed earlier (seaborn, openpyxl, scikit-learn) were removed. pmdarima is back for Milestone 2 (ndiffs / nsdiffs).
+# Unused packages listed earlier (seaborn, openpyxl, scikit-learn) were removed. pmdarima gives ndiffs / nsdiffs.
 
 # Core
 numpy==2.5.3
@@ -13,8 +13,14 @@ joblib==1.6.0
 lightgbm==4.7.0
 ruptures==1.1.10
 
-# Milestone 2: recommended differencing orders (src/stationarity.py)
+# Recommended differencing orders (src/stationarity.py)
 pmdarima==2.1.1
+
+# Advanced models, work in progress (notebooks/12_advanced_models_wip.ipynb only).
+# torch is the CPU build: pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+xgboost==3.4.1
+prophet==1.5.0
+torch==2.14.1
 
 # Plots
 matplotlib==3.11.2
