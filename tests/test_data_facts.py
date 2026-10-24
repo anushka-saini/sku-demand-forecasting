@@ -1,4 +1,4 @@
-"""Milestone 1 synopsis numbers, checked against the real data. Skipped if data/raw is not downloaded."""
+"""Numbers about the data that the notebooks and docs quote, checked against the raw files. Skipped if data/raw is not downloaded."""
 from pathlib import Path
 
 import numpy as np

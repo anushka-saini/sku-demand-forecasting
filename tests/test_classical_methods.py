@@ -1,4 +1,4 @@
-"""Milestone 2: metrics, stationarity classifier, classical backtest (no lookahead, fallback)."""
+"""Classical models: metrics, stationarity classifier, classical backtest (no lookahead, fallback)."""
 import sys
 from pathlib import Path
 

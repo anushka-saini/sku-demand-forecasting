@@ -1,15 +1,19 @@
-"""Every notebook starts with the standard header; Milestone 2 notebooks (12+) also follow the 8-section template."""
+"""Every notebook opens with a title and a short paragraph; the restructured ones have been run cleanly."""
 import json
-import re
 from pathlib import Path
 
 import pytest
 
 NB = Path(__file__).resolve().parents[1] / "notebooks"
-FIELDS = ["Milestone", "Task", "Stage", "Aim", "Inputs", "Outputs", "Hypotheses", "Expected runtime"]
-SECTIONS = ["Setup and config", "Load data", "Method", "Run", "Results", "Checks", "Interpretation", "What comes next"]
-# The *_ORIGINAL notebook is the owner's untouched backup copy of notebook 00, not part of the pipeline.
+# the *_ORIGINAL notebook is the owner's backup copy, not part of the project
 NOTEBOOKS = sorted(p for p in NB.glob("*.ipynb") if "_ORIGINAL" not in p.name)
+ORDER = ["01_meet_the_data", "02_scope", "03_explore", "04_zeros_and_trimming", "05_stationarity", "06_decomposition",
+         "07a_classical_forecasting", "07b_classical_residuals", "08a_break_detection", "08b_detector_calibration",
+         "08c_high_confidence_breaks", "08d_shift_aware_classical", "09a_lightgbm", "09b_lightgbm_after_breaks",
+         "10_model_comparison", "11a_uncertainty", "11b_inventory_simulation", "11c_calibrated_safety_stock",
+         "11d_inventory_other_seasons", "11e_classical_forecasts_and_stock", "11f_texas_and_wisconsin",
+         "12_advanced_models_wip", "90_powerbi_export", "91_dashboard_export"]
+RESTRUCTURED = [NB / f"{n}.ipynb" for n in ORDER if (NB / f"{n}.ipynb").exists()]
 
 
 def cells(path):
@@ -21,27 +25,18 @@ def text(cell):
 
 
 @pytest.mark.parametrize("path", NOTEBOOKS, ids=lambda p: p.name)
-def test_header_has_every_field(path):
+def test_opens_with_a_title_and_a_paragraph(path):
     first = cells(path)[0]
     assert first["cell_type"] == "markdown"
-    missing = [f for f in FIELDS if f"| **{f}** |" not in text(first)]
-    assert not missing, f"{path.name} header is missing: {missing}"
+    lines = text(first).strip().splitlines()
+    assert lines[0].startswith("# "), "first line should be the title"
+    assert len(" ".join(lines[1:]).strip()) > 80, "the title should be followed by a short opening paragraph"
 
 
-M2 = [p for p in NOTEBOOKS if int(re.match(r"(\d+)", p.name).group(1)) >= 12]
-
-
-@pytest.mark.parametrize("path", M2, ids=lambda p: p.name)
-def test_milestone2_notebooks_follow_the_template(path):
-    md = [text(c) for c in cells(path) if c["cell_type"] == "markdown"]
-    found = [m.group(1) for t in md for m in [re.match(r"## \d\. (.+)", t.splitlines()[0])] if m]
-    assert found == SECTIONS, f"{path.name} sections: {found}"
-    assert "WRITTEN" in text(cells(path)[-1]), "last cell should list the files written"
-
-
-@pytest.mark.parametrize("path", M2, ids=lambda p: p.name)
-def test_milestone2_notebooks_were_run(path):
+@pytest.mark.parametrize("path", RESTRUCTURED, ids=lambda p: p.name)
+def test_restructured_notebooks_were_run_cleanly(path):
     code = [c for c in cells(path) if c["cell_type"] == "code"]
     assert all(c.get("execution_count") for c in code), "run it top to bottom with nbconvert"
     errors = [o for c in code for o in c.get("outputs", []) if o.get("output_type") == "error"]
     assert not errors, f"{path.name} has error outputs"
+    assert "written" in text(code[-1]), "the last cell should list the files written"
