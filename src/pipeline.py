@@ -26,7 +26,7 @@ def count_leading_zero_items(item_level, day_cols, min_gap=30):
 
 def scope_state(sales, calendar, state):
     """
-    Same scoping as notebook 00b for one state: sum the state's stores per item, trim leading
+    Same scoping as 02_scope for one state: sum the state's stores per item, trim leading
     zeros, ABC-XYZ within each category, keep AX/AY. Returns (long_df of candidates with a
     category column, per-category summary DataFrame, segmentation DataFrame).
     """
@@ -123,7 +123,7 @@ def price_daily_frame(price_wk, days):
 
 
 def normal_or_empirical_ss(past_errors, lead_time, service_level, intermittent):
-    """The notebook 03 rule: empirical lead-time quantile for intermittent items, normal formula otherwise."""
+    """The 11b rule: empirical lead-time quantile for intermittent items, normal formula otherwise."""
     if intermittent:
         return safety_stock_empirical(lead_time_error_sums(past_errors, lead_time), service_level)
     return safety_stock_normal(np.std(np.concatenate(past_errors), ddof=1), lead_time, service_level)
@@ -134,7 +134,7 @@ def simulate_inventory(fc, origins, price_daily, policies, service_levels, lead_
     """
     Notebook 03's simulation as a function. origins[0] is the warm-up; origins[1:] are simulated.
     ss_fn(item, model, variant, origin, lead_time, service_level, past_errors) -> safety stock;
-    default is the notebook 03 rule. Returns one row per item x policy x service level, including the
+    default is the 11b rule. Returns one row per item x policy x service level, including the
     cost bases (holding_value_days, lost_value) and achieved cycle service level counts.
     """
     eval_origins = origins[1:]

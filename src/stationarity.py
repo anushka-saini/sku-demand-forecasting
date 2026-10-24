@@ -23,7 +23,7 @@ def kpss_p(y, reg="c"):
 
 
 def classify(adf_c, kpss_c, adf_ct, kpss_ct, alpha=ALPHA):
-    """Turn the four p-values into one label (rule fixed in docs/PREREGISTRATION_M2.md)."""
+    """Turn the four p-values into one label (rule fixed in docs/PREREGISTRATION_CLASSICAL.md)."""
     adf_c_rej, kpss_c_rej = adf_c < alpha, kpss_c < alpha
     adf_ct_rej, kpss_ct_rej = adf_ct < alpha, kpss_ct < alpha
     if adf_c_rej and not kpss_c_rej:

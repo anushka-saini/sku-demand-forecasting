@@ -200,50 +200,49 @@ def build():
     rs = read("replication_scope.csv")
     F['replication_scope'] = {r.state: fact(int(rs[rs['state'] == r.state]['ax_ay_candidates'].sum()), 'replication_scope.csv')
                               for r in rs.drop_duplicates('state').itertuples()}
-    m2 = build_m2()
-    if m2:
-        F['m2'] = m2
+    c = build_classical()
+    if c:
+        F['classical'] = c
     return F
 
 
-# ---------------------------------------------------------------- Milestone 2 (notebooks 12-16)
+# ---------------------------------------------------------------- classical models, stationarity and decomposition
 
-M2T = ROOT / "outputs" / "m2" / "tables"
-M2_FILES = ["m2_sample_items.csv", "stationarity_summary.csv", "classical_metrics_summary.csv", "classical_tests.csv",
-            "classical_h4.csv", "aggregate_metrics.csv", "classical_run_stats.csv", "diagnostics_summary.csv",
+CLASSICAL_FILES = ["classical_sample_items.csv", "stationarity_summary.csv", "comparison_metrics_summary.csv", "comparison_tests.csv",
+            "classical_h4.csv", "comparison_totals_metrics.csv", "classical_run_stats.csv", "diagnostics_summary.csv",
             "shift_aware_tests.csv", "stock_summary.csv", "stock_tests.csv"]
 
 
-def build_m2():
-    """Milestone 2 headline numbers. Returns {} if notebooks 12-16 have not been run yet."""
-    if not all((M2T / f).exists() for f in M2_FILES):
+def build_classical():
+    """Classical-model headline numbers. Returns {} if those notebooks have not been run yet."""
+    if not all((T / f).exists() for f in CLASSICAL_FILES):
         return {}
-    r = {f: pd.read_csv(M2T / f) for f in M2_FILES}
-    src = lambda f: f"m2/tables/{f}"
+    r = {f: pd.read_csv(T / f) for f in CLASSICAL_FILES}
+    src = lambda f: f
     M = {}
 
-    s = r["m2_sample_items.csv"]
-    M['sample'] = fact(len(s), src("m2_sample_items.csv"), break_items=int(s['break_item'].sum()))
+    s = r["classical_sample_items.csv"]
+    M['sample'] = fact(len(s), src("classical_sample_items.csv"), break_items=int(s['break_item'].sum()))
 
     st = r["stationarity_summary.csv"].set_index("category")
     M['stationarity'] = {f"{lab}|{cat}": fact(st.loc[cat, lab], src("stationarity_summary.csv"), n=st.loc[cat, 'n_items'])
                          for cat in st.index for lab in ['stationary', 'trend-stationary', 'difference-stationary',
                                                          'conflicting', 'd=0', 'd=1', 'D=1']}
 
-    sm = r["classical_metrics_summary.csv"]
-    M['metrics'] = {f"{row.model}|{row.category}|{k}": fact(getattr(row, f"median_{k}"), src("classical_metrics_summary.csv"),
+    sm = r["comparison_metrics_summary.csv"]
+    M['metrics'] = {f"{row.model}|{row.category}|{k}": fact(getattr(row, f"median_{k}"), src("comparison_metrics_summary.csv"),
                                                           n=row.n_items, mean=getattr(row, f"mean_{k}"))
                     for row in sm.itertuples() for k in ['rmse', 'mae', 'mape', 'smape', 'wape', 'mase']}
-    M['mape_excluded_share'] = fact(sm.loc[sm['category'] == 'ALL', 'mape_excluded_share'].iloc[0], src("classical_metrics_summary.csv"))
+    M['mape_excluded_share'] = fact(sm.loc[sm['category'] == 'ALL', 'mape_excluded_share'].iloc[0], src("comparison_metrics_summary.csv"))
 
     M['tests'] = {f"{row['hypothesis']}|{row['model_a']}-{row['model_b']}":
-                  fact(row['median_diff'], src("classical_tests.csv"), n=row['n'], ci=(row['ci_low'], row['ci_high']),
+                  fact(row['median_diff'], src("comparison_tests.csv"), n=row['n'], ci=(row['ci_low'], row['ci_high']),
                        p_value=row['p_value'], p_holm=row['p_holm'], a_better=bool(row['a_better']))
-                  for _, row in r["classical_tests.csv"].iterrows()}
-    t = r["classical_tests.csv"]
+                  for _, row in r["comparison_tests.csv"].iterrows()}
+    t = r["comparison_tests.csv"]
     M['h1_supported'] = {row['model_a']: bool(row['a_better']) for _, row in t[t['hypothesis'] == 'H1'].iterrows()}
     alls = sm[sm['category'] == 'ALL'].set_index('model')['median_mase']
-    M['h2_lowest_median_mase'] = {'model': str(alls.idxmin()), 'value': num(alls.min()), 'source': src("classical_metrics_summary.csv"),
+    M['h2_lowest_median_mase'] = {'model': str(alls.idxmin()), 'value': num(alls.min()), 'source': src("comparison_metrics_summary.csv"),
                                   'significant_vs_all': bool(t[t['hypothesis'] == 'H2']['a_better'].all())}
 
     h4 = r["classical_h4.csv"]
@@ -253,8 +252,8 @@ def build_m2():
                                   mul_within_5pct=row.get('mul_within_5pct'))
                for _, row in h4.iterrows()}
 
-    ag = r["aggregate_metrics.csv"]
-    M['aggregate_mase'] = {f"{row.series}|{row.model}": fact(row.mase, src("aggregate_metrics.csv"), how=row.how)
+    ag = r["comparison_totals_metrics.csv"]
+    M['aggregate_mase'] = {f"{row.series}|{row.model}": fact(row.mase, src("comparison_totals_metrics.csv"), how=row.how)
                            for row in ag.itertuples()}
 
     rs = r["classical_run_stats.csv"]

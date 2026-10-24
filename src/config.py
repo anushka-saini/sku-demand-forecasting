@@ -14,7 +14,7 @@ CHECKPOINTS = PROCESSED / "classical_fits"     # per-item fits, so a rerun can p
 SEED = 42
 CATEGORIES = ["FOODS", "HOBBIES", "HOUSEHOLD"]
 
-# Backtest: identical to notebook 02
+# Backtest: the same origins and horizon for every model (07a, 09a, 10)
 HORIZON = 28
 N_ORIGINS = 7
 LAST_DAY = pd.Timestamp("2016-05-22")

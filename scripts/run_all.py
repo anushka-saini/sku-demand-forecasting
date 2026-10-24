@@ -1,11 +1,11 @@
 """
-Run the whole project on Windows without `make`: the notebooks in order, then the facts file, then the tests.
-Same steps as the Makefile.
+Run the project on Windows without `make`: the notebooks in order, then the facts file, the README numbers and the
+tests. Same steps as the Makefile.
 
-  python scripts/run_all.py                 everything (about 1.5 hours)
-  python scripts/run_all.py --m2            only the Milestone 2 notebooks (12-16), facts and tests
-  python scripts/run_all.py --m1-eda        only the Milestone 1 EDA notebooks (00, 00a, 00b)
-  python scripts/run_all.py --skip-notebooks   facts and tests only
+  python scripts/run_all.py                          everything, in order
+  python scripts/run_all.py --only 05_stationarity   only these notebooks (comma-separated), then facts and tests
+  python scripts/run_all.py --from 07a_classical_forecasting   from this notebook to the end
+  python scripts/run_all.py --skip-notebooks         facts, README and tests only
 """
 import subprocess
 import sys
@@ -15,13 +15,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PY = sys.executable
 
-M1_EDA = ["00_data_scoping_eda", "00a_data_audit", "00b_cross_category_scoping"]
-M1 = ["00b_cross_category_scoping", "01_structural_break_detection", "02_forecasting_static_vs_adaptive",
-      "03_inventory_decision_layer", "04_powerbi_export", "05_dashboard_export", "06_detector_calibration",
-      "07_high_confidence_breaks", "08_adaptation_variants", "09_forecast_calibration", "10_inventory_robustness",
-      "11_replication_tx_wi"]
-M2 = ["12_stationarity_decomposition", "13_classical_models", "14_model_diagnostics", "15_shift_aware_classical",
-      "16_classical_stock_link"]
+# the learning path: data, classical models, breaks, machine learning, comparison, stock, advanced, exports
+ORDER = ["01_meet_the_data", "02_scope", "03_explore", "04_zeros_and_trimming", "05_stationarity", "06_decomposition",
+         "07a_classical_forecasting", "07b_classical_residuals", "08a_break_detection", "08b_detector_calibration",
+         "08c_high_confidence_breaks", "08d_shift_aware_classical", "09a_lightgbm", "09b_lightgbm_after_breaks",
+         "10_model_comparison", "11a_uncertainty", "11b_inventory_simulation", "11c_calibrated_safety_stock",
+         "11d_inventory_other_seasons", "11e_classical_forecasts_and_stock", "11f_texas_and_wisconsin",
+         "12_advanced_models_wip", "90_powerbi_export", "91_dashboard_export"]
 
 
 def run(cmd, label):
@@ -33,17 +33,22 @@ def run(cmd, label):
     print(f"   done in {(time.time() - t0) / 60:.1f} min", flush=True)
 
 
-def main():
-    args = sys.argv[1:]
+def pick(args):
+    """Which notebooks to run, in path order, keeping only the ones that exist."""
+    names = [n for n in ORDER if (ROOT / "notebooks" / f"{n}.ipynb").exists()]
     if "--skip-notebooks" in args:
-        notebooks = []
-    elif "--m2" in args:
-        notebooks = M2
-    elif "--m1-eda" in args:
-        notebooks = M1_EDA
-    else:
-        notebooks = M1 + M2
-    for nb in notebooks:
+        return []
+    if "--only" in args:
+        wanted = args[args.index("--only") + 1].split(",")
+        return [n for n in names if n in wanted]
+    if "--from" in args:
+        start = args[args.index("--from") + 1]
+        return names[names.index(start):]
+    return names
+
+
+def main():
+    for nb in pick(sys.argv[1:]):
         run([PY, "-m", "jupyter", "nbconvert", "--to", "notebook", "--execute", "--inplace",
              "--ExecutePreprocessor.timeout=20000", f"notebooks/{nb}.ipynb"], nb)
     run([PY, "scripts/build_facts.py"], "facts")

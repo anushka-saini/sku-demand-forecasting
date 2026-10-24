@@ -40,52 +40,52 @@ def render(f):
     verdict = {x["question"]: x["verdict"] for x in v}
     lines = [
         START,
-        "### In plain words",
+        "### What we found",
         "",
-        f"1. **Do sales levels really change? {'Yes, often' if adj['ci95'][0] > 0.5 else ('Yes' if adj['ci95'][0] > 0 else 'Not clearly')}.** After removing changes that would appear just by chance, about "
-        f"**{adj['value']:.0%}** of the busy items changed their normal sales level at some point. Our change detector only "
+        f"1. Do sales levels really change? {'Yes, often' if adj['ci95'][0] > 0.5 else ('Yes' if adj['ci95'][0] > 0 else 'Not clearly')}. After removing changes that would appear just by chance, about "
+        f"{adj['value']:.0%} of the busy products changed their normal sales level at some point. Our change detector only "
         f"notices big changes, though: a sudden 20% jump is spotted just {s20:.0%} of the time.",
-        f"2. **Which forecast works best? {verdict['Which forecast is best?']}.** Its typical error is **{1 - lgb / naive:.0%} smaller** "
+        f"2. Which forecast works best? {verdict['Which forecast is best?']}. Its typical error is {1 - lgb / naive:.0%} smaller "
         f"than simply copying last week's sales. It guesses a little low overall ({abs(bias):.1%} under).",
-        f"3. **Does retraining the model after a change help? {verdict['Does retraining after a shift help?']}.** We tried "
+        f"3. Does retraining the model after a change help? {verdict['Does retraining after a shift help?']}. We tried "
         f"{n_methods} different ways. None made forecasts better, and the simplest one made them slightly worse. "
         f"The same was true in {' and '.join(STATE_NAMES.get(x, x) for x in states)}.",
-        f"4. **Does a better forecast save money on stock? {verdict['Does a better forecast cut stock cost?']}.** Using the better "
-        f"forecast to decide when to reorder means holding **{abs(base['inventory_change']):.0%} less stock** at "
-        f"**{abs(base['value']):.0%} lower cost** than the simple method, and it was clearly cheaper in {n_win_sig} of "
+        f"4. Does a better forecast save money on stock? {verdict['Does a better forecast cut stock cost?']}. Using the better "
+        f"forecast to decide when to reorder means holding {abs(base['inventory_change']):.0%} less stock at "
+        f"{abs(base['value']):.0%} lower cost than the simple method, and it was clearly cheaper in {n_win_sig} of "
         f"{len(windows)} time periods tested. Setting safety stock from realistic error ranges cut the cost by a further "
-        f"**{abs(calc['value']):.0%}**. These costs use assumed prices for storage and lost sales, not real Walmart figures.",
+        f"{abs(calc['value']):.0%}. These costs use assumed prices for storage and lost sales, not real Walmart figures.",
         "",
     ]
-    lines += m2_lines(f)
+    lines += classical_lines(f)
     lines += [
-        "<details><summary><b>Technical details</b> (verdicts, confidence intervals, test statistics)</summary>",
+        "<details><summary>Technical details (verdicts, confidence intervals, test statistics)</summary>",
         "",
         "| Question | Verdict | Evidence | Caveat |",
         "|---|---|---|---|",
     ]
-    lines += [f"| {x['question']} | **{x['verdict']}** ({x['strength']}) | {x['answer']} | {x['caveat']} |" for x in v]
+    lines += [f"| {x['question']} | {x['verdict']} ({x['strength']}) | {x['answer']} | {x['caveat']} |" for x in v]
     lines += [
         "",
-        f"- **Scope:** {sc['ax_ay_items']['value']} high-volume (AX/AY) California items, "
-        f"{sc['ax_ay_share_of_items']['value']:.1%} of {sc['ca_items']['value']:,} items and "
+        f"- Scope: {sc['ax_ay_items']['value']} high-volume (AX/AY) California products, "
+        f"{sc['ax_ay_share_of_items']['value']:.1%} of {sc['ca_items']['value']:,} products and "
         f"{sc['ax_ay_share_of_units']['value']:.1%} of units sold.",
-        f"- **Shift detection:** {adj['observed']:.1%} of the {adj['n']} items with two or more years of data are flagged. The false-alarm "
+        f"- Shift detection: {adj['observed']:.1%} of the {adj['n']} products with two or more years of data are flagged. The false-alarm "
         f"rate on a seasonality-preserving null is {br['seasonal_null_false_alarm_rate']['CUSUM']['value']:.1%}, so the "
         f"chance-adjusted share with a real shift is {adj['value']:.1%} (95% CI {adj['ci95'][0]:.1%} to {adj['ci95'][1]:.1%}). "
         f"Only {int(hc['value'])} of {int(hc['n'])} breaks are high-confidence.",
-        f"- **Forecasting:** median MASE is {fc['median_item_mase']['lightgbm_ALL']['value']:.3f} for LightGBM, "
+        f"- Forecasting: median MASE is {fc['median_item_mase']['lightgbm_ALL']['value']:.3f} for LightGBM, "
         f"{fc['median_item_mase']['ets_ALL']['value']:.3f} for ETS and "
         f"{fc['median_item_mase']['seasonal_naive_ALL']['value']:.3f} for seasonal naive. LightGBM − ETS is "
         f"{le['value']:+.4f} (95% CI {le['ci95'][0]:+.4f} to {le['ci95'][1]:+.4f}). Calibrated 90% bands cover "
         f"{cov['value']:.1%} of days (was {cov['coverage_before']:.1%}).",
-        f"- **Retraining after a shift:** restarting from the shift changes MASE by {trunc['value']:+.4f} "
+        f"- Retraining after a shift: restarting from the shift changes MASE by {trunc['value']:+.4f} "
         f"(95% CI {trunc['ci95'][0]:+.4f} to {trunc['ci95'][1]:+.4f}, n = {trunc['n']}). None of the "
         f"{len({k.split('|')[1] for k in fc['adaptation_variants']})} methods tested helps.",
-        f"- **Inventory (95% target, 7-day lead time, assumed costs):** static LightGBM holds "
+        f"- Inventory (95% target, 7-day lead time, assumed costs): static LightGBM holds "
         f"{abs(base['inventory_change']):.1%} less inventory at {abs(base['value']):.1%} lower cost than seasonal naive. "
         f"Calibrated safety stock changes total cost by {calc['value']:+.1%}.",
-        f"- **Replication:** {n_hold} of {len(rep)} conclusion checks hold in {' and '.join(states)}.",
+        f"- Replication: {n_hold} of {len(rep)} conclusion checks hold in {' and '.join(states)}.",
         "",
         "</details>",
         END,
@@ -93,11 +93,11 @@ def render(f):
     return "\n".join(lines)
 
 
-def m2_lines(f):
-    """Milestone 2 summary in plain words, or nothing if notebooks 12-16 have not been run."""
-    if "m2" not in f:
+def classical_lines(f):
+    """Classical-model summary in plain words, or nothing if those notebooks have not been run."""
+    if "classical" not in f:
         return []
-    m = f["m2"]
+    m = f["classical"]
     mase = lambda k: m["metrics"][f"{k}|ALL|mase"]["value"]
     n = m["sample"]["value"]
     sar, hw = m["tests"]["H1|sarima-seasonal_naive"], m["tests"]["H1|hw_add-seasonal_naive"]
@@ -108,16 +108,16 @@ def m2_lines(f):
     st = m["stationarity"]["stationary|ALL"]
     yes = lambda b: "Yes" if b else "No"
     return [
-        "### Milestone 2: classical time-series models",
+        "### Classical time-series models",
         "",
-        f"On a sample of {n} items, with the same backtest as above: **{st['value']:.0%}** of the 726 items test as "
+        f"On a sample of {n} products, with the same backtest as above: {st['value']:.0%} of the 726 products test as "
         f"stationary (ADF and KPSS agree). SARIMA (median MASE {mase('sarima'):.3f}) and Holt-Winters ({mase('hw_add'):.3f}) "
-        f"against seasonal naive ({mase('seasonal_naive'):.3f}): SARIMA better: **{yes(sar['a_better'])}** "
+        f"against seasonal naive ({mase('seasonal_naive'):.3f}): SARIMA better: {yes(sar['a_better'])} "
         f"(median difference {sar['value']:+.3f}, 95% CI {sar['ci95'][0]:+.3f} to {sar['ci95'][1]:+.3f}); Holt-Winters "
-        f"better: **{yes(hw['a_better'])}** ({hw['value']:+.3f}, 95% CI {hw['ci95'][0]:+.3f} to {hw['ci95'][1]:+.3f}). "
-        f"The lowest median error is **{names[best]}** ({m['h2_lowest_median_mase']['value']:.3f}). Reacting to a detected "
-        f"break helps SARIMA: **{yes(not m['h3_supported'])}** (restart {r['value']:+.4f}, level-shift dummy "
-        f"{d['value']:+.4f} MASE, n = {r['n']} items). Details: `docs/midsem/INTERIM_FINDINGS.md`.",
+        f"better: {yes(hw['a_better'])} ({hw['value']:+.3f}, 95% CI {hw['ci95'][0]:+.3f} to {hw['ci95'][1]:+.3f}). "
+        f"The lowest median error is {names[best]} ({m['h2_lowest_median_mase']['value']:.3f}). Reacting to a detected "
+        f"break helps SARIMA: {yes(not m['h3_supported'])} (restart {r['value']:+.4f}, level-shift dummy "
+        f"{d['value']:+.4f} MASE, n = {r['n']} products). Details: `notebooks/10_model_comparison.ipynb`.",
         "",
     ]
 
