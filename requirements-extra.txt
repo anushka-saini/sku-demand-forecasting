@@ -1,0 +1,11 @@
+# Extra packages for the time-series notebooks 07c to 07h (install on top of requirements.txt).
+# Tested in the same environment as requirements.txt (Python 3.12.9); none of them changes a pinned package.
+# See docs/ENVIRONMENT.md for what was checked.
+
+autots==1.0.4
+prophet==1.5.0          # already in requirements.txt, listed here so this file is complete on its own
+
+# tsfresh (and numba, llvmlite, stumpy and PyWavelets with it) was used for demand profiles, which were removed:
+# they routed every product to the same model (docs/PREREGISTRATION_TS.md, change 5).
+
+# Darts (u8darts[notorch]) is left out: it would downgrade pandas 3.0.6 to 2.3.3 and scikit-learn 1.9.1 to 1.7.2.

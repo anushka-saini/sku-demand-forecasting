@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from break_detection import to_weekly, surrogate_max_stats, weekly_ca_prices
-from forecasting import HORIZON, build_lgb_panel, is_intermittent, lgb_forecast, local_forecasts, training_windows
+from forecasting import HORIZON, is_intermittent, local_forecasts, training_windows
 from inventory import (cycle_service_level, lead_time_error_sums, policy_kpis, safety_stock_empirical,
                        safety_stock_normal, simulate_policy)
 from metrics import mase_scale
@@ -63,14 +63,16 @@ def calibrate_h(daily, before, k=1.0, burn_in=8, ref_len=52, seed=42, q=0.95):
 
 
 def run_backtest(long_df, calendar, price_wk, origins, h, snap_col='snap_CA', run_ets=False,
-                 n_jobs=-1, log=print):
+                 n_jobs=-1, log=print, folder=None, best=None):
     """
-    Seasonal naive (+ static ETS if run_ets) and LightGBM static + truncate-adaptive at each origin,
-    with break detection at each origin using data up to that origin only. Items without a break
-    keep the static LightGBM forecast as their adaptive forecast.
+    Seasonal naive (+ static ETS if run_ets) and the best time-series model from 07h, static and retrained after a
+    shift, at each origin, with break detection at each origin using data up to that origin only. Items without a
+    break keep the static forecast as their retrained one. folder holds the per-item checkpoints of the best model.
     Returns (forecasts, windows, scales): forecasts has item_id, origin, date, model, variant,
     forecast, actual; scales has item_id, origin, mase_scale.
     """
+    import best_model as bm
+    import ts_models as tm
     from joblib import Parallel, delayed
     daily = {i: g[['date', 'sales']].reset_index(drop=True) for i, g in long_df.groupby('item_id')}
     windows = training_windows(daily, origins, h)
@@ -80,22 +82,15 @@ def run_backtest(long_df, calendar, price_wk, origins, h, snap_col='snap_CA', ru
     local = pd.DataFrame([r for rows in res for r in rows])
     log(f"local models: {len(local)} rows")
 
-    panel = build_lgb_panel(long_df, calendar, price_wk, snap_col=snap_col)
-    w_idx = windows.set_index(['origin', 'item_id'])
-    parts = []
-    for o in origins:
-        st = w_idx.loc[o]['adaptive_start'].dropna().to_dict()
-        for variant, kw in [('static', {}), ('adaptive', {'train_start_by_item': st})]:
-            out, _ = lgb_forecast(panel, o, **kw)
-            out['origin'], out['model'], out['variant'] = o, 'lightgbm', variant
-            parts.append(out)
-        log(f"LightGBM origin {o.date()} done")
-    lgb = pd.concat(parts, ignore_index=True)
-    lgb = lgb.merge(windows[['item_id', 'origin', 'has_break']], on=['item_id', 'origin'])
-    stat = lgb[lgb['variant'] == 'static'].set_index(['item_id', 'origin', 'date'])['forecast']
-    fix = (lgb['variant'] == 'adaptive') & ~lgb['has_break']
-    lgb.loc[fix, 'forecast'] = stat.reindex(pd.MultiIndex.from_frame(lgb.loc[fix, ['item_id', 'origin', 'date']])).to_numpy()
-    fc = pd.concat([local, lgb.drop(columns='has_break')], ignore_index=True)
+    best = best or bm.load_best()
+    jobs = 10 if n_jobs == -1 else n_jobs
+    orders = bm.orders_for(daily, origins[0], folder, n_jobs=jobs) if bm.needs_orders(best) else None
+    flags = tm.calendar_flags(calendar, snap_col)
+    prices = {i: tm.relative_price(price_wk[i], calendar) for i in daily if i in price_wk}
+    st = bm.starts_from(windows, variants=('adaptive',))
+    top = bm.run_best(daily, origins, st, folder, best, orders, flags, prices, n_jobs=jobs)
+    log(f"{best['model']}: {len(top)} rows")
+    fc = pd.concat([local, top.drop(columns=['converged', 'fallback'])], ignore_index=True)
     fc = fc.merge(long_df[['item_id', 'date', 'sales']].rename(columns={'sales': 'actual'}), on=['item_id', 'date'])
 
     scales = pd.DataFrame([{'item_id': i, 'origin': o, 'mase_scale': mase_scale(d.loc[d['date'] <= o, 'sales'].to_numpy())}
