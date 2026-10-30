@@ -15,6 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 T = ROOT / "outputs" / "tables"
 OUT = ROOT / "outputs" / "results_facts.json"
 
+# the best time-series model from 07h (outputs/tables/ts_best_model.json); it replaced LightGBM in 09 to 11
+BEST_FILE = T / "ts_best_model.json"
+BEST = "best"                        # the key its forecasts are stored under in 09 to 11
+BEST_INFO = json.loads(BEST_FILE.read_text()) if BEST_FILE.exists() else {}
+
 
 def num(x):
     if isinstance(x, (list, tuple)):
@@ -46,7 +51,8 @@ def read(name):
 
 
 def build():
-    F = {}
+    F = {'best_model': {'value': BEST_INFO.get('model'), 'name': BEST_INFO.get('name'), 'key': BEST,
+                        'members': list(BEST_INFO.get('members', {})), 'source': 'ts_best_model.json'}}
 
     # ---------------- scope
     items = read("app/items.csv")
@@ -104,7 +110,7 @@ def build():
     mase = read("model_mase_unrounded.csv")
     tests = read("adaptive_vs_static_tests.csv")
     var = read("adaptation_variants_tests.csv")
-    lge = read("lgb_vs_ets_test.csv")
+    lge = read("best_vs_ets_test.csv")
     bias = read("forecast_bias.csv")
     cov = read("conformal_coverage.csv")
 
@@ -120,7 +126,7 @@ def build():
         'adaptation_variants': {f"{r['group']}|{r['variant']}": dict(tfact(r, 'adaptation_variants_tests.csv'),
                                                                       p_holm=num(r['p_holm']), helps=bool(r['helps']))
                                 for _, r in var.iterrows()},
-        'lightgbm_minus_ets_mase': {r['category']: tfact(r, 'lgb_vs_ets_test.csv') for _, r in lge.iterrows()},
+        'best_minus_ets_mase': {r['category']: tfact(r, 'best_vs_ets_test.csv') for _, r in lge.iterrows()},
         'bias': {f"{r.model}_{r.variant}_{r.category}": fact(r.pooled_bias, 'forecast_bias.csv', n=r.n_items,
                                                              median_item_bias=r.median_item_bias,
                                                              median_item_bias_ci95=[num(r.ci_low), num(r.ci_high)])
@@ -153,9 +159,9 @@ def build():
             r.total_diff, 'robustness_cost_differences.csv', n=r.n_items, ci=(r.ci_low, r.ci_high),
             total_diff_pct=r.total_diff_pct, median_item_diff=r.median_item_diff, top10_share_of_abs_gap=r.top10_share_of_abs_gap)
             for r in rob.itertuples()},
-        'newsvendor_lightgbm_static': {f"{r.window}|h{r.holding_rate}|m{r.stockout_multiple}": fact(
+        'newsvendor_best_static': {f"{r.window}|h{r.holding_rate}|m{r.stockout_multiple}": fact(
             r.simulated_cheapest_level, 'robustness_newsvendor.csv', critical_ratio=r.critical_ratio)
-            for r in nv[nv['policy'] == 'lightgbm_static'].itertuples()},
+            for r in nv[nv['policy'] == f'{BEST}_static'].itertuples()},
         'breakeven_stockout_to_holding_ratio_99_vs_95': {f"{r.window}|{r.policy}": fact(r.breakeven_stockout_to_holding_ratio,
                                                                                        'robustness_breakeven.csv')
                                                          for r in be.itertuples()},
@@ -167,21 +173,21 @@ def build():
 
     s95 = k7[k7['service_level'] == 0.95].set_index('policy')
     F['inventory']['static_vs_naive_base_95'] = fact(
-        s95.loc['lightgbm_static', 'cost'] / s95.loc['seasonal_naive_static', 'cost'] - 1, 'pbi_fact_inventory_kpi.csv',
-        n=s95.loc['lightgbm_static', 'n'], metric='relative total cost change, lead time 7, base costs',
-        inventory_change=s95.loc['lightgbm_static', 'inv'] / s95.loc['seasonal_naive_static', 'inv'] - 1)
+        s95.loc[f'{BEST}_static', 'cost'] / s95.loc['seasonal_naive_static', 'cost'] - 1, 'pbi_fact_inventory_kpi.csv',
+        n=s95.loc[f'{BEST}_static', 'n'], metric='relative total cost change, lead time 7, base costs',
+        inventory_change=s95.loc[f'{BEST}_static', 'inv'] / s95.loc['seasonal_naive_static', 'inv'] - 1)
     F['inventory']['adaptive_vs_static_base_95'] = fact(
-        s95.loc['lightgbm_adaptive', 'cost'] / s95.loc['lightgbm_static', 'cost'] - 1, 'pbi_fact_inventory_kpi.csv',
-        n=s95.loc['lightgbm_adaptive', 'n'], metric='relative total cost change, lead time 7, base costs')
-    c = cal_inv[cal_inv['policy'] == 'lightgbm_static'].set_index(['method', 'service_level'])
+        s95.loc[f'{BEST}_adaptive', 'cost'] / s95.loc[f'{BEST}_static', 'cost'] - 1, 'pbi_fact_inventory_kpi.csv',
+        n=s95.loc[f'{BEST}_adaptive', 'n'], metric='relative total cost change, lead time 7, base costs')
+    c = cal_inv[cal_inv['policy'] == f'{BEST}_static'].set_index(['method', 'service_level'])
     F['inventory']['conformal_vs_normal_cost_change'] = {
         str(sl): fact(c.loc[('conformal', sl), 'total_cost'] / c.loc[('normal formula', sl), 'total_cost'] - 1,
                       'inventory_calibrated_vs_normal.csv', n=c.loc[('conformal', sl), 'n_items'])
         for sl in sorted(cal_inv['service_level'].unique())}
 
-    # ---------------- planner watchlist: LightGBM static, lead time 7, items below the target fill rate
+    # ---------------- planner watchlist: the best model, static, lead time 7, items below the target fill rate
     items_cal = read("inventory_calibrated_items.csv")
-    w = items_cal[(items_cal['model'] == 'lightgbm') & (items_cal['variant'] == 'static')]
+    w = items_cal[(items_cal['model'] == BEST) & (items_cal['variant'] == 'static')]
     F['planner'] = {f"{m}|{sl}": fact(int((g['fill_rate'] < sl).sum()), 'inventory_calibrated_items.csv', n=len(g),
                                       metric='items whose simulated fill rate is below the target')
                     for (m, sl), g in w.groupby(['method', 'service_level'])}
@@ -203,6 +209,9 @@ def build():
     c = build_classical()
     if c:
         F['classical'] = c
+    ts = build_time_series()
+    if ts:
+        F['time_series'] = ts
     return F
 
 
@@ -286,6 +295,44 @@ def build_classical():
                              total_ci_dollars=[num(row.total_ci_low), num(row.total_ci_high)],
                              median_fill_rate_diff=row.median_fill_rate_diff, p_value_cost=row.p_value_cost)
                         for row in stt.itertuples()}
+    return M
+
+
+# ---------------------------------------------------------------- time-series models (07c to 07h)
+
+TS_FILES = ["ts_headline.csv", "ts_headline_by_category.csv", "ts_tests.csv", "ts_sarima_ablation.csv",
+            "ts_combination_members.csv"]
+
+
+def build_time_series():
+    """Headline numbers of the time-series comparison. Returns {} if 07h has not been run yet."""
+    if not all((T / f).exists() for f in TS_FILES):
+        return {}
+    r = {f: pd.read_csv(T / f) for f in TS_FILES}
+    h = r["ts_headline.csv"].set_index("model")
+    M = {'metrics': {f"{m}|ALL|{k}": fact(h.loc[m, k], "ts_headline.csv", n=h.loc[m, 'n_products'], kind=h.loc[m, 'kind'],
+                                          validation=h.loc[m, f"val_{k}"] if f"val_{k}" in h else None)
+                     for m in h.index for k in ['rmse', 'mae', 'mape', 'smape', 'wape', 'mase']}}
+    bc = r["ts_headline_by_category.csv"]
+    M['metrics'].update({f"{row.model}|{row.category}|{k}": fact(getattr(row, k), "ts_headline_by_category.csv")
+                         for row in bc.itertuples() for k in ['rmse', 'mae', 'mape']})
+    cont = h[h['kind'] == 'contender']
+    best = cont['rmse'].idxmin()
+    ref = h.loc['sarima_07a']
+    M['best_contender'] = {'model': best, 'rmse': num(cont.loc[best, 'rmse']), 'mae': num(cont.loc[best, 'mae']),
+                           'mape': num(cont.loc[best, 'mape']), 'rmse_vs_sarima_07a': num(cont.loc[best, 'rmse'] - ref['rmse']),
+                           'mae_vs_sarima_07a': num(cont.loc[best, 'mae'] - ref['mae']), 'source': "ts_headline.csv"}
+    M['tests'] = {f"{row.metric}|{row.model}-sarima_07a": fact(row.median_diff, "ts_tests.csv", n=row.n,
+                                                               ci=(row.ci_low, row.ci_high), p_holm=row.p_holm,
+                                                               better=bool(row.better_than_sarima))
+                  for row in r["ts_tests.csv"].itertuples()}
+    a = r["ts_sarima_ablation.csv"]
+    M['ablation'] = {f"{row.family}|{row.step}": fact(row.val_rmse, "ts_sarima_ablation.csv", kept=bool(row.kept),
+                                                      val_mae=row.val_mae, scored_rmse=row.scored_rmse,
+                                                      scored_mae=row.scored_mae)
+                     for row in a.itertuples()}
+    M['combination_members'] = {'value': r["ts_combination_members.csv"]['member'].tolist(),
+                                'source': "ts_combination_members.csv"}
     return M
 
 

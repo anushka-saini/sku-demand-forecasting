@@ -38,8 +38,8 @@ Units are item-level daily (or weekly) sales summed over the 4 CA stores. Money 
 ## pbi_dim_policy: one row per model × variant
 | column | description |
 |---|---|
-| policy | key, e.g. `lightgbm_adaptive` |
-| model | seasonal_naive, ets, lightgbm, tsb |
+| policy | key, e.g. `best_adaptive` |
+| model | seasonal_naive, ets, best (the best time-series model from 07h, SARIMA), tsb |
 | variant | static (all history), adaptive (retrained from the last detected break), placebo (random truncation of no-break items, control) |
 | used_in_inventory | TRUE for the policies simulated in notebook 03 |
 
