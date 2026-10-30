@@ -1,5 +1,5 @@
-category,ets,lightgbm,seasonal_naive
-FOODS,0.771,0.751,0.957
-HOBBIES,0.755,0.752,1.004
-HOUSEHOLD,0.744,0.73,0.978
-ALL,0.755,0.744,0.976
+category,best,ets,seasonal_naive
+FOODS,0.761,0.771,0.957
+HOBBIES,0.749,0.755,1.004
+HOUSEHOLD,0.74,0.744,0.978
+ALL,0.747,0.755,0.976
