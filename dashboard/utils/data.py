@@ -37,7 +37,7 @@ SCHEMA = {
                           "adaptive_window_days", "is_eval_origin"], ["origin", "last_change_week", "last_alarm_week"]),
     "forecast_error": (TABLES / "pbi_fact_forecast_error.csv",
                        ["item_id", "origin", "model", "variant", "has_break", "mase", "is_eval_origin"], ["origin"]),
-    "model_mase": (TABLES / "model_mase_by_category.csv", ["category", "ets", "lightgbm", "seasonal_naive"], []),
+    "model_mase": (TABLES / "model_mase_by_category.csv", ["category", "ets", "best", "seasonal_naive"], []),
     "adaptive_tests": (TABLES / "adaptive_vs_static_tests.csv",
                        ["comparison", "model", "category", "n", "median_diff", "ci_low", "ci_high", "share_improved",
                         "rank_biserial", "p_value"], []),
@@ -117,7 +117,7 @@ SCHEMA.update({
     "price_correlation": (TABLES / "explore_price_correlation.csv", ["item_id", "spearman_units_vs_price"], []),
     "comparison_overview": (TABLES / "comparison_overview.csv", ["model", "n_items", "median_mase", "median_rmse", "median_mae",
                                                                  "median_smape", "median_wape", "median_mase_726",
-                                                                 "beats_naive_share", "beats_lightgbm_share"], []),
+                                                                 "beats_naive_share", "beats_best_share"], []),
     "classical_sample": (TABLES / "classical_sample_items.csv", ["item_id", "category", "break_item"], []),
     "stationarity_items": (TABLES / "stationarity_items.csv", ["item_id", "category", "adf_c", "kpss_c", "adf_ct", "kpss_ct",
                                                         "label", "d", "D"], []),
@@ -162,11 +162,37 @@ SCHEMA.update({
     "shift_aware_items": (TABLES / "shift_aware_item_origin.csv", ["item_id", "origin", "variant", "mase_variant", "static"],
                           ["origin"]),
     "variants_items": (TABLES / "adaptation_variants_item_origin_mase.csv",
-                       ["item_id", "origin", "static", "truncate", "decay", "level_shift", "blend", "has_break"], ["origin"]),
+                       ["item_id", "origin", "static", "truncate", "blend", "has_break"], ["origin"]),
     "classical_726": (TABLES / "classical_726_scores.csv", ["item_id", "model", "mase", "category", "intermittent"], []),
-    "advanced_wip": (TABLES / "advanced_wip_summary.csv", ["model", "mase"], []),
-    "advanced_wip_items": (TABLES / "advanced_wip_item_scores.csv", ["item_id", "model", "mase"], []),
     "funnel": (TABLES / "hc_breaks_funnel.csv", ["cusum_breaks", "4_high_confidence"], []),
+})
+
+# Time-series models (notebooks 07c to 07h)
+SCHEMA.update({
+    "ts_headline": (TABLES / "ts_headline.csv", ["model", "name", "kind", "rmse", "mae", "mape", "smape", "wape", "mase",
+                                                 "val_rmse", "val_mae", "val_mape", "n_products"], []),
+    "ts_ablation": (TABLES / "ts_sarima_ablation.csv", ["family", "step", "model", "kept", "val_rmse", "val_mae", "val_mape",
+                                                        "scored_rmse", "scored_mae", "scored_mape"], []),
+    "ts_tests": (TABLES / "ts_tests.csv", ["metric", "model", "median_diff", "p_holm", "better_than_sarima",
+                                           "worse_than_sarima"], []),
+    "varima_scores": (TABLES / "ts_varima_scores.csv", ["series", "model", "rmse", "mae", "mase"], []),
+    "ts_forecasts": (TABLES / "ts_forecasts.parquet", ["item_id", "origin", "date", "model", "forecast", "actual", "category"],
+                     ["origin", "date"]),
+    "ts_combination_members": (TABLES / "ts_combination_members.csv", ["member", "validation_rmse"], []),
+    "sarima_totals_rescaled": (TABLES / "sarima_totals_rescaled.csv", ["series", "origin", "scale", "mase"], []),
+})
+
+# Which model is best (notebook 07i)
+SCHEMA.update({
+    "verdict_metrics": (TABLES / "verdict_metrics.csv", ["group", "model", "n_products", "rmse", "mae", "mape", "smape",
+                                                         "wape", "mase"], []),
+    "verdict_ranks": (TABLES / "verdict_ranks.csv", ["model", "rank_rmse", "rank_mase", "avg_rank", "n_first", "n_top2",
+                                                     "n_top3"], []),
+    "verdict_tests": (TABLES / "verdict_tests.csv", ["metric", "reference", "model", "median_diff", "ci_low", "ci_high",
+                                                     "gap_pct", "p_holm", "result"], []),
+    "verdict_wins": (TABLES / "verdict_wins.csv", ["metric", "model", "wins"], []),
+    "verdict_stock": (TABLES / "verdict_stock.csv", ["method", "model", "total_cost", "fill_rate", "avg_inventory_value"],
+                      []),
 })
 
 

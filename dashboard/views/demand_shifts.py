@@ -5,7 +5,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.facts import facts, lookup
-from utils.models import COLORS
+from utils.models import BEST, BEST_SHORT, COLORS
 from utils.ui import ACCENT, DARK, NEUTRAL, apply_item_filters, chart, download, filters, filters_used, kpis, page, style, tells
 
 f = facts()
@@ -87,10 +87,9 @@ with c2:
 
 # did reacting to a shift help?
 rows = []
-for v, lab in [("truncate", "LightGBM, retrained after a shift"), ("decay", "LightGBM, old data down-weighted"),
-               ("level_shift", "LightGBM with a shift feature"), ("blend", "LightGBM, blend of static and retrained")]:
+for v, lab in [("truncate", f"{BEST_SHORT}, retrained after a shift"), ("blend", f"{BEST_SHORT}, blend of static and retrained")]:
     r = variants[(variants["group"] == "all detected breaks") & (variants["variant"] == v)].iloc[0]
-    rows.append({"version": lab, "model": "lightgbm", "items": int(r["n"]), "change": r["median_diff"], "low": r["ci_low"],
+    rows.append({"version": lab, "model": BEST, "items": int(r["n"]), "change": r["median_diff"], "low": r["ci_low"],
                  "high": r["ci_high"], "better_for": r["share_improved"], "meets_rule": str(r["helps"]).lower() == "true"})
 for m, lab in [("ets", "ETS, retrained after a shift"), ("tsb", "TSB, retrained after a shift")]:
     r = adaptive[(adaptive["model"] == m) & adaptive["comparison"].str.startswith("adaptive") & (adaptive["category"] == "ALL")].iloc[0]
@@ -101,12 +100,13 @@ for v, lab in [("restart", "SARIMA, retrained after a shift"), ("dummy", "SARIMA
         r = sarima[(sarima["group"] == grp) & (sarima["variant"] == v)].iloc[0]
         rows.append({"version": lab + suffix, "model": "sarima", "items": int(r["n"]), "change": r["median_diff"], "low": r["ci_low"],
                      "high": r["ci_high"], "better_for": r["share_improved"], "meets_rule": str(r["helps"]).lower() == "true"})
-pl = adaptive[(adaptive["model"] == "lightgbm") & adaptive["comparison"].str.startswith("placebo") & (adaptive["category"] == "ALL")].iloc[0]
-rows.append({"version": "LightGBM, random short window (placebo)", "model": "lightgbm", "items": int(pl["n"]), "change": pl["median_diff"],
+pl = adaptive[(adaptive["model"] == BEST) & adaptive["comparison"].str.startswith("placebo") & (adaptive["category"] == "ALL")].iloc[0]
+rows.append({"version": f"{BEST_SHORT}, random short window (placebo)", "model": BEST, "items": int(pl["n"]), "change": pl["median_diff"],
              "low": pl["ci_low"], "high": pl["ci_high"], "better_for": pl["share_improved"], "meets_rule": False})
 rt = pd.DataFrame(rows)
 
-PRACTICAL = 0.0074
+mu = get("mase_unrounded")
+PRACTICAL = round(0.01 * mu[(mu["model"] == BEST) & (mu["category"] == "ALL")]["median_item_mase"].iloc[0], 4)    # 1% of its error
 fig = go.Figure()
 fig.add_vrect(x0=-PRACTICAL, x1=PRACTICAL, fillcolor=NEUTRAL, opacity=0.10, line_width=0)
 fig.add_scatter(x=rt["change"], y=rt["version"], mode="markers", marker=dict(color=[COLORS[m] for m in rt["model"]], size=11),
@@ -124,10 +124,10 @@ n_worse = int((main["low"] > 0).sum())
 n_tested = len(main)
 n_rule = int(main["meets_rule"].sum())
 chart(fig, f"Reacting to a shift did not pay off: {n_rule} of {n_tested} versions meet the bar for a useful gain",
-      f"{n_worse} versions are clearly worse than doing nothing and {n_better} clearly better, and the better one is too small "
+      f"{n_worse} {'version is' if n_worse == 1 else 'versions are'} clearly worse than doing nothing and {n_better} clearly better, and the better one is too small "
       f"to matter (the grey band is ±{PRACTICAL}, the smallest gain we decided in advance would count). Lines show a 95% range."
       if n_better else
-      f"{n_worse} versions are clearly worse than doing nothing and none is clearly better. The grey band is ±{PRACTICAL}, the "
+      f"{n_worse} {'version is' if n_worse == 1 else 'versions are'} clearly worse than doing nothing and none is clearly better. The grey band is ±{PRACTICAL}, the "
       f"smallest gain we decided in advance would count. Lines show a 95% range.")
 show = rt.rename(columns={"version": "Version", "items": "Items", "change": "Change in MASE", "low": "95% range from",
                           "high": "95% range to", "better_for": "Better for", "meets_rule": "Useful gain"}).drop(columns="model")

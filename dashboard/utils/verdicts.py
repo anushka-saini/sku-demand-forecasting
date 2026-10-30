@@ -3,6 +3,7 @@ The four headline verdicts, computed from results_facts.json (no Streamlit impor
 Rules were agreed before the dashboard was built and are shown on the Overview page.
 """
 from utils.facts import lookup, value
+from utils.models import BEST, BEST_SHORT
 
 POWER_FOR_YES = 0.80     # a 20% step must be detected at least this often for "Yes, detectable"
 STATES = ('TX', 'WI')
@@ -35,7 +36,7 @@ def shifts(f):
 
 
 def best_model(f):
-    med = {m: value(f, 'forecasts', 'median_item_mase', f'{m}_ALL') for m in ('seasonal_naive', 'ets', 'lightgbm')}
+    med = {m: value(f, 'forecasts', 'median_item_mase', f'{m}_ALL') for m in ('seasonal_naive', 'ets', BEST)}
     best = min(med, key=med.get)
     others = [m for m in med if m != best]
     ca_sig = all(value(f, 'forecasts', 'pairwise', f'{best}-{o}|ALL') < 0 and
@@ -45,11 +46,16 @@ def best_model(f):
                   for s in STATES for o in others if f'{s}|{best} - {o}' in lookup(f, 'replication_tests'))
     strength = 'strong' if ca_sig and rep_sig else ('moderate' if ca_sig else 'weak')
     bias = value(f, 'forecasts', 'bias', f'{best}_static_ALL')
-    names = {'lightgbm': 'LightGBM', 'ets': 'ETS', 'seasonal_naive': 'Seasonal naive'}
+    names = {BEST: BEST_SHORT, 'ets': 'ETS', 'seasonal_naive': 'Seasonal naive'}
+    runner = sorted(others, key=med.get)[0]
+    pw = lookup(f, 'forecasts', 'pairwise')
+    t = pw.get(f'{best}-{runner}|ALL') or pw.get(f'{runner}-{best}|ALL')
+    level = t is not None and t['p_value'] >= 0.05
     return {
         'question': 'Which forecast is best?', 'verdict': names[best], 'strength': strength,
         'answer': f"{names[best]}: median error {med[best]:.3f} vs {med['seasonal_naive']:.3f} for the simple "
-                  f"baseline (MASE; lower is better).",
+                  f"baseline (MASE; lower is better)."
+                  + (f" {names[runner]} is level with it ({med[runner]:.3f}; the difference is not significant)." if level else ""),
         'caveat': (f"It under-forecasts by {abs(bias):.1%} in total." if bias < 0 else f"It over-forecasts by {bias:.1%} in total."),
         'page': 'views/accuracy.py'}
 
@@ -70,10 +76,15 @@ def retraining(f):
     strength = 'strong' if verdict == 'No' and rep else 'moderate'
     return {
         'question': 'Does retraining after a shift help?', 'verdict': verdict, 'strength': strength,
-        'answer': f"None of {n_variants} retraining methods improved forecasts. Simply restarting from the shift made "
-                  f"error slightly worse ({trunc['value']:+.4f} MASE, n = {trunc['n']} items)"
+        'answer': (f"None of {n_variants} ways of reacting improved {BEST_SHORT}'s forecasts. " if not any_helps else
+                   f"At least one of {n_variants} ways of reacting met the bar for a useful gain. ")
+                  + (f"Simply restarting from the shift changed its error by {trunc['value']:+.4f} MASE (n = {trunc['n']} items)"
+                     if trunc['value'] != 0 else
+                     f"Simply restarting from the shift left the median error unchanged and made it better for only "
+                     f"{trunc['share_improved']:.0%} of {trunc['n']} items")
                   + (f", and the same holds in {n_rep} other states." if rep else "."),
-        'caveat': "Tested with one model (LightGBM) and four simple methods; small shifts are invisible to the detector.",
+        'caveat': (f"Tested with {BEST_SHORT} (restart and a blend), and on ETS, TSB and SARIMA in 08d; small shifts are "
+                   "invisible to the detector."),
         'page': 'views/demand_shifts.py'}
 
 
@@ -93,8 +104,10 @@ def stock(f):
     strength = 'strong' if n_sig == n_win and rep else ('moderate' if verdict != 'No' else 'weak')
     return {
         'question': 'Does a better forecast cut stock cost?', 'verdict': verdict, 'strength': strength,
-        'answer': f"At a 95% target, LightGBM-based reorder points hold {abs(base['inventory_change']):.1%} less stock at "
-                  f"{abs(base['value']):.1%} lower cost than the simple baseline; clearly lower in {n_sig} of {n_win} time windows.",
+        'answer': f"At a 95% target, reorder points from {BEST_SHORT} hold {abs(base['inventory_change']):.1%} "
+                  f"{'less' if base['inventory_change'] < 0 else 'more'} stock at {abs(base['value']):.1%} "
+                  f"{'lower' if base['value'] < 0 else 'higher'} cost than the simple baseline; clearly lower in {n_sig} of "
+                  f"{n_win} time windows.",
         'caveat': "Lead time and costs are assumptions, not measured data.",
         'page': 'views/stock_impact.py'}
 
@@ -132,7 +145,7 @@ def classical_shift(f):
         'question': 'Does a shift-aware SARIMA help?', 'verdict': verdict, 'strength': 'moderate',
         'answer': f"Restart from the break: {r['value']:+.4f} MASE; level-shift dummy: {d['value']:+.4f} "
                   f"(median per item, n = {r['n']} items with a break).",
-        'caveat': ("The same answer as for LightGBM. " if verdict == 'No' else "Unlike LightGBM. ")
+        'caveat': (f"The same answer as for {BEST_SHORT}. " if verdict == 'No' else f"Unlike {BEST_SHORT}. ")
                   + "Breaks older than the 730-day fit window leave the model unchanged.",
         'page': 'views/demand_shifts.py'}
 

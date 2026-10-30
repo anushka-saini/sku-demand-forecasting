@@ -16,7 +16,7 @@ def verdict(ci_low, ci_high, lower_is_better=True):
     return "no detectable difference"
 
 
-def headline(tests, model="lightgbm"):
+def headline(tests, model="best"):
     """One-sentence finding for adaptive vs static, built from the test table."""
     a = tests[(tests["comparison"].str.startswith("adaptive")) & (tests["model"] == model) & (tests["category"] == "ALL")].iloc[0]
     p = tests[(tests["comparison"].str.startswith("placebo")) & (tests["model"] == model) & (tests["category"] == "ALL")].iloc[0]
@@ -30,17 +30,20 @@ def headline(tests, model="lightgbm"):
             f"{p['median_diff']:+.4f} (95% CI {p['ci_low']:+.4f} to {p['ci_high']:+.4f}, n = {int(p['n'])}).")
 
 
-def per_item_variant_diff(errors, model, variant):
+def per_item_variant_diff(errors, model, variant, placebo=None):
     """
-    Per-item mean of (variant - static) MASE over eval origins, as in 09a_lightgbm:
+    Per-item mean of (variant - static) MASE over eval origins, as in 09_best_model_all_products:
     adaptive -> origins where a break had been detected; placebo -> origins without a break.
-    Placebo rows that equal static (no truncation was possible) are dropped.
+    placebo: the (item_id, origin) rows that got a placebo window, as 09 uses; without it, placebo rows that equal
+    static are dropped instead, which misses placebo windows older than the fit window.
     """
     e = errors[errors["is_eval_origin"] & (errors["model"] == model)]
     piv = e.pivot_table(index=["item_id", "origin", "has_break"], columns="variant", values="mase").reset_index()
     piv = piv[piv["has_break"]] if variant == "adaptive" else piv[~piv["has_break"]]
     piv["diff"] = piv[variant] - piv["static"]
-    if variant == "placebo":
+    if variant == "placebo" and placebo is not None:
+        piv = piv.merge(placebo[["item_id", "origin"]], on=["item_id", "origin"])
+    elif variant == "placebo":
         piv = piv[piv["diff"] != 0]
     return piv.groupby("item_id", as_index=False)["diff"].mean()
 
@@ -116,7 +119,7 @@ BAND_FLAG = 0.80          # 90% band covering fewer than this share of days is f
 
 
 def build_watchlist(cal_items, item_bias, item_cov, items, hc_items, method, service_level,
-                    model="lightgbm", variant="static"):
+                    model="best", variant="static"):
     """
     Items whose simulated fill rate fell below the target, for one forecast policy and safety-stock method,
     with plain-language reasons. Only filters and joins pre-computed tables.

@@ -5,7 +5,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.kpis import BAND_FLAG, BIAS_FLAG, base_cost_assumptions, build_watchlist
-from utils.models import POLICY_COLORS, POLICY_NAMES
+from utils.models import BEST, BEST_SHORT, POLICY_COLORS, POLICY_NAMES
 from utils.ui import DARK, NEUTRAL, chart, download, filters, filters_used, kpis, page, simulated, style, tells
 
 flt = filters()
@@ -17,7 +17,7 @@ cal_items = get("calibrated_items")
 wdiff = get("window_diffs")
 items = get("items")
 H_BASE, M_BASE = base_cost_assumptions(inv)
-POL = ["lightgbm_static", "lightgbm_adaptive", "seasonal_naive_static"]
+POL = [f"{BEST}_static", f"{BEST}_adaptive", "seasonal_naive_static"]
 
 page("Stock impact", "What do the forecasts mean for stock held, lost sales and cost?")
 filters_used(["category"])
@@ -46,19 +46,19 @@ g = k.groupby("policy").agg(demand=("demand_units", "sum"), lost=("lost_units", 
 g["fill_rate"] = 1 - g["lost"] / g["demand"]
 scen = sens[(sens["lead_time"] == lt) & (sens["holding_rate"] == h) & (sens["stockout_multiple"] == m)]
 cost = scen.set_index(["policy", "service_level"])["total_cost"]
-c_lgb, c_naive = cost[("lightgbm_static", sl)], cost[("seasonal_naive_static", sl)]
+c_best, c_naive = cost[(f"{BEST}_static", sl)], cost[("seasonal_naive_static", sl)]
 kpis([
-    {"label": "Total cost, LightGBM forecast", "value": f"${c_lgb:,.0f}", "compare": f"{c_lgb / c_naive - 1:+.1%} vs the baseline forecast",
-     "tone": "good" if c_lgb < c_naive else "bad", "help": "Holding plus lost-sale cost over the test period, all items, at the costs you chose."},
-    {"label": "Fill rate", "value": f"{g.loc['lightgbm_static', 'fill_rate']:.1%}",
+    {"label": f"Total cost, {BEST_SHORT} forecast", "value": f"${c_best:,.0f}", "compare": f"{c_best / c_naive - 1:+.1%} vs the baseline forecast",
+     "tone": "good" if c_best < c_naive else "bad", "help": "Holding plus lost-sale cost over the test period, all items, at the costs you chose."},
+    {"label": "Fill rate", "value": f"{g.loc[f'{BEST}_static', 'fill_rate']:.1%}",
      "compare": f"vs {g.loc['seasonal_naive_static', 'fill_rate']:.1%} with the baseline", "help": "Share of demand served from stock."},
-    {"label": "Average stock held", "value": f"${g.loc['lightgbm_static', 'stock']:,.0f}",
-     "compare": f"{g.loc['lightgbm_static', 'stock'] / g.loc['seasonal_naive_static', 'stock'] - 1:+.0%} vs the baseline",
+    {"label": "Average stock held", "value": f"${g.loc[f'{BEST}_static', 'stock']:,.0f}",
+     "compare": f"{g.loc[f'{BEST}_static', 'stock'] / g.loc['seasonal_naive_static', 'stock'] - 1:+.0%} vs the baseline",
      "help": "Average value of stock on hand, summed over the items in view."},
-    {"label": "Safety stock per item", "value": f"{g.loc['lightgbm_static', 'ss']:,.1f} units",
+    {"label": "Safety stock per item", "value": f"{g.loc[f'{BEST}_static', 'ss']:,.1f} units",
      "compare": f"vs {g.loc['seasonal_naive_static', 'ss']:,.1f} with the baseline",
      "help": "Average extra units kept to cover forecast error, from the textbook formula."},
-    {"label": "Days out of stock", "value": f"{int(g.loc['lightgbm_static', 'stockout_days']):,}",
+    {"label": "Days out of stock", "value": f"{int(g.loc[f'{BEST}_static', 'stockout_days']):,}",
      "compare": f"vs {int(g.loc['seasonal_naive_static', 'stockout_days']):,} with the baseline", "help": "Item-days with an empty shelf."},
 ])
 
@@ -77,7 +77,7 @@ chart(fig, f"Cheapest here: {POLICY_NAMES[cheap['policy']]} at a {cheap['service
 
 # textbook vs calibrated safety stock (saved only for a 7-day lead time and the base costs)
 c = cal[cal["service_level"] == sl].copy()
-cs = c[c["policy"] == "lightgbm_static"].set_index("method")
+cs = c[c["policy"] == f"{BEST}_static"].set_index("method")
 fig = go.Figure()
 for method, lab, color in [("normal formula", "textbook formula", NEUTRAL), ("conformal", "sized from past errors", "#1F6F8B")]:
     d = c[c["method"] == method].set_index("policy").reindex(POL)
@@ -90,7 +90,7 @@ style(fig, height=340).update_yaxes(title="total cost ($)", tickprefix="$", tick
 save = cs.loc["conformal", "total_cost"] / cs.loc["normal formula", "total_cost"] - 1
 diag = get("residual_checks")
 normal_pass = diag.loc[diag["level"] == "item", "normality_pass"].max()
-chart(fig, f"Sizing safety stock from past errors changes LightGBM's cost by {save:+.0%} at a {sl:.0%} target",
+chart(fig, f"Sizing safety stock from past errors changes {BEST_SHORT}'s cost by {save:+.0%} at a {sl:.0%} target",
       f"The textbook formula assumes forecast errors are normal; at most {normal_pass:.1%} of items pass a normality test. "
       f"With it, only "
       f"{cs.loc['normal formula', 'cycle_service_level']:.1%} of order cycles avoided a stockout against a {sl:.0%} target; "
@@ -99,8 +99,8 @@ chart(fig, f"Sizing safety stock from past errors changes LightGBM's cost by {sa
 
 with st.expander("Does this hold in other half-years?"):
     wd = wdiff[wdiff["service_level"] == sl].copy()
-    wd["label"] = wd["window"] + ": " + wd["comparison"].map({"static - naive": "LightGBM vs baseline",
-                                                               "adaptive - static": "retrained vs LightGBM"})
+    wd["label"] = wd["window"] + ": " + wd["comparison"].map({"static - naive": f"{BEST_SHORT} vs baseline",
+                                                               "adaptive - static": f"retrained vs {BEST_SHORT}"})
     fig = go.Figure(go.Scatter(x=wd["total_diff_pct"], y=wd["label"], mode="markers",
                                marker=dict(size=10, color=["#E69F00" if c == "static - naive" else "#A06A00" for c in wd["comparison"]]),
                                customdata=wd[["ci_low", "ci_high", "n_items"]],
@@ -110,7 +110,7 @@ with st.expander("Does this hold in other half-years?"):
     style(fig, height=300, legend=False).update_xaxes(title="difference in total cost (%)", ticksuffix="%")
     fig.update_yaxes(autorange="reversed")
     sn = wd[wd["comparison"] == "static - naive"]
-    chart(fig, f"LightGBM is cheaper than the baseline in {int((sn['ci_high'] < 0).sum())} of {len(sn)} half-years at a {sl:.0%} target",
+    chart(fig, f"{BEST_SHORT} is cheaper than the baseline in {int((sn['ci_high'] < 0).sum())} of {len(sn)} half-years at a {sl:.0%} target",
           "W1 is the test period above; W2 and W3 are two earlier half-years run the same way. 7-day lead time, base costs.")
 
 st.markdown("<div class='chart-title'>Items to check</div>", unsafe_allow_html=True)
@@ -119,7 +119,7 @@ method = st.radio("Safety stock", ["conformal", "normal formula"], horizontal=Tr
 wl = build_watchlist(cal_items, get("item_bias"), get("item_coverage"), items, get("hc_items"), method, sl)
 if flt["categories"]:
     wl = wl[wl["category"].isin(flt["categories"])]
-st.caption(f"Items whose simulated fill rate fell below the {sl:.0%} target with LightGBM forecasts (7-day lead time), "
+st.caption(f"Items whose simulated fill rate fell below the {sl:.0%} target with {BEST_SHORT} forecasts (7-day lead time), "
            f"most lost units first. Reasons are simple flags: forecast more than {BIAS_FLAG:.0%} off in total, an interval "
            f"that held the sales on fewer than {BAND_FLAG:.0%} of days, a detected shift, or sales on few days.")
 if wl.empty:
@@ -135,9 +135,9 @@ else:
     st.caption("The CSV has every column, including category, forecast bias and interval coverage.")
     download(wl, f"items_to_check_{int(sl * 100)}.csv", key="dl_watch")
 
-adapt = cost[("lightgbm_adaptive", sl)] / c_lgb - 1
-tells(f"With these settings the LightGBM forecast costs {c_lgb / c_naive - 1:+.1%} against the baseline forecast, and the "
+adapt = cost[(f"{BEST}_adaptive", sl)] / c_best - 1
+tells(f"With these settings the {BEST_SHORT} forecast costs {c_best / c_naive - 1:+.1%} against the baseline forecast, and the "
       f"version retrained after shifts costs {adapt:+.1%} against it. Changing how safety stock is sized moves cost by {save:+.0%}"
-      f" at the {sl:.0%} target" + (", so it is the bigger lever. " if abs(save) > abs(c_lgb / c_naive - 1) else ". ")
+      f" at the {sl:.0%} target" + (", so it is the bigger lever. " if abs(save) > abs(c_best / c_naive - 1) else ". ")
       + f"{len(wl):,} items still fall below the target with the "
       f"{'past-error' if method == 'conformal' else 'textbook'} safety stock. All of this is simulated with assumed costs.")

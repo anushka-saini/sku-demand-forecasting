@@ -4,8 +4,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.data import get
-from utils.derive import all_item_scores, eval_origins, in_window
-from utils.models import COLORS, NAMES, ORDER, SHORT, name
+from utils.derive import all_item_scores, eval_origins, in_window, sample_forecasts, sample_metrics
+from utils.models import BEST, BEST_SHORT, COLORS, NAMES, ORDER, SAMPLE_DUPLICATES, SHORT, name
 from utils.ui import ACCENT, DARK, NEUTRAL, apply_item_filters, chart, download, empty, filters, filters_used, kpis, page, style, tells, vline
 
 flt = filters()
@@ -14,8 +14,8 @@ fd_all = get("forecast_daily")
 weekly = get("sales_weekly")
 bo = get("breaks_by_origin")
 sample = get("classical_sample")
-cmp_fc = get("classical_forecasts")
-cmp_m = get("classical_item_metrics")
+cmp_fc = sample_forecasts()
+cmp_m = sample_metrics()
 cov = get("coverage")
 item_cov = get("item_coverage")
 
@@ -32,26 +32,31 @@ if st.session_state.get("ie_item") not in ids:        # the filters removed the 
 item = st.selectbox("Item (type to search; sorted by units sold)", ids, key="ie_item")
 info = items.set_index("item_id").loc[item]
 in_sample = item in set(sample["item_id"])
+# models run on the 150-item sample only; on the sample the best model is the 07h contender it repeats
+SAMPLE_MODELS = [m for m in ["sarima", "sarimax", "theta", "prophet", "autots", "ets_boxcox", "combination", "hw_add",
+                             "hw_mul", "arima"] if m not in SAMPLE_DUPLICATES.values()]
 
 fd = in_window(fd_all[fd_all["item_id"] == item], flt["window"])
-models = [m for m in ["lightgbm", "ets", "seasonal_naive", "tsb"] if m in set(fd["model"])]
+models = [m for m in [BEST, "ets", "seasonal_naive", "tsb"] if m in set(fd["model"])]
 if in_sample:
-    models += [m for m in ["sarima", "hw_add", "hw_mul", "arima"] if m in set(cmp_fc["model"])]
+    models += [m for m in SAMPLE_MODELS if m in set(cmp_fc["model"])]
 if st.session_state.get("ie_model") not in models:
     st.session_state["ie_model"] = models[0]
 c1, c2 = st.columns([2, 1])
-model = c1.radio("Forecasting method", models, horizontal=True, format_func=lambda m: SHORT[m], key="ie_model")
+model = (c1.radio if len(models) <= 5 else c1.selectbox)("Forecasting method", models, format_func=lambda m: SHORT[m],
+                                                         key="ie_model", **({"horizontal": True} if len(models) <= 5 else {}))
 can_retrain = model in set(fd.loc[fd["variant"] == "adaptive", "model"])
 retrained = c2.toggle("Version retrained after a shift", value=False, key="ie_retrained", disabled=not can_retrain,
                       help="Retrains the model only on sales after the latest detected shift. Only differs for items with a shift.")
 variant = "adaptive" if (retrained and can_retrain) else "static"
 if not in_sample:
-    st.caption("SARIMA, ARIMA and Holt-Winters were run on a 150-item sample; this item is not in it.")
+    st.caption("SARIMA, SARIMAX, Theta, Prophet, AutoTS, ARIMA and Holt-Winters were run on a 150-item sample; this "
+               "item is not in it.")
 
 # scores for this item, and its rank among all items for the chosen static method where every item has one
 allsc = all_item_scores(flt["window"])
-lgb = allsc[(allsc["model"] == "lightgbm") & (allsc["variant"] == "static")].set_index("item_id")["mase"]
-rank = int(lgb.rank(method="min").get(item, np.nan)) if item in lgb.index else None
+top = allsc[(allsc["model"] == BEST) & (allsc["variant"] == "static")].set_index("item_id")["mase"]
+rank = int(top.rank(method="min").get(item, np.nan)) if item in top.index else None
 mine = allsc[allsc["item_id"] == item]
 ibo = bo[(bo["item_id"] == item) & bo["is_eval_origin"]].sort_values("origin")
 shift_known = bool(ibo["has_break"].any())
@@ -61,7 +66,7 @@ item_rows = [{"method": NAMES[m] + (", retrained after a shift" if v == "adaptiv
              if v == "static" or (v == "adaptive" and shift_known and m != "seasonal_naive")]
 if in_sample:
     cm = in_window(cmp_m[(cmp_m["item_id"] == item) & cmp_m["origin"].isin(set(eval_origins()))], flt["window"])
-    for m, g in cm[cm["model"].isin(["sarima", "hw_add", "hw_mul", "arima"])].groupby("model"):
+    for m, g in cm[cm["model"].isin(SAMPLE_MODELS)].groupby("model"):
         item_rows.append({"method": NAMES[m], "MASE": g["mase"].mean(), "MAE": g["mae"].mean()})
 et = pd.DataFrame(item_rows).drop_duplicates("method").sort_values("MASE")
 
@@ -78,9 +83,9 @@ kpis([
     {"label": "Average sales", "value": f"{info['mean_sales']:,.1f}", "compare": f"units a day · {info['category'].title()} · {info['segment']}"},
     {"label": f"Error, {SHORT[model]}", "value": f"{chosen_mase:.3f}" if pd.notna(chosen_mase) else "n/a",
      "compare": "MASE over the forecast dates in view", "help": "Average error divided by the error of repeating last week. Lower is better."},
-    {"label": "Rank among all items (LightGBM)", "value": f"{rank:,} of {len(lgb):,}" if rank else "n/a",
-     "compare": f"lower error than {1 - rank / len(lgb):.0%} of items" if rank else "",
-     "help": "1 = the item LightGBM forecasts best. Uses LightGBM because it was run on every item."},
+    {"label": f"Rank among all items ({BEST_SHORT})", "value": f"{rank:,} of {len(top):,}" if rank else "n/a",
+     "compare": f"lower error than {1 - rank / len(top):.0%} of items" if rank else "",
+     "help": f"1 = the item {BEST_SHORT} forecasts best. Uses {BEST_SHORT} because it was run on every item."},
     {"label": "Detected shift", "value": "Yes" if shift_known else "No",
      "compare": (f"latest change week of {ibo.loc[ibo['has_break'], 'last_change_week'].iloc[-1]:%d %b %Y}" if shift_known
                  else "none found by any forecast date")},
@@ -105,7 +110,7 @@ else:
     style(fig, height=400).update_yaxes(title="units per day", tickformat=",")
     fig.update_xaxes(title="date")
     inside = ((f["actual"] >= f["lo_90"]) & (f["actual"] <= f["hi_90"])).mean() if has_band else np.nan
-    allcov = cov[(cov["model"] == "lightgbm") & (cov["variant"] == "static") & (cov["level"] == 90) & (cov["origins"] == "origins 2-6")]
+    allcov = cov[(cov["model"] == BEST) & (cov["variant"] == "static") & (cov["level"] == 90) & (cov["origins"] == "origins 2-6")]
     band_note = (f" The shaded band is a 90% interval from the item's own past errors; here it held the actual sales on "
                  f"{inside:.0%} of days, and across all items on {allcov['coverage_before'].iloc[0]:.1%}."
                  if has_band and len(allcov) else " No interval is saved for this method.")
@@ -144,11 +149,11 @@ with c2:
 if et.empty:
     tells(f"No scores are saved for {item} in the chosen forecast dates.")
 else:
-    top = et.iloc[0]
-    text = f"For {item}, the most accurate method is {top['method']} (MASE {top['MASE']:.3f}). "
+    first = et.iloc[0]
+    text = f"For {item}, the most accurate method is {first['method']} (MASE {first['MASE']:.3f}). "
     if rank:
-        text += (f"With LightGBM it ranks {rank:,} of {len(lgb):,} items, so it is "
-                 f"{'easier' if rank <= len(lgb) / 2 else 'harder'} to forecast than most. ")
+        text += (f"With {BEST_SHORT} it ranks {rank:,} of {len(top):,} items, so it is "
+                 f"{'easier' if rank <= len(top) / 2 else 'harder'} to forecast than most. ")
     text += ("A shift had been detected by at least one forecast date." if shift_known else
              "No shift had been detected by any forecast date.")
     tells(text)

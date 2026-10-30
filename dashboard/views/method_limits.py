@@ -44,7 +44,8 @@ st.markdown("- Each model is fitted only on data before its forecast date, and a
             "ARIMA orders) is chosen on that training data.\n"
             "- The shift detector's alarm threshold was set on data before the first forecast date, and shifts are only used if "
             "they were detected by the forecast date.\n"
-            "- LightGBM only uses sales from at least 28 days before the day it forecasts, so it never needs its own forecasts.\n"
+            "- Model settings (transforms, regressors, which models to combine) were chosen on three validation dates before "
+            "the scored ones (Sep to Dec 2015), never on the scored dates.\n"
             "- Two things are known in advance, as in the original competition: prices and the calendar. The item list was chosen "
             "on the full history, which is a mild look-ahead in which items were studied, though not in any forecast.")
 
@@ -62,7 +63,7 @@ st.markdown(f"- They cover the high-volume, steady items only ({share:.0%} of th
             f"- Costs are assumptions. Fill rate, stockouts and stock held come out of the simulation; money depends on the costs.\n"
             f"- Forecasts are scored on one half-year, {pd.Timestamp(w['first_eval_day']):%b %Y} to "
             f"{pd.Timestamp(w['last_eval_day']):%b %Y}; the stock results were also checked on two earlier half-years.\n"
-            f"- LightGBM's settings were fixed, not tuned, and the advanced models in progress are not part of any result.")
+            f"- Every forecast here comes from a time-series model; machine-learning models were left out of the project.")
 
 with st.expander("The same checks in Texas and Wisconsin"):
     t = rep[["state", "conclusion", "holds", "evidence"]].copy()

@@ -34,6 +34,11 @@ p.question {font-size: 1.06rem; opacity: 0.85; margin: 0 0 1.1rem 0; max-width: 
         margin: 1.6rem 0 0.4rem 0; max-width: 62rem;}
 .tells .head {font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #1F6F8B;
               margin-bottom: 0.2rem;}
+.verdict {border: 2px solid #B26B00; background: rgba(178,107,0,0.07); border-radius: 6px; padding: 0.8rem 1.1rem;
+           margin: 0.8rem 0 1.6rem 0; max-width: 62rem;}
+.verdict .head {font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #B26B00;
+                margin-bottom: 0.3rem;}
+.verdict p {margin: 0 0 0.55rem 0;}
 .simulated {border: 1px dashed #B26B00; border-radius: 4px; padding: 0.45rem 0.8rem; font-size: 0.9rem; margin: 0.2rem 0 1rem 0;}
 .simulated b {color: #B26B00;}
 .takeaway {font-size: 0.92rem; margin: -0.4rem 0 1.4rem 0; opacity: 0.85;}
@@ -42,6 +47,7 @@ p.question {font-size: 1.06rem; opacity: 0.85; margin: 0 0 1.1rem 0; max-width: 
   .kpi .compare.good {color: #5CC08F;} .kpi .compare.bad {color: #E8857B;}
   .tells .head {color: #6FB6CF;} .tells {border-left-color: #6FB6CF; background: rgba(111,182,207,0.10);}
   .simulated b {color: #E0A040;}
+  .verdict {border-color: #E0A040; background: rgba(224,160,64,0.09);} .verdict .head {color: #E0A040;}
 }
 .footer {font-size: 0.78rem; opacity: 0.65; border-top: 1px solid rgba(128,128,128,0.3); margin-top: 2.5rem; padding-top: 0.6rem;}
 .filters-used {font-size: 0.8rem; opacity: 0.7; margin: -0.6rem 0 1rem 0;}
@@ -93,6 +99,12 @@ def tells(sentences):
     """The closing 'What this tells us' box, built from the page's computed values."""
     st.markdown(f"<div class='tells'><div class='head'>What this tells us</div>{html.escape(sentences)}</div>",
                 unsafe_allow_html=True)
+
+
+def verdict_box(sentences, head="Verdict"):
+    """A highlighted box of generated sentences, one paragraph each."""
+    body = "".join(f"<p>{html.escape(s)}</p>" for s in sentences)
+    st.markdown(f"<div class='verdict'><div class='head'>{html.escape(head)}</div>{body}</div>", unsafe_allow_html=True)
 
 
 def simulated(text):
