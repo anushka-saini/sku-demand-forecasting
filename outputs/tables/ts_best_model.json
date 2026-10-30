@@ -1,0 +1,23 @@
+{
+ "model": "combination",
+ "name": "Combination",
+ "members": {
+  "sarimax": {
+   "kind": "sarima",
+   "exog": [
+    "fourier1"
+   ]
+  },
+  "ets": {
+   "kind": "ets",
+   "fit_days": null,
+   "how": "boxcox"
+  },
+  "theta": {
+   "kind": "theta"
+  }
+ },
+ "rmse": 4.3918913580547585,
+ "mae": 3.498853485229379,
+ "mape": 0.5863098261945383
+}

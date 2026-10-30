@@ -1,0 +1,9 @@
+,rmse,mae
+seasonal_naive,0,0
+ets,30,64
+sarima,22,14
+sarimax,18,17
+theta,11,8
+prophet,49,32
+autots,1,2
+combination,19,13

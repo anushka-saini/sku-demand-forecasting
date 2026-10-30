@@ -1,0 +1,3 @@
+item_id,origin,model,forecast_max,training_max
+FOODS_3_203,2015-12-06,sarimax,193.23371639923582,38.0
+HOUSEHOLD_1_217,2016-01-03,sarimax,2263.3417593105673,23.0

@@ -1,0 +1,6 @@
+,setting
+sarima,sarima_base
+sarimax,sarima_f1
+arimax,arimax_f1
+ets,ets_boxcox
+seasonal_naive,naive_base
