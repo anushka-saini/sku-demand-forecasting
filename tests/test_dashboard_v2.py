@@ -70,7 +70,12 @@ def test_stock_verdict_counts_significant_windows():
     keys = [k for k in md if k.endswith("|static - naive|0.95")]
     for k in keys:
         md[k]["ci95"] = [-10.0, -1.0]
+    r5 = [k for k in f["replication"] if k.split("|")[1].startswith("R5")]
+    for k in r5:
+        f["replication"][k]["holds"] = True
     assert verdicts.stock(f)["verdict"] == "Yes"
+    f["replication"][r5[0]]["holds"] = False            # "Yes" also needs the saving in both other states
+    assert verdicts.stock(f)["verdict"] == "Partly"
     for k in keys:
         md[k]["ci95"] = [-10.0, 5.0]
     assert verdicts.stock(f)["verdict"] == "No"
@@ -79,20 +84,21 @@ def test_stock_verdict_counts_significant_windows():
 @needs_facts
 def test_best_model_is_lowest_median_mase():
     f = copy.deepcopy(read_facts())
-    assert verdicts.best_model(f)["verdict"] == "LightGBM"
+    from utils.models import BEST_SHORT
+    assert verdicts.best_model(f)["verdict"] == BEST_SHORT
     f["forecasts"]["median_item_mase"]["ets_ALL"]["value"] = 0.1
-    f["forecasts"]["pairwise"].setdefault("ets-lightgbm|ALL", {"value": -0.1, "p_value": 0.001})
+    f["forecasts"]["pairwise"].setdefault("ets-best|ALL", {"value": -0.1, "p_value": 0.001})
     assert verdicts.best_model(f)["verdict"] == "ETS"
 
 
 # ---------------------------------------------------------------- watchlist
 
 def _toy():
-    cal = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "lightgbm", "variant": "static", "method": "conformal",
+    cal = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "best", "variant": "static", "method": "conformal",
                         "service_level": 0.95, "fill_rate": [0.90, 0.99, 0.94], "lost_units": [50.0, 1.0, 10.0],
                         "stockout_days": [5, 0, 2], "total_cost": [100.0, 10.0, 40.0], "mean_safety_stock": [3.0, 3.0, 3.0]})
-    bias = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "lightgbm", "variant": "static", "bias": [-0.2, 0.0, 0.01]})
-    cov = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "lightgbm", "variant": "static",
+    bias = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "best", "variant": "static", "bias": [-0.2, 0.0, 0.01]})
+    cov = pd.DataFrame({"item_id": ["a", "b", "c"], "model": "best", "variant": "static",
                         "coverage90_before": [0.5, 0.9, 0.9], "coverage90_after": [0.7, 0.9, 0.95]})
     items = pd.DataFrame({"item_id": ["a", "b", "c"], "category": "FOODS", "segment": "AY",
                           "break_at_last_origin": [True, False, False], "intermittent": [False, False, True]})

@@ -9,10 +9,11 @@ NB = Path(__file__).resolve().parents[1] / "notebooks"
 NOTEBOOKS = sorted(p for p in NB.glob("*.ipynb") if "_ORIGINAL" not in p.name)
 ORDER = ["01_meet_the_data", "02_scope", "03_explore", "04_zeros_and_trimming", "05_stationarity", "06_decomposition",
          "07a_classical_forecasting", "07b_classical_residuals", "08a_break_detection", "08b_detector_calibration",
-         "08c_high_confidence_breaks", "08d_shift_aware_classical", "09a_lightgbm", "09b_lightgbm_after_breaks",
+         "08c_high_confidence_breaks", "08d_shift_aware_classical", "09_best_model_all_products",
+         "09b_runner_up_all_products",
          "10_model_comparison", "11a_uncertainty", "11b_inventory_simulation", "11c_calibrated_safety_stock",
          "11d_inventory_other_seasons", "11e_classical_forecasts_and_stock", "11f_texas_and_wisconsin",
-         "12_advanced_models_wip", "90_powerbi_export", "91_dashboard_export"]
+         "90_powerbi_export", "91_dashboard_export"]
 RESTRUCTURED = [NB / f"{n}.ipynb" for n in ORDER if (NB / f"{n}.ipynb").exists()]
 
 

@@ -52,9 +52,9 @@ def test_verdict():
 
 def test_headline_reports_negative_result_honestly():
     tests = pd.DataFrame([
-        {"comparison": "adaptive (break items)", "model": "lightgbm", "category": "ALL", "n": 488,
+        {"comparison": "adaptive (break items)", "model": "best", "category": "ALL", "n": 488,
          "median_diff": 0.0033, "ci_low": 0.0015, "ci_high": 0.0053},
-        {"comparison": "placebo (no-break items)", "model": "lightgbm", "category": "ALL", "n": 261,
+        {"comparison": "placebo (no-break items)", "model": "best", "category": "ALL", "n": 261,
          "median_diff": 0.0009, "ci_low": -0.0015, "ci_high": 0.0035}])
     h = headline(tests)
     assert h.startswith("Retraining after a detected break did not help")
@@ -70,9 +70,9 @@ def test_per_item_variant_diff_uses_break_origins_only():
     rows = []
     for origin, has_break in [("2016-01-01", True), ("2016-02-01", False)]:
         for variant, mase in [("static", 1.0), ("adaptive", 1.2 if has_break else 1.0), ("placebo", 1.0)]:
-            rows.append({"item_id": "A", "origin": origin, "model": "lightgbm", "variant": variant,
+            rows.append({"item_id": "A", "origin": origin, "model": "best", "variant": variant,
                          "has_break": has_break, "mase": mase, "is_eval_origin": True})
-    d = per_item_variant_diff(pd.DataFrame(rows), "lightgbm", "adaptive")
+    d = per_item_variant_diff(pd.DataFrame(rows), "best", "adaptive")
     assert np.isclose(d["diff"].iloc[0], 0.2)                  # only the break origin counts
 
 
@@ -109,9 +109,14 @@ def test_app_per_item_medians_match_notebook_tests():
         pytest.skip("results not generated")
     errors = read_table(path_err, [], ["origin"])
     tests = pd.read_csv(path_tests)
+    windows = ROOT / "data" / "processed" / "breaks_by_origin.csv"
+    placebo = None
+    if windows.exists():
+        w = pd.read_csv(windows, parse_dates=["origin", "placebo_start"])
+        placebo = w[w["placebo_start"].notna()]
     for variant, comp in [("adaptive", "adaptive (break items)"), ("placebo", "placebo (no-break items)")]:
-        d = per_item_variant_diff(errors, "lightgbm", variant)
-        row = tests[(tests["comparison"] == comp) & (tests["model"] == "lightgbm") & (tests["category"] == "ALL")].iloc[0]
+        d = per_item_variant_diff(errors, "best", variant, placebo)
+        row = tests[(tests["comparison"] == comp) & (tests["model"] == "best") & (tests["category"] == "ALL")].iloc[0]
         assert len(d) == row["n"]
         assert np.isclose(d["diff"].median(), row["median_diff"], atol=1e-5)   # export rounds MASE to 5 dp
 
