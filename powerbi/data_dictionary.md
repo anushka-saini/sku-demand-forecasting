@@ -39,7 +39,7 @@ Units are item-level daily (or weekly) sales summed over the 4 CA stores. Money 
 | column | description |
 |---|---|
 | policy | key, e.g. `best_adaptive` |
-| model | seasonal_naive, ets, best (the best time-series model from 07h, SARIMA), tsb |
+| model | seasonal_naive, ets, best (the best time-series model from 07h, the combination of SARIMAX, Box-Cox Holt-Winters and Theta), tsb |
 | variant | static (all history), adaptive (retrained from the last detected break), placebo (random truncation of no-break items, control) |
 | used_in_inventory | TRUE for the policies simulated in notebook 03 |
 
