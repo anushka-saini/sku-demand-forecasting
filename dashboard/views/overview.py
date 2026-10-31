@@ -46,7 +46,8 @@ kpis([
      "compare": f"range {adj['ci95'][0]:.0%} to {adj['ci95'][1]:.0%}, chance alarms removed",
      "help": "Share of items whose normal sales level changed for good at some point."},
     {"label": "Stock cost, better forecast", "value": f"{stock['value']:+.1%}",
-     "compare": f"vs the baseline forecast; {stock['inventory_change']:+.0%} stock held", "tone": "good",
+     "compare": f"vs the baseline forecast; {stock['inventory_change']:+.0%} stock held",
+     "tone": "good" if stock["value"] < 0 else "bad",
      "help": "Simulated over 168 days at a 95% target and a 7-day lead time, with assumed costs."},
     {"label": "Fill rate, safety stock from past errors", "value": f"{fr_cal:.1%}",
      "compare": f"vs {fr_text:.1%} with the textbook formula", "tone": "good",
@@ -59,9 +60,13 @@ s1 = (f"Lasting shifts are common: after removing chance alarms, about {adj['val
 s2 = (f"{name(best)} forecasts best, with a typical error {gain:.0%} below the simple baseline, "
       + (f"and reacting to a detected shift made none of the {reacting} versions we tried more accurate."
          if not any_better else "and at least one version that reacts to shifts improved accuracy."))
-s3 = (f"In the stock simulation the better forecast holds {abs(stock['inventory_change']):.0%} less stock at "
-      f"{abs(stock['value']):.0%} lower cost, and sizing safety stock from past errors lifts the fill rate from "
-      f"{fr_text:.1%} to {fr_cal:.1%}.")
+c95 = cal[cal["service_level"] == 0.95].set_index(["method", "policy"])["total_cost"]
+conf_vs = c95[("conformal", f"{BEST}_static")] / c95[("conformal", "seasonal_naive_static")] - 1
+more = lambda x, lo, hi: f"{abs(x):.0%} {lo if x < 0 else hi}"
+s3 = (f"In the stock simulation with the textbook safety stock, the better forecast holds "
+      f"{more(stock['inventory_change'], 'less', 'more')} stock at {more(stock['value'], 'lower', 'higher')} cost than the "
+      f"baseline forecast; with safety stock sized from past errors it costs {more(conf_vs, 'less', 'more')}. Sizing "
+      f"safety stock from past errors also lifts the fill rate from {fr_text:.1%} to {fr_cal:.1%}.")
 st.markdown(f"{s1} {s2} {s3}")
 todo = (f"**What to do with this:** plan with {name(best)} forecasts as they are"
         + (", do not retrain them after a detected shift," if not any_better else ",")
@@ -135,6 +140,6 @@ cal_save = lookup(f, "inventory", "conformal_vs_normal_cost_change", "0.95")["va
 bigger = "how safety stock is sized" if abs(cal_save) > abs(stock["value"]) else "the better forecast"
 tells(f"{name(best)} cuts the typical error by {gain:.0%}, "
       + ("while reacting to shifts did not help. " if not any_better else "and some shift-aware versions helped. ")
-      + f"In the simulation the larger saving comes from {bigger} ({cal_save:+.0%} cost from safety stock sized on past "
-      f"errors, {stock['value']:+.0%} from the better forecast). The costs behind these numbers are assumptions; the "
-      f"Stock impact page lets you change them.")
+      + f"In the simulation, sizing safety stock from past errors changes total cost by {cal_save:+.0%}, against "
+      f"{stock['value']:+.0%} from the better forecast with the textbook safety stock, so {bigger} matters more. The "
+      f"costs behind these numbers are assumptions; the Stock impact page lets you change them.")

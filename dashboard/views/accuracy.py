@@ -326,6 +326,8 @@ with st.expander("All 726 items: the models run on every item"):
     a = mu[mu["category"] == "ALL"].set_index("model")
     pw = get("pairwise")
 
+    pv = lambda p: "p < 0.001" if p < 0.001 else f"p = {p:.3f}"
+
     def pair(x, y):
         r = pw[(pw["model_a"] == x) & (pw["model_b"] == y) & (pw["category"] == "ALL")]
         return r.iloc[0] if len(r) else None
@@ -333,21 +335,21 @@ with st.expander("All 726 items: the models run on every item"):
     le, tsb = pair(BEST, "ets"), a.loc["tsb"]
     st.markdown(f"Typical MASE on all {int(a.loc[BEST, 'n_items']):,} items: {BEST_SHORT} {a.loc[BEST, 'median_item_mase']:.3f}, "
                 f"ETS {a.loc['ets', 'median_item_mase']:.3f}, seasonal naive {a.loc['seasonal_naive', 'median_item_mase']:.3f}. "
-                f"{BEST_SHORT} is better than ETS for {le['share_improved']:.0%} of items (p = {le['p_value']:.2f}). TSB, built "
+                f"{BEST_SHORT} is better than ETS for {le['share_improved']:.0%} of items ({pv(le['p_value'])}). TSB, built "
                 f"for items that often sell nothing, runs only on the {int(tsb['n_items'])} such items and scores "
                 f"{tsb['median_item_mase']:.3f}.")
     runner = next((m for m in a.index if m not in ("seasonal_naive", "ets", BEST, "tsb")), None)   # 09b
     if runner is not None and pair(runner, BEST) is not None:
         rb, re_ = pair(runner, BEST), pair(runner, "ets")
 
-        def verdict(r, other):
+        def compared(r, other):
             if r["p_value"] < 0.05:
                 return f"significantly {'better' if r['median_diff'] < 0 else 'worse'} than {other}"
             return f"level with {other}"
         st.markdown(f"{SHORT[runner]}, the runner-up on the sample, was also fitted on every item (09b). Its typical MASE "
-                    f"is {a.loc[runner, 'median_item_mase']:.3f}: {verdict(rb, BEST_SHORT)} (smaller error for "
-                    f"{rb['share_improved']:.0%} of items, median difference {rb['median_diff']:+.4f}, p = {rb['p_value']:.3f}) "
-                    f"and {verdict(re_, 'ETS')} (smaller error for {re_['share_improved']:.0%}, p = {re_['p_value']:.3f}). The "
+                    f"is {a.loc[runner, 'median_item_mase']:.3f}: {compared(rb, BEST_SHORT)} (smaller error for "
+                    f"{rb['share_improved']:.0%} of items, median difference {rb['median_diff']:+.4f}, {pv(rb['p_value'])}) "
+                    f"and {compared(re_, 'ETS')} (smaller error for {re_['share_improved']:.0%}, {pv(re_['p_value'])}). The "
                     f"stock work uses {BEST_SHORT}, picked by the rule fixed before the run.")
     keep = [m for m in ["seasonal_naive", "ets", BEST, runner, "tsb"] if m in a.index]
     t726 = pd.DataFrame({"Model": [name(m) for m in keep], "Items": a.loc[keep, "n_items"].astype(int).to_numpy(),
