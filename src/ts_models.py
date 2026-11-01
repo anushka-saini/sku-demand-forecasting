@@ -187,7 +187,7 @@ def sarima_fc(y, order, sorder=(0, 0, 0, M), h=H, how=None, clip=False, exog=Non
 
 
 def ets_fc(y, h=H, how=None, clip=False, unit=1.0):
-    """Damped Holt-Winters (ETS) as in forecasting.ets_forecast: additive damped trend, additive weekly season."""
+    """Damped Holt-Winters: additive damped trend and additive weekly season, with an optional transform (how)."""
     y = np.asarray(y, dtype=float)
     try:
         z, back = prepare(y, clip, how, unit)

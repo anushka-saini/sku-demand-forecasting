@@ -1,5 +1,3 @@
-import warnings
-
 import numpy as np
 import pandas as pd
 
@@ -14,55 +12,6 @@ def seasonal_naive(train, h=HORIZON, m=7):
     return np.resize(train[-m:], h)
 
 
-def ets_forecast(train, h=HORIZON, m=7):
-    """
-    Holt-Winters ETS: additive damped trend + additive weekly seasonality,
-    parameters estimated by statsmodels. Falls back to seasonal naive if the fit
-    fails. Forecasts are clipped at zero.
-    """
-    from statsmodels.tsa.holtwinters import ExponentialSmoothing
-    train = np.asarray(train, dtype=float)
-    try:
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            fit = ExponentialSmoothing(train, trend='add', damped_trend=True, seasonal='add',
-                                       seasonal_periods=m, initialization_method='estimated').fit()
-            fc = fit.forecast(h)
-        if not np.all(np.isfinite(fc)):
-            raise ValueError
-    except Exception:
-        fc = seasonal_naive(train, h, m)
-    return np.maximum(fc, 0.0)
-
-
-def tsb_forecast(train, h=HORIZON, alphas=(0.05, 0.1, 0.2, 0.3), betas=(0.05, 0.1, 0.2, 0.3)):
-    """
-    Teunter-Syntetos-Babai (TSB) method for intermittent demand: separately
-    smooths demand size (alpha, updated only on non-zero days) and demand
-    probability (beta, updated every day). Forecast = probability * size, flat
-    over the horizon. Smoothing constants chosen by in-sample one-step MSE.
-    """
-    y = np.asarray(train, dtype=float)
-    nz = np.flatnonzero(y)
-    if len(nz) == 0:
-        return np.zeros(h)
-    best = (np.inf, 0.0)
-    for a in alphas:
-        for b in betas:
-            z, p = y[nz[0]], 1.0 / max(1, np.mean(np.diff(nz))) if len(nz) > 1 else 1.0
-            sse = 0.0
-            for t in range(nz[0] + 1, len(y)):
-                sse += (y[t] - p * z) ** 2
-                if y[t] > 0:
-                    z += a * (y[t] - z)
-                    p += b * (1 - p)
-                else:
-                    p += b * (0 - p)
-            if sse < best[0]:
-                best = (sse, p * z)
-    return np.full(h, best[1])
-
-
 def is_intermittent(series, adi_cut=1.32):
     """Syntetos-Boylan rule: average inter-demand interval > 1.32 -> intermittent."""
     y = np.asarray(series, dtype=float)
@@ -70,9 +19,9 @@ def is_intermittent(series, adi_cut=1.32):
     return n_nonzero == 0 or len(y) / n_nonzero > adi_cut
 
 
-def local_forecasts(item_id, dates, sales, origins, starts, run_tsb=False, h=HORIZON, run_ets=True):
+def local_forecasts(item_id, dates, sales, origins, starts, h=HORIZON):
     """
-    All local-model forecasts for one item across origins and training-window
+    Seasonal naive forecasts for one item across origins and training-window
     variants. starts: dict origin -> {variant: start_date or None}; a variant
     whose start equals the static start (or is None) reuses the static forecast.
     Returns a list of dict rows (item_id, origin, date, model, variant, forecast).
@@ -92,10 +41,6 @@ def local_forecasts(item_id, dates, sales, origins, starts, run_tsb=False, h=HOR
                 i0 = dates.searchsorted(start)
                 train = sales[i0:n_train]
                 fitted[key] = {'seasonal_naive': seasonal_naive(train, h)}
-                if run_ets:
-                    fitted[key]['ets'] = ets_forecast(train, h)
-                if run_tsb:
-                    fitted[key]['tsb'] = tsb_forecast(train, h)
             for model, fc in fitted[key].items():
                 rows.extend({'item_id': item_id, 'origin': origin, 'date': d, 'model': model,
                              'variant': variant, 'forecast': f} for d, f in zip(fc_dates, fc))

@@ -65,23 +65,19 @@ def sarima_forecast(y, order, sorder=NO_SEASON, h=H, exog=None, exog_future=None
         return seasonal_naive(y, h), False, True
 
 
-def fit_hw(y, seasonal="add"):
-    """Holt-Winters with an additive trend and a weekly season. Returns (result, shift used).
-    A multiplicative season needs positive data, so zeros get one unit added (removed again after)."""
-    y = np.asarray(y, dtype=float)
-    shift = 1.0 if seasonal == "mul" and (y <= 0).any() else 0.0
+def fit_hw(y):
+    """Holt-Winters with an additive trend and an additive weekly season."""
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        res = ExponentialSmoothing(y + shift, trend="add", seasonal=seasonal, seasonal_periods=M,
-                                   initialization_method="estimated").fit()
-    return res, shift
+        return ExponentialSmoothing(np.asarray(y, dtype=float), trend="add", seasonal="add", seasonal_periods=M,
+                                    initialization_method="estimated").fit()
 
 
-def hw_forecast(y, seasonal="add", h=H):
+def hw_forecast(y, h=H):
     """Holt-Winters forecast with the same fallback rule as SARIMA. Returns (forecast, converged, fell_back)."""
     try:
-        res, shift = fit_hw(y, seasonal)
-        fc = np.asarray(res.forecast(h), dtype=float) - shift
+        res = fit_hw(y)
+        fc = np.asarray(res.forecast(h), dtype=float)
         if not np.all(np.isfinite(fc)):
             raise ValueError("non-finite forecast")
         ok = bool(getattr(res.mle_retvals, "success", True))
@@ -132,7 +128,7 @@ def run_item_to_file(item, dates, y, origins, path, **kw):
     return item
 
 
-def backtest_series(dates, y, origins, h=H, pq=range(3), PQ=range(2), models=("hw_add", "hw_mul", "arima", "sarima"),
+def backtest_series(dates, y, origins, h=H, pq=range(3), PQ=range(2), models=("hw_add", "arima", "sarima"),
                     orders=None):
     """Every classical model at every origin, each fitted only on data up to that origin.
     Orders are picked at origins[0] and then kept fixed. Returns (forecast rows, orders)."""
@@ -145,9 +141,7 @@ def backtest_series(dates, y, origins, h=H, pq=range(3), PQ=range(2), models=("h
         fc_dates = pd.date_range(o + pd.Timedelta(days=1), periods=h)
         for model in models:
             if model == "hw_add":
-                fc, ok, fb = hw_forecast(yt, "add", h)
-            elif model == "hw_mul":
-                fc, ok, fb = hw_forecast(yt, "mul", h)
+                fc, ok, fb = hw_forecast(yt, h)
             elif model == "arima":
                 fc, ok, fb = sarima_forecast(yt, orders["arima_order"], NO_SEASON, h)
             else:

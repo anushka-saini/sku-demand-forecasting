@@ -7,7 +7,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
 from metrics import mase, mase_scale, paired_test
-from forecasting import seasonal_naive, tsb_forecast, is_intermittent
+from forecasting import seasonal_naive, is_intermittent
 from break_detection import cusum_breaks_online
 from inventory import (safety_stock_normal, safety_stock_empirical, lead_time_error_sums,
                        forecast_path, simulate_policy, policy_kpis)
@@ -40,11 +40,8 @@ def test_seasonal_naive_repeats_last_week():
     assert fc.tolist() == [7, 8, 9, 10, 11, 12, 13, 7, 8, 9]
 
 
-def test_tsb_on_regular_pattern():
-    y = np.tile([0.0, 4.0], 100)                               # demand every other day, size 4
-    fc = tsb_forecast(y, h=5)
-    assert np.allclose(fc, fc[0]) and 1.5 < fc[0] < 2.5        # ~ probability 0.5 * size 4
-    assert is_intermittent(y) and not is_intermittent(np.ones(50))
+def test_intermittent_rule():
+    assert is_intermittent(np.tile([0.0, 4.0], 100)) and not is_intermittent(np.ones(50))
 
 
 def test_online_cusum_finds_two_breaks_without_lookahead():

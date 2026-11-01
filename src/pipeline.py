@@ -62,10 +62,10 @@ def calibrate_h(daily, before, k=1.0, burn_in=8, ref_len=52, seed=42, q=0.95):
     return float(np.quantile(surrogate_max_stats(weekly, burn_in, ref_len, k=k, seed=seed), q))
 
 
-def run_backtest(long_df, calendar, price_wk, origins, h, snap_col='snap_CA', run_ets=False,
-                 n_jobs=-1, log=print, folder=None, best=None):
+def run_backtest(long_df, calendar, price_wk, origins, h, snap_col='snap_CA', n_jobs=-1, log=print, folder=None,
+                 best=None):
     """
-    Seasonal naive (+ static ETS if run_ets) and the best time-series model from 07h, static and retrained after a
+    Seasonal naive and the best time-series model from 07h, static and retrained after a
     shift, at each origin, with break detection at each origin using data up to that origin only. Items without a
     break keep the static forecast as their retrained one. folder holds the per-item checkpoints of the best model.
     Returns (forecasts, windows, scales): forecasts has item_id, origin, date, model, variant,
@@ -78,9 +78,9 @@ def run_backtest(long_df, calendar, price_wk, origins, h, snap_col='snap_CA', ru
     windows = training_windows(daily, origins, h)
     starts = {i: {o: {'static': None} for o in origins} for i in daily}
     res = Parallel(n_jobs=n_jobs, batch_size=4)(
-        delayed(local_forecasts)(i, d['date'], d['sales'], origins, starts[i], run_ets=run_ets) for i, d in daily.items())
+        delayed(local_forecasts)(i, d['date'], d['sales'], origins, starts[i]) for i, d in daily.items())
     local = pd.DataFrame([r for rows in res for r in rows])
-    log(f"local models: {len(local)} rows")
+    log(f"seasonal naive: {len(local)} rows")
 
     best = best or bm.load_best()
     jobs = 10 if n_jobs == -1 else n_jobs

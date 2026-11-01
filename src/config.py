@@ -39,14 +39,15 @@ PRACTICAL_SHARE = 0.01                       # H3: a variant must improve MASE b
 FIG_STYLE = {"figure.facecolor": "white", "axes.facecolor": "white", "savefig.facecolor": "white",
              "savefig.dpi": 150, "font.size": 13, "axes.titlesize": 15, "axes.titleweight": "bold",
              "axes.labelsize": 13, "legend.fontsize": 11, "axes.spines.top": False, "axes.spines.right": False}
-COLORS = {"seasonal_naive": "#8C8C8C", "ets": "#009E73", "hw_add": "#0072B2", "hw_mul": "#56B4E9",
-          "arima": "#CC79A7", "sarima": "#D55E00", "actual": "#222222"}
-NAMES = {"seasonal_naive": "Seasonal naive", "ets": "Damped Holt-Winters (ETS)", "hw_add": "Holt-Winters additive",
-         "hw_mul": "Holt-Winters multiplicative", "arima": "ARIMA", "sarima": "SARIMA",
-         # the time-series models of 07c to 07h (07h's Box-Cox ETS is renamed, as 07a already has an 'ets')
-         "ets_boxcox": "Damped ETS, Box-Cox (tuned)", "sarimax": "SARIMAX", "theta": "Theta", "prophet": "Prophet",
-         "autots": "AutoTS", "combination": "Combination", "combination_weighted": "Combination, inverse-error weights",
-         "ar": "AR(p)", "ma": "MA(q)", "arma": "ARMA(p, q)", "arimax": "ARIMAX"}
+# The 12 forecasting models the project reports. 07h stores the damped Holt-Winters with Box-Cox as 'ets';
+# 10, 11 and the dashboard call it 'ets_boxcox'. VARIMA runs on the three category totals only.
+MODELS = ["seasonal_naive", "hw_add", "ets_boxcox", "theta", "arma", "arima", "sarima", "sarimax", "varima", "prophet",
+          "autots", "combination"]
+COLORS = {"seasonal_naive": "#8C8C8C", "hw_add": "#0072B2", "arima": "#CC79A7", "sarima": "#D55E00",
+          "actual": "#222222"}
+NAMES = {"seasonal_naive": "Seasonal naive", "hw_add": "Holt-Winters additive", "arima": "ARIMA", "sarima": "SARIMA",
+         "ets_boxcox": "Holt-Winters (damped, Box-Cox)", "sarimax": "SARIMAX", "theta": "Theta", "prophet": "Prophet",
+         "autots": "AutoTS", "combination": "Combination", "arma": "ARMA(p, q)", "varima": "VARIMA"}
 
 
 def _best():
@@ -59,7 +60,7 @@ def _best():
     return b["model"], f'{b["name"]} (best time-series model)'   # so it never reads like the 150-product SARIMA
 
 
-BEST = "best"                                # its forecasts are stored under this key, so they never clash with ets or sarima
+BEST = "best"                                # its forecasts are stored under this key, so they never clash with sarima
 BEST_MODEL, BEST_NAME = _best()
 BEST_NAME = BEST_NAME or "Best time-series model"
 NAMES[BEST] = BEST_NAME

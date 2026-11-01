@@ -119,8 +119,8 @@ def test_constant_added_only_without_differencing():
     assert classical.trend_for(1, 0) == "n" and classical.trend_for(0, 1) == "n"
 
 
-def test_multiplicative_holt_winters_survives_zeros():
+def test_holt_winters_survives_zeros():
     dates, y = _toy(200)
     y[::10] = 0
-    fc, ok, fb = classical.hw_forecast(y, "mul")
+    fc, ok, fb = classical.hw_forecast(y)
     assert not fb and np.all(np.isfinite(fc)) and np.all(fc >= 0)
