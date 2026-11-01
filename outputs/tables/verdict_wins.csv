@@ -1,6 +1,6 @@
 metric,model,name,wins,share
 rmse,seasonal_naive,Seasonal naive,0,0.0
-rmse,ets,"Holt-Winters (damped ETS, Box-Cox)",30,0.2
+rmse,ets,"Holt-Winters (damped, Box-Cox)",30,0.2
 rmse,sarima,SARIMA,22,0.14666666666666667
 rmse,sarimax,SARIMAX,18,0.12
 rmse,theta,Theta,11,0.07333333333333333
@@ -8,7 +8,7 @@ rmse,prophet,Prophet,49,0.32666666666666666
 rmse,autots,AutoTS,1,0.006666666666666667
 rmse,combination,Combination,19,0.12666666666666668
 mae,seasonal_naive,Seasonal naive,0,0.0
-mae,ets,"Holt-Winters (damped ETS, Box-Cox)",64,0.4266666666666667
+mae,ets,"Holt-Winters (damped, Box-Cox)",64,0.4266666666666667
 mae,sarima,SARIMA,14,0.09333333333333334
 mae,sarimax,SARIMAX,17,0.11333333333333333
 mae,theta,Theta,8,0.05333333333333334
@@ -16,7 +16,7 @@ mae,prophet,Prophet,32,0.21333333333333335
 mae,autots,AutoTS,2,0.013333333333333334
 mae,combination,Combination,13,0.08666666666666667
 mape,seasonal_naive,Seasonal naive,2,0.013333333333333334
-mape,ets,"Holt-Winters (damped ETS, Box-Cox)",89,0.5933333333333334
+mape,ets,"Holt-Winters (damped, Box-Cox)",89,0.5933333333333334
 mape,sarima,SARIMA,15,0.1
 mape,sarimax,SARIMAX,10,0.06666666666666667
 mape,theta,Theta,4,0.02666666666666667
@@ -24,7 +24,7 @@ mape,prophet,Prophet,23,0.15333333333333332
 mape,autots,AutoTS,3,0.02
 mape,combination,Combination,4,0.02666666666666667
 smape,seasonal_naive,Seasonal naive,0,0.0
-smape,ets,"Holt-Winters (damped ETS, Box-Cox)",36,0.24
+smape,ets,"Holt-Winters (damped, Box-Cox)",36,0.24
 smape,sarima,SARIMA,23,0.15333333333333332
 smape,sarimax,SARIMAX,23,0.15333333333333332
 smape,theta,Theta,10,0.06666666666666667
@@ -32,7 +32,7 @@ smape,prophet,Prophet,33,0.22
 smape,autots,AutoTS,3,0.02
 smape,combination,Combination,22,0.14666666666666667
 wape,seasonal_naive,Seasonal naive,3,0.02
-wape,ets,"Holt-Winters (damped ETS, Box-Cox)",63,0.42
+wape,ets,"Holt-Winters (damped, Box-Cox)",63,0.42
 wape,sarima,SARIMA,14,0.09333333333333334
 wape,sarimax,SARIMAX,14,0.09333333333333334
 wape,theta,Theta,8,0.05333333333333334
@@ -40,7 +40,7 @@ wape,prophet,Prophet,35,0.23333333333333334
 wape,autots,AutoTS,1,0.006666666666666667
 wape,combination,Combination,12,0.08
 mase,seasonal_naive,Seasonal naive,0,0.0
-mase,ets,"Holt-Winters (damped ETS, Box-Cox)",64,0.4266666666666667
+mase,ets,"Holt-Winters (damped, Box-Cox)",64,0.4266666666666667
 mase,sarima,SARIMA,14,0.09333333333333334
 mase,sarimax,SARIMAX,17,0.11333333333333333
 mase,theta,Theta,8,0.05333333333333334

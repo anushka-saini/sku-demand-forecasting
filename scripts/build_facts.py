@@ -110,7 +110,6 @@ def build():
     mase = read("model_mase_unrounded.csv")
     tests = read("adaptive_vs_static_tests.csv")
     var = read("adaptation_variants_tests.csv")
-    lge = read("best_vs_ets_test.csv")
     bias = read("forecast_bias.csv")
     cov = read("conformal_coverage.csv")
 
@@ -126,7 +125,6 @@ def build():
         'adaptation_variants': {f"{r['group']}|{r['variant']}": dict(tfact(r, 'adaptation_variants_tests.csv'),
                                                                       p_holm=num(r['p_holm']), helps=bool(r['helps']))
                                 for _, r in var.iterrows()},
-        'best_minus_ets_mase': {r['category']: tfact(r, 'best_vs_ets_test.csv') for _, r in lge.iterrows()},
         'bias': {f"{r.model}_{r.variant}_{r.category}": fact(r.pooled_bias, 'forecast_bias.csv', n=r.n_items,
                                                              median_item_bias=r.median_item_bias,
                                                              median_item_bias_ci95=[num(r.ci_low), num(r.ci_high)])
@@ -218,7 +216,7 @@ def build():
 # ---------------------------------------------------------------- classical models, stationarity and decomposition
 
 CLASSICAL_FILES = ["classical_sample_items.csv", "stationarity_summary.csv", "comparison_metrics_summary.csv", "comparison_tests.csv",
-            "classical_h4.csv", "comparison_totals_metrics.csv", "classical_run_stats.csv", "diagnostics_summary.csv",
+            "comparison_totals_metrics.csv", "classical_run_stats.csv", "diagnostics_summary.csv",
             "shift_aware_tests.csv", "stock_summary.csv", "stock_tests.csv"]
 
 
@@ -253,13 +251,6 @@ def build_classical():
     alls = sm[sm['category'] == 'ALL'].set_index('model')['median_mase']
     M['h2_lowest_median_mase'] = {'model': str(alls.idxmin()), 'value': num(alls.min()), 'source': src("comparison_metrics_summary.csv"),
                                   'significant_vs_all': bool(t[t['hypothesis'] == 'H2']['a_better'].all())}
-
-    h4 = r["classical_h4.csv"]
-    M['h4'] = {row['group']: fact(row['median_mase_hw_add'], src("classical_h4.csv"), n=row['n_items'],
-                                  hw_mul=row['median_mase_hw_mul'],
-                                  share_items_add_better=row.get('share_items_add_better'),
-                                  mul_within_5pct=row.get('mul_within_5pct'))
-               for _, row in h4.iterrows()}
 
     ag = r["comparison_totals_metrics.csv"]
     M['aggregate_mase'] = {f"{row.series}|{row.model}": fact(row.mase, src("comparison_totals_metrics.csv"), how=row.how)

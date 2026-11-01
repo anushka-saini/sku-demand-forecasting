@@ -262,26 +262,6 @@
         "source": "model_mase_unrounded.csv",
         "n": 283
       },
-      "ets_ALL": {
-        "value": 0.7554417909684548,
-        "source": "model_mase_unrounded.csv",
-        "n": 726
-      },
-      "ets_FOODS": {
-        "value": 0.7714139332119375,
-        "source": "model_mase_unrounded.csv",
-        "n": 337
-      },
-      "ets_HOBBIES": {
-        "value": 0.7552912475948945,
-        "source": "model_mase_unrounded.csv",
-        "n": 106
-      },
-      "ets_HOUSEHOLD": {
-        "value": 0.7444404773138665,
-        "source": "model_mase_unrounded.csv",
-        "n": 283
-      },
       "best_ALL": {
         "value": 0.74674925310294,
         "source": "model_mase_unrounded.csv",
@@ -321,77 +301,9 @@
         "value": 0.7444212823496841,
         "source": "model_mase_unrounded.csv",
         "n": 283
-      },
-      "tsb_ALL": {
-        "value": 0.9864412262180424,
-        "source": "model_mase_unrounded.csv",
-        "n": 26
-      },
-      "tsb_FOODS": {
-        "value": 1.0565670724747858,
-        "source": "model_mase_unrounded.csv",
-        "n": 10
-      },
-      "tsb_HOBBIES": {
-        "value": 0.9278619417969048,
-        "source": "model_mase_unrounded.csv",
-        "n": 5
-      },
-      "tsb_HOUSEHOLD": {
-        "value": 0.96971188793843,
-        "source": "model_mase_unrounded.csv",
-        "n": 11
       }
     },
     "adaptive_minus_static_mase": {
-      "ets_adaptive_ALL": {
-        "value": 0.0023641253062898,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 488,
-        "ci95": [
-          0.0004093095271872,
-          0.0038024412168507
-        ],
-        "p_value": 0.0008593716070445,
-        "rank_biserial": 0.174125850682222,
-        "share_improved": 0.444672131147541
-      },
-      "ets_adaptive_FOODS": {
-        "value": 0.0010635313730723,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 234,
-        "ci95": [
-          -0.0010884678150013,
-          0.0050525833886437
-        ],
-        "p_value": 0.126864180187245,
-        "rank_biserial": 0.1151118385160938,
-        "share_improved": 0.4743589743589743
-      },
-      "ets_adaptive_HOBBIES": {
-        "value": 0.0030988198749696,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 67,
-        "ci95": [
-          0.0017526404366826,
-          0.0050502851765695
-        ],
-        "p_value": 0.0067071671943512,
-        "rank_biserial": 0.3810359964881475,
-        "share_improved": 0.3283582089552239
-      },
-      "ets_adaptive_HOUSEHOLD": {
-        "value": 0.0020693871872306,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 187,
-        "ci95": [
-          -0.0006833325836813,
-          0.0042314288224018
-        ],
-        "p_value": 0.0205964408011151,
-        "rank_biserial": 0.195244055068836,
-        "share_improved": 0.4491978609625668
-      },
       "best_adaptive_ALL": {
         "value": 0.0014677246222766,
         "source": "adaptive_vs_static_tests.csv",
@@ -440,102 +352,6 @@
         "rank_biserial": 0.1848902036636705,
         "share_improved": 0.4331550802139037
       },
-      "tsb_adaptive_ALL": {
-        "value": 0.0014817991645253,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 19,
-        "ci95": [
-          0.0,
-          0.0067788474435803
-        ],
-        "p_value": 0.328948974609375,
-        "rank_biserial": 0.2810457516339869,
-        "share_improved": 0.2631578947368421
-      },
-      "tsb_adaptive_FOODS": {
-        "value": 0.0033894237219918,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 6,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.1666666666666666
-      },
-      "tsb_adaptive_HOBBIES": {
-        "value": 0.0003922074333218,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 5,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.4
-      },
-      "tsb_adaptive_HOUSEHOLD": {
-        "value": 0.0022524979519591,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 8,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.25
-      },
-      "ets_placebo_ALL": {
-        "value": 0.0004089629625763,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 261,
-        "ci95": [
-          -0.0029727285668571,
-          0.003782237992906
-        ],
-        "p_value": 0.8144435115289201,
-        "rank_biserial": -0.0167587961744318,
-        "share_improved": 0.4865900383141762
-      },
-      "ets_placebo_FOODS": {
-        "value": -0.0029727285668571,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 115,
-        "ci95": [
-          -0.0084060107533037,
-          0.0040586680909043
-        ],
-        "p_value": 0.8516758538482383,
-        "rank_biserial": -0.0200899550224887,
-        "share_improved": 0.5304347826086957
-      },
-      "ets_placebo_HOBBIES": {
-        "value": 0.0022945818567721,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 40,
-        "ci95": [
-          -0.0063166460993125,
-          0.0077106602644881
-        ],
-        "p_value": 0.7245544941888511,
-        "rank_biserial": -0.0658536585365853,
-        "share_improved": 0.45
-      },
-      "ets_placebo_HOUSEHOLD": {
-        "value": 0.0015002020356109,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 106,
-        "ci95": [
-          -0.0023846331171695,
-          0.0046158507928607
-        ],
-        "p_value": 0.9159090067474503,
-        "rank_biserial": 0.0118144947980955,
-        "share_improved": 0.4528301886792453
-      },
       "best_placebo_ALL": {
         "value": 0.0018847143375478,
         "source": "adaptive_vs_static_tests.csv",
@@ -583,42 +399,6 @@
         "p_value": 0.1259567392715441,
         "rank_biserial": 0.1712220067007582,
         "share_improved": 0.4245283018867924
-      },
-      "tsb_placebo_ALL": {
-        "value": -0.0027218312131451,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 7,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.7142857142857143
-      },
-      "tsb_placebo_FOODS": {
-        "value": -0.0091206034317384,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 4,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.75
-      },
-      "tsb_placebo_HOUSEHOLD": {
-        "value": -0.0012890351733048,
-        "source": "adaptive_vs_static_tests.csv",
-        "n": 3,
-        "ci95": [
-          null,
-          null
-        ],
-        "p_value": null,
-        "rank_biserial": null,
-        "share_improved": 0.6666666666666666
       }
     },
     "adaptation_variants": {
@@ -679,56 +459,6 @@
         "helps": false
       }
     },
-    "best_minus_ets_mase": {
-      "ALL": {
-        "value": -0.0055724163838667,
-        "source": "best_vs_ets_test.csv",
-        "n": 726,
-        "ci95": [
-          -0.0070371483823767,
-          -0.004128264674851
-        ],
-        "p_value": 1.7591136891584148e-23,
-        "rank_biserial": -0.4277929981318752,
-        "share_improved": 0.628099173553719
-      },
-      "FOODS": {
-        "value": -0.0092664836943663,
-        "source": "best_vs_ets_test.csv",
-        "n": 337,
-        "ci95": [
-          -0.0124828666209331,
-          -0.0059973893348771
-        ],
-        "p_value": 1.97682221503728e-15,
-        "rank_biserial": -0.499236212315418,
-        "share_improved": 0.6706231454005934
-      },
-      "HOBBIES": {
-        "value": -0.0040417839580571,
-        "source": "best_vs_ets_test.csv",
-        "n": 106,
-        "ci95": [
-          -0.0099016305591486,
-          -0.0006292801850491
-        ],
-        "p_value": 2.9840811291413436e-05,
-        "rank_biserial": -0.467113383882913,
-        "share_improved": 0.6132075471698113
-      },
-      "HOUSEHOLD": {
-        "value": -0.0026169058396292,
-        "source": "best_vs_ets_test.csv",
-        "n": 283,
-        "ci95": [
-          -0.0051807187438802,
-          -0.0009927356184522
-        ],
-        "p_value": 5.881838750567086e-06,
-        "rank_biserial": -0.3107052207236351,
-        "share_improved": 0.5830388692579506
-      }
-    },
     "bias": {
       "seasonal_naive_static_ALL": {
         "value": -0.0077846907047203,
@@ -770,54 +500,14 @@
           0.0273665320771645
         ]
       },
-      "ets_static_ALL": {
-        "value": -0.0088072252563926,
-        "source": "forecast_bias.csv",
-        "n": 726,
-        "median_item_bias": -0.007342874309587,
-        "median_item_bias_ci95": [
-          -0.0133392979590377,
-          -0.0010802577432661
-        ]
-      },
-      "ets_static_FOODS": {
-        "value": -0.0192905928692455,
-        "source": "forecast_bias.csv",
-        "n": 337,
-        "median_item_bias": -0.0216486119609559,
-        "median_item_bias_ci95": [
-          -0.031325375982116,
-          -0.0118625907181189
-        ]
-      },
-      "ets_static_HOBBIES": {
-        "value": 0.0164339771984767,
-        "source": "forecast_bias.csv",
-        "n": 106,
-        "median_item_bias": 0.0147570950732381,
-        "median_item_bias_ci95": [
-          -0.0009829148292723,
-          0.0270526743696815
-        ]
-      },
-      "ets_static_HOUSEHOLD": {
-        "value": 0.0073160153793689,
-        "source": "forecast_bias.csv",
-        "n": 283,
-        "median_item_bias": -0.0023462877363934,
-        "median_item_bias_ci95": [
-          -0.0113783575192943,
-          0.0058527746282668
-        ]
-      },
       "best_static_ALL": {
         "value": -0.0156758663872437,
         "source": "forecast_bias.csv",
         "n": 726,
         "median_item_bias": -0.0212562452288864,
         "median_item_bias_ci95": [
-          -0.027214022137101,
-          -0.0148106406363384
+          -0.0271287709876348,
+          -0.014671195374917
         ]
       },
       "best_static_FOODS": {
@@ -826,8 +516,8 @@
         "n": 337,
         "median_item_bias": -0.0310976289936442,
         "median_item_bias_ci95": [
-          -0.03629724910197,
-          -0.0214320405902781
+          -0.0363207392927863,
+          -0.0205927350765596
         ]
       },
       "best_static_HOBBIES": {
@@ -837,7 +527,7 @@
         "median_item_bias": -0.0100347226597989,
         "median_item_bias_ci95": [
           -0.0259673725896745,
-          0.0032770935419758
+          0.0029763887877177
         ]
       },
       "best_static_HOUSEHOLD": {
@@ -846,8 +536,8 @@
         "n": 283,
         "median_item_bias": -0.0114545150049013,
         "median_item_bias_ci95": [
-          -0.0242916107553698,
-          -0.0018293239739959
+          -0.0243093417569614,
+          -0.0017057232994288
         ]
       },
       "best_adaptive_ALL": {
@@ -856,8 +546,8 @@
         "n": 726,
         "median_item_bias": -0.0183370072804235,
         "median_item_bias_ci95": [
-          -0.02531956552346,
-          -0.0130050310289591
+          -0.0249328123845009,
+          -0.0126813739216978
         ]
       },
       "best_adaptive_FOODS": {
@@ -866,8 +556,8 @@
         "n": 337,
         "median_item_bias": -0.0243629732526063,
         "median_item_bias_ci95": [
-          -0.0324657557690681,
-          -0.0154253820350407
+          -0.0315820785465731,
+          -0.0150404780987493
         ]
       },
       "best_adaptive_HOBBIES": {
@@ -876,8 +566,8 @@
         "n": 106,
         "median_item_bias": -0.0110971372411106,
         "median_item_bias_ci95": [
-          -0.0278853415130219,
-          0.0029247046980916
+          -0.0276215727434011,
+          0.0028188179177639
         ]
       },
       "best_adaptive_HOUSEHOLD": {
@@ -887,7 +577,7 @@
         "median_item_bias": -0.0135289332260538,
         "median_item_bias_ci95": [
           -0.0245391164971223,
-          0.0009738163052337
+          0.0008422043279938
         ]
       }
     },
@@ -1014,102 +704,6 @@
         "rank_biserial": -0.9998506942716368,
         "share_improved": 0.9964664310954064
       },
-      "best-ets|ALL": {
-        "value": -0.0055724163838667,
-        "source": "model_pairwise_tests.csv",
-        "n": 726,
-        "ci95": [
-          -0.0070371483823767,
-          -0.004128264674851
-        ],
-        "p_value": 1.7591136891584148e-23,
-        "rank_biserial": -0.4277929981318752,
-        "share_improved": 0.628099173553719
-      },
-      "best-ets|FOODS": {
-        "value": -0.0092664836943663,
-        "source": "model_pairwise_tests.csv",
-        "n": 337,
-        "ci95": [
-          -0.0124828666209331,
-          -0.0059973893348771
-        ],
-        "p_value": 1.97682221503728e-15,
-        "rank_biserial": -0.499236212315418,
-        "share_improved": 0.6706231454005934
-      },
-      "best-ets|HOBBIES": {
-        "value": -0.0040417839580571,
-        "source": "model_pairwise_tests.csv",
-        "n": 106,
-        "ci95": [
-          -0.0099016305591486,
-          -0.0006292801850491
-        ],
-        "p_value": 2.9840811291413436e-05,
-        "rank_biserial": -0.467113383882913,
-        "share_improved": 0.6132075471698113
-      },
-      "best-ets|HOUSEHOLD": {
-        "value": -0.0026169058396292,
-        "source": "model_pairwise_tests.csv",
-        "n": 283,
-        "ci95": [
-          -0.0051807187438802,
-          -0.0009927356184522
-        ],
-        "p_value": 5.881838750567086e-06,
-        "rank_biserial": -0.3107052207236351,
-        "share_improved": 0.5830388692579506
-      },
-      "ets-seasonal_naive|ALL": {
-        "value": -0.2102638306125635,
-        "source": "model_pairwise_tests.csv",
-        "n": 726,
-        "ci95": [
-          -0.2191611879838332,
-          -0.1987273783155549
-        ],
-        "p_value": 1.3514237140318363e-117,
-        "rank_biserial": -0.987624146933888,
-        "share_improved": 0.9600550964187328
-      },
-      "ets-seasonal_naive|FOODS": {
-        "value": -0.1728337660587373,
-        "source": "model_pairwise_tests.csv",
-        "n": 337,
-        "ci95": [
-          -0.1862878161836257,
-          -0.1583150585033934
-        ],
-        "p_value": 4.095984057153042e-53,
-        "rank_biserial": -0.9642161080188928,
-        "share_improved": 0.9258160237388724
-      },
-      "ets-seasonal_naive|HOBBIES": {
-        "value": -0.2609558600480011,
-        "source": "model_pairwise_tests.csv",
-        "n": 106,
-        "ci95": [
-          -0.2779774644170348,
-          -0.2309390020904747
-        ],
-        "p_value": 4.348499899879881e-19,
-        "rank_biserial": -0.9989419855404692,
-        "share_improved": 0.9905660377358492
-      },
-      "ets-seasonal_naive|HOUSEHOLD": {
-        "value": -0.2249439186285542,
-        "source": "model_pairwise_tests.csv",
-        "n": 283,
-        "ci95": [
-          -0.2371288039141194,
-          -0.214183872459184
-        ],
-        "p_value": 4.450382814804962e-48,
-        "rank_biserial": -0.9991041656298212,
-        "share_improved": 0.9893992932862192
-      },
       "sarima-best|ALL": {
         "value": 0.0073863446888895,
         "source": "model_pairwise_tests.csv",
@@ -1158,53 +752,53 @@
         "rank_biserial": 0.4249738714975364,
         "share_improved": 0.3356890459363957
       },
-      "sarima-ets|ALL": {
-        "value": 0.0025786791746148,
+      "sarima-seasonal_naive|ALL": {
+        "value": -0.2082153284869683,
         "source": "model_pairwise_tests.csv",
         "n": 726,
         "ci95": [
-          0.0006370224310747,
-          0.0050161691920719
+          -0.2172113112313882,
+          -0.1991412661303723
         ],
-        "p_value": 0.1851972139140915,
-        "rank_biserial": 0.0567599213341366,
-        "share_improved": 0.4517906336088154
+        "p_value": 1.2332437664439246e-114,
+        "rank_biserial": -0.974899678288449,
+        "share_improved": 0.9669421487603306
       },
-      "sarima-ets|FOODS": {
-        "value": -0.0004012531035828,
+      "sarima-seasonal_naive|FOODS": {
+        "value": -0.1794222033602791,
         "source": "model_pairwise_tests.csv",
         "n": 337,
         "ci95": [
-          -0.0042627144765482,
-          0.0028252794076341
+          -0.192640766121573,
+          -0.1671131282766526
         ],
-        "p_value": 0.1687092660688023,
-        "rank_biserial": -0.0865099292398995,
-        "share_improved": 0.5133531157270029
+        "p_value": 7.194379401545712e-52,
+        "rank_biserial": -0.952452021842572,
+        "share_improved": 0.9495548961424332
       },
-      "sarima-ets|HOBBIES": {
-        "value": 0.0036662509134592,
+      "sarima-seasonal_naive|HOBBIES": {
+        "value": -0.2535287145225942,
         "source": "model_pairwise_tests.csv",
         "n": 106,
         "ci95": [
-          0.0003797548641553,
-          0.007546105225929
+          -0.2766286579620596,
+          -0.2265814132307731
         ],
-        "p_value": 0.0162471489129604,
-        "rank_biserial": 0.2689120084641156,
-        "share_improved": 0.3962264150943396
+        "p_value": 4.348499899879881e-19,
+        "rank_biserial": -0.9989419855404692,
+        "share_improved": 0.981132075471698
       },
-      "sarima-ets|HOUSEHOLD": {
-        "value": 0.0052049477617772,
+      "sarima-seasonal_naive|HOUSEHOLD": {
+        "value": -0.2169577655038135,
         "source": "model_pairwise_tests.csv",
         "n": 283,
         "ci95": [
-          0.0021737735744324,
-          0.0074986474294016
+          -0.2377471016434953,
+          -0.2042777107509394
         ],
-        "p_value": 0.0060312465986159,
-        "rank_biserial": 0.1883242920420046,
-        "share_improved": 0.3992932862190813
+        "p_value": 8.533364086575982e-47,
+        "rank_biserial": -0.9851689643159308,
+        "share_improved": 0.9823321554770318
       }
     }
   },
@@ -2460,11 +2054,6 @@
       "evidence": "median MASE 0.7281 vs 0.9479, p = 1.14e-86",
       "source": "replication_conclusions.csv"
     },
-    "TX|R3 Combination at least as good as ETS": {
-      "holds": true,
-      "evidence": "median MASE 0.7281 vs ETS 0.7393",
-      "source": "replication_conclusions.csv"
-    },
     "TX|R4 truncate-adaptation does not help": {
       "holds": true,
       "evidence": "median diff +0.0011 (CI +0.0004 to +0.0023), p = 0.0001, n = 353",
@@ -2493,11 +2082,6 @@
     "WI|R2 Combination beats seasonal naive": {
       "holds": true,
       "evidence": "median MASE 0.7993 vs 1.0252, p = 9.14e-99",
-      "source": "replication_conclusions.csv"
-    },
-    "WI|R3 Combination at least as good as ETS": {
-      "holds": true,
-      "evidence": "median MASE 0.7993 vs ETS 0.8049",
       "source": "replication_conclusions.csv"
     },
     "WI|R4 truncate-adaptation does not help": {
@@ -2534,18 +2118,6 @@
       "rank_biserial": -0.9901843991867888,
       "share_improved": 0.9640831758034026
     },
-    "TX|best - ets": {
-      "value": -0.0069561739693703,
-      "source": "replication_tests.csv",
-      "n": 529,
-      "ci95": [
-        -0.0078758031087549,
-        -0.0055208957956158
-      ],
-      "p_value": 7.331643471857791e-23,
-      "rank_biserial": -0.4939401505153903,
-      "share_improved": 0.6994328922495274
-    },
     "TX|truncate - static (break items)": {
       "value": 0.0010802607085511,
       "source": "replication_tests.csv",
@@ -2569,18 +2141,6 @@
       "p_value": 9.135653883654818e-99,
       "rank_biserial": -0.9956002479048136,
       "share_improved": 0.9749163879598662
-    },
-    "WI|best - ets": {
-      "value": -0.0067254790323688,
-      "source": "replication_tests.csv",
-      "n": 598,
-      "ci95": [
-        -0.0091018674226496,
-        -0.0054495530775882
-      ],
-      "p_value": 1.12202533205082e-22,
-      "rank_biserial": -0.4625713982613162,
-      "share_improved": 0.6622073578595318
     },
     "WI|truncate - static (break items)": {
       "value": 0.0012625718935548,
@@ -2790,42 +2350,6 @@
         "n": 150,
         "mean": 0.9917115038181618
       },
-      "ets|ALL|rmse": {
-        "value": 4.4984342852994095,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 6.684751104838569
-      },
-      "ets|ALL|mae": {
-        "value": 3.51059550042455,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.265192313478035
-      },
-      "ets|ALL|mape": {
-        "value": 0.5946112069300593,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.6428946182249863
-      },
-      "ets|ALL|smape": {
-        "value": 0.4711841311117221,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5184632458139761
-      },
-      "ets|ALL|wape": {
-        "value": 0.4372325537523972,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5468416251387364
-      },
-      "ets|ALL|mase": {
-        "value": 0.7564397113973151,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7736479515027535
-      },
       "hw_add|ALL|rmse": {
         "value": 4.5601761639593175,
         "source": "comparison_metrics_summary.csv",
@@ -2861,42 +2385,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 150,
         "mean": 0.7752123778558134
-      },
-      "hw_mul|ALL|rmse": {
-        "value": 4.553974764344241,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 6.78683556223829
-      },
-      "hw_mul|ALL|mae": {
-        "value": 3.586298461009592,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.359981091847888
-      },
-      "hw_mul|ALL|mape": {
-        "value": 0.5950919661744976,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.638972530760959
-      },
-      "hw_mul|ALL|smape": {
-        "value": 0.4822063906409077,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.522759339984323
-      },
-      "hw_mul|ALL|wape": {
-        "value": 0.4389163170674034,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5051137533422455
-      },
-      "hw_mul|ALL|mase": {
-        "value": 0.7614909678997697,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7809450489091823
       },
       "arima|ALL|rmse": {
         "value": 4.82234654514658,
@@ -3222,114 +2710,6 @@
         "n": 150,
         "mean": 0.7591461691916972
       },
-      "combination_weighted|ALL|rmse": {
-        "value": 4.400188654116665,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 6.549972643412129
-      },
-      "combination_weighted|ALL|mae": {
-        "value": 3.498766550291436,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.128327057238445
-      },
-      "combination_weighted|ALL|mape": {
-        "value": 0.585775016142543,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.646397747825459
-      },
-      "combination_weighted|ALL|smape": {
-        "value": 0.4692425025491444,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.509881805454952
-      },
-      "combination_weighted|ALL|wape": {
-        "value": 0.4357539926016032,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7664265258308347
-      },
-      "combination_weighted|ALL|mase": {
-        "value": 0.7464769312010489,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7593365700763182
-      },
-      "ar|ALL|rmse": {
-        "value": 4.760597761106336,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 7.010314232797196
-      },
-      "ar|ALL|mae": {
-        "value": 3.922217243966173,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.5596526044180505
-      },
-      "ar|ALL|mape": {
-        "value": 0.6397064468330276,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7729308572566744
-      },
-      "ar|ALL|smape": {
-        "value": 0.4826482620957862,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5207754136898566
-      },
-      "ar|ALL|wape": {
-        "value": 0.4574727048724387,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 1.4588541257643712
-      },
-      "ar|ALL|mase": {
-        "value": 0.7860172738880171,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.8195387840633404
-      },
-      "ma|ALL|rmse": {
-        "value": 5.288307757294407,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 7.38471651551701
-      },
-      "ma|ALL|mae": {
-        "value": 4.298561848092858,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.8940214282594665
-      },
-      "ma|ALL|mape": {
-        "value": 0.6406158469993684,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.8410224869571842
-      },
-      "ma|ALL|smape": {
-        "value": 0.5035754755925868,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5350518116622673
-      },
-      "ma|ALL|wape": {
-        "value": 0.476256693220231,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 1.8425916093546104
-      },
-      "ma|ALL|mase": {
-        "value": 0.8386695620203886,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.8627402465029513
-      },
       "arma|ALL|rmse": {
         "value": 4.541906486661197,
         "source": "comparison_metrics_summary.csv",
@@ -3365,42 +2745,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 150,
         "mean": 0.7839181951087106
-      },
-      "arimax|ALL|rmse": {
-        "value": 4.801194668998152,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 7.087544556832543
-      },
-      "arimax|ALL|mae": {
-        "value": 3.8657617536039934,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 5.621455704584205
-      },
-      "arimax|ALL|mape": {
-        "value": 0.6372769289663807,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.7386745215702614
-      },
-      "arimax|ALL|smape": {
-        "value": 0.4877913826205523,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.5255603042335717
-      },
-      "arimax|ALL|wape": {
-        "value": 0.4636367957595155,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.6958018114945874
-      },
-      "arimax|ALL|mase": {
-        "value": 0.8009742291147128,
-        "source": "comparison_metrics_summary.csv",
-        "n": 150,
-        "mean": 0.8182752075711687
       },
       "seasonal_naive|FOODS|rmse": {
         "value": 10.317588998650011,
@@ -3438,42 +2782,6 @@
         "n": 50,
         "mean": 0.9675594871314483
       },
-      "ets|FOODS|rmse": {
-        "value": 8.067181801535845,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 9.689074360162016
-      },
-      "ets|FOODS|mae": {
-        "value": 6.422563871660764,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 7.628723374815456
-      },
-      "ets|FOODS|mape": {
-        "value": 0.5333163994828536,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.6186633576881718
-      },
-      "ets|FOODS|smape": {
-        "value": 0.4050222167035137,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.484469301797136
-      },
-      "ets|FOODS|wape": {
-        "value": 0.3955131145121239,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.6084896178857067
-      },
-      "ets|FOODS|mase": {
-        "value": 0.7596315213076626,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7855751134851497
-      },
       "hw_add|FOODS|rmse": {
         "value": 8.070055614937388,
         "source": "comparison_metrics_summary.csv",
@@ -3509,42 +2817,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7856529381383384
-      },
-      "hw_mul|FOODS|rmse": {
-        "value": 8.165736000741619,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 9.932274470135498
-      },
-      "hw_mul|FOODS|mae": {
-        "value": 6.421598017944167,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 7.865349731647826
-      },
-      "hw_mul|FOODS|mape": {
-        "value": 0.517640133970117,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.6146246480505865
-      },
-      "hw_mul|FOODS|smape": {
-        "value": 0.4141205800287896,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4961048829718602
-      },
-      "hw_mul|FOODS|wape": {
-        "value": 0.39985487093449,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5052886464406218
-      },
-      "hw_mul|FOODS|mase": {
-        "value": 0.7632737438503729,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8023682585386013
       },
       "arima|FOODS|rmse": {
         "value": 8.94832312660261,
@@ -3870,114 +3142,6 @@
         "n": 50,
         "mean": 0.7613730345443127
       },
-      "combination_weighted|FOODS|rmse": {
-        "value": 8.000633536157588,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 9.371106547527576
-      },
-      "combination_weighted|FOODS|mae": {
-        "value": 6.270931789602172,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 7.334333636704785
-      },
-      "combination_weighted|FOODS|mape": {
-        "value": 0.5035550667230781,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.6753991779908488
-      },
-      "combination_weighted|FOODS|smape": {
-        "value": 0.3880787063454078,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.469406509918774
-      },
-      "combination_weighted|FOODS|wape": {
-        "value": 0.3823120307288677,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 1.2986904860276232
-      },
-      "combination_weighted|FOODS|mase": {
-        "value": 0.7384745541827418,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7618474538746492
-      },
-      "ar|FOODS|rmse": {
-        "value": 9.131092591167722,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 10.029468368739993
-      },
-      "ar|FOODS|mae": {
-        "value": 7.139817575197842,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 7.987964422859444
-      },
-      "ar|FOODS|mape": {
-        "value": 0.5568237559467563,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8849433676061993
-      },
-      "ar|FOODS|smape": {
-        "value": 0.3956386353725179,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4737130890660043
-      },
-      "ar|FOODS|wape": {
-        "value": 0.3797313914144224,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.077516972094977
-      },
-      "ar|FOODS|mase": {
-        "value": 0.7892044995346468,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8227461430056795
-      },
-      "ma|FOODS|rmse": {
-        "value": 9.346507880585271,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 10.77263222627356
-      },
-      "ma|FOODS|mae": {
-        "value": 7.368115304074196,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 8.677715561000952
-      },
-      "ma|FOODS|mape": {
-        "value": 0.5526107930913347,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 1.031426305390696
-      },
-      "ma|FOODS|smape": {
-        "value": 0.4143113481372124,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4881450711581849
-      },
-      "ma|FOODS|wape": {
-        "value": 0.3922468669134601,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.096718050858173
-      },
-      "ma|FOODS|mase": {
-        "value": 0.8461896072321329,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8780722180871895
-      },
       "arma|FOODS|rmse": {
         "value": 8.604770973338184,
         "source": "comparison_metrics_summary.csv",
@@ -4013,42 +3177,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7821893034974424
-      },
-      "arimax|FOODS|rmse": {
-        "value": 8.979553040875386,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 10.346578485385235
-      },
-      "arimax|FOODS|mae": {
-        "value": 7.344862358815297,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 8.222202000641778
-      },
-      "arimax|FOODS|mape": {
-        "value": 0.5510480531357951,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8264119281873639
-      },
-      "arimax|FOODS|smape": {
-        "value": 0.4043477823335391,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4878773803939891
-      },
-      "arimax|FOODS|wape": {
-        "value": 0.3913915571990213,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.988763254629938
-      },
-      "arimax|FOODS|mase": {
-        "value": 0.8331580399718543,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8373131349823326
       },
       "seasonal_naive|HOBBIES|rmse": {
         "value": 4.221284842109163,
@@ -4086,42 +3214,6 @@
         "n": 50,
         "mean": 1.023118603074973
       },
-      "ets|HOBBIES|rmse": {
-        "value": 3.202443526995456,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 5.838564858779612
-      },
-      "ets|HOBBIES|mae": {
-        "value": 2.57175055387574,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.575770779749913
-      },
-      "ets|HOBBIES|mape": {
-        "value": 0.6803519290368996,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7357735589554733
-      },
-      "ets|HOBBIES|smape": {
-        "value": 0.49752715920271,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5550088529178435
-      },
-      "ets|HOBBIES|wape": {
-        "value": 0.4683021319223727,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.539043952921482
-      },
-      "ets|HOBBIES|mase": {
-        "value": 0.7588340211738401,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7758230104904564
-      },
       "hw_add|HOBBIES|rmse": {
         "value": 3.230122952024989,
         "source": "comparison_metrics_summary.csv",
@@ -4157,42 +3249,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7804343261984102
-      },
-      "hw_mul|HOBBIES|rmse": {
-        "value": 3.2346117302562645,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 5.910056723997958
-      },
-      "hw_mul|HOBBIES|mae": {
-        "value": 2.5313329135650435,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.64112468050363
-      },
-      "hw_mul|HOBBIES|mape": {
-        "value": 0.6937794659324028,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7405778130140876
-      },
-      "hw_mul|HOBBIES|smape": {
-        "value": 0.5013475846788534,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5572694417654502
-      },
-      "hw_mul|HOBBIES|wape": {
-        "value": 0.4682329537933902,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5428925077767004
-      },
-      "hw_mul|HOBBIES|mase": {
-        "value": 0.7722547793204184,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7844502511280049
       },
       "arima|HOBBIES|rmse": {
         "value": 3.2639027845771285,
@@ -4518,114 +3574,6 @@
         "n": 50,
         "mean": 0.7658402649123507
       },
-      "combination_weighted|HOBBIES|rmse": {
-        "value": 3.168197385796719,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 5.821505409113573
-      },
-      "combination_weighted|HOBBIES|mae": {
-        "value": 2.467275102591616,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.523300417375832
-      },
-      "combination_weighted|HOBBIES|mape": {
-        "value": 0.647272114237683,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7052261605244814
-      },
-      "combination_weighted|HOBBIES|smape": {
-        "value": 0.4992849579475137,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5488039485790818
-      },
-      "combination_weighted|HOBBIES|wape": {
-        "value": 0.46534304617739,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5270123830206382
-      },
-      "combination_weighted|HOBBIES|mase": {
-        "value": 0.7537264126218203,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7660866913883012
-      },
-      "ar|HOBBIES|rmse": {
-        "value": 3.286276019261796,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 6.081283560901068
-      },
-      "ar|HOBBIES|mae": {
-        "value": 2.5688103358439345,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.742236284090964
-      },
-      "ar|HOBBIES|mape": {
-        "value": 0.6664840977330635,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7389008755395297
-      },
-      "ar|HOBBIES|smape": {
-        "value": 0.5162253414610825,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5593542809012536
-      },
-      "ar|HOBBIES|wape": {
-        "value": 0.4874562633765631,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5572842868968191
-      },
-      "ar|HOBBIES|mase": {
-        "value": 0.7809304038792151,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7978946328632891
-      },
-      "ma|HOBBIES|rmse": {
-        "value": 3.362394001153561,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 6.158875177947333
-      },
-      "ma|HOBBIES|mae": {
-        "value": 2.6676575375686897,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.783926222192721
-      },
-      "ma|HOBBIES|mape": {
-        "value": 0.6610700137353418,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7317628472779176
-      },
-      "ma|HOBBIES|smape": {
-        "value": 0.5196399647984082,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5669233857051996
-      },
-      "ma|HOBBIES|wape": {
-        "value": 0.4867507404208442,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5637322684722256
-      },
-      "ma|HOBBIES|mase": {
-        "value": 0.7873195713007748,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8098887769808552
-      },
       "arma|HOBBIES|rmse": {
         "value": 3.192461022530716,
         "source": "comparison_metrics_summary.csv",
@@ -4661,42 +3609,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7879226144478366
-      },
-      "arimax|HOBBIES|rmse": {
-        "value": 3.263283556582702,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 5.974324661318906
-      },
-      "arimax|HOBBIES|mae": {
-        "value": 2.553261157919364,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.688043032341791
-      },
-      "arimax|HOBBIES|mape": {
-        "value": 0.6628855372884488,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7469767904082257
-      },
-      "arimax|HOBBIES|smape": {
-        "value": 0.5073995273174714,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5555592742368733
-      },
-      "arimax|HOBBIES|wape": {
-        "value": 0.4732394088833445,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5462937399145382
-      },
-      "arimax|HOBBIES|mase": {
-        "value": 0.7651788739439573,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7893959263400441
       },
       "seasonal_naive|HOUSEHOLD|rmse": {
         "value": 4.710523414147588,
@@ -4734,42 +3646,6 @@
         "n": 50,
         "mean": 0.984456421248064
       },
-      "ets|HOUSEHOLD|rmse": {
-        "value": 3.670548673896601,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.52661409557408
-      },
-      "ets|HOUSEHOLD|mae": {
-        "value": 2.939674062176655,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.591082785868735
-      },
-      "ets|HOUSEHOLD|mape": {
-        "value": 0.574323086666843,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5742469380313137
-      },
-      "ets|HOUSEHOLD|smape": {
-        "value": 0.4747616624365013,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5159115827269484
-      },
-      "ets|HOUSEHOLD|wape": {
-        "value": 0.4208627521351171,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4929913046090203
-      },
-      "ets|HOUSEHOLD|mase": {
-        "value": 0.7426799798842303,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.759545730532654
-      },
       "hw_add|HOUSEHOLD|rmse": {
         "value": 3.702584617316144,
         "source": "comparison_metrics_summary.csv",
@@ -4805,42 +3681,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7595498692306916
-      },
-      "hw_mul|HOUSEHOLD|rmse": {
-        "value": 3.6129800551394826,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.518175492581416
-      },
-      "hw_mul|HOUSEHOLD|mae": {
-        "value": 2.8615789954401256,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.573468863392206
-      },
-      "hw_mul|HOUSEHOLD|mape": {
-        "value": 0.5613408603910848,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5617151312182027
-      },
-      "hw_mul|HOUSEHOLD|smape": {
-        "value": 0.4642052774146291,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5149036952156587
-      },
-      "hw_mul|HOUSEHOLD|wape": {
-        "value": 0.4209245047681254,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4671601058094145
-      },
-      "hw_mul|HOUSEHOLD|mase": {
-        "value": 0.7560890143660086,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7560166370609405
       },
       "arima|HOUSEHOLD|rmse": {
         "value": 3.957968044261955,
@@ -5166,114 +4006,6 @@
         "n": 50,
         "mean": 0.7502252081184282
       },
-      "combination_weighted|HOUSEHOLD|rmse": {
-        "value": 3.664387369436275,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.457305973595238
-      },
-      "combination_weighted|HOUSEHOLD|mae": {
-        "value": 2.8745016292259917,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.52734711763472
-      },
-      "combination_weighted|HOUSEHOLD|mape": {
-        "value": 0.5732722323900539,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.558567904961047
-      },
-      "combination_weighted|HOUSEHOLD|smape": {
-        "value": 0.4658973704378873,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5114349578670002
-      },
-      "combination_weighted|HOUSEHOLD|wape": {
-        "value": 0.4237399186570655,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.4735767084442427
-      },
-      "combination_weighted|HOUSEHOLD|mase": {
-        "value": 0.7484712890124123,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7500755649660036
-      },
-      "ar|HOUSEHOLD|rmse": {
-        "value": 3.943068997054647,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.920190768750524
-      },
-      "ar|HOUSEHOLD|mae": {
-        "value": 3.087303780814707,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.948757106303743
-      },
-      "ar|HOUSEHOLD|mape": {
-        "value": 0.6458726351336079,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.694948328624294
-      },
-      "ar|HOUSEHOLD|smape": {
-        "value": 0.4947210965431782,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5292588711023117
-      },
-      "ar|HOUSEHOLD|wape": {
-        "value": 0.4608281187592693,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7417611183013176
-      },
-      "ar|HOUSEHOLD|mase": {
-        "value": 0.8188541475616747,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8379755763210526
-      },
-      "ma|HOUSEHOLD|rmse": {
-        "value": 4.126798007294502,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 5.2226421423301375
-      },
-      "ma|HOUSEHOLD|mae": {
-        "value": 3.117787164698721,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.220422501584727
-      },
-      "ma|HOUSEHOLD|mape": {
-        "value": 0.6789337002312209,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.7598783082029389
-      },
-      "ma|HOUSEHOLD|smape": {
-        "value": 0.5162895506108389,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5500869781234169
-      },
-      "ma|HOUSEHOLD|wape": {
-        "value": 0.4850526651183438,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8673245087334339
-      },
-      "ma|HOUSEHOLD|mase": {
-        "value": 0.8625543122653876,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.900259744440809
-      },
       "arma|HOUSEHOLD|rmse": {
         "value": 3.7276898250356414,
         "source": "comparison_metrics_summary.csv",
@@ -5309,42 +4041,6 @@
         "source": "comparison_metrics_summary.csv",
         "n": 50,
         "mean": 0.7816426673808529
-      },
-      "arimax|HOUSEHOLD|rmse": {
-        "value": 3.9551780358426942,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 4.941730523793487
-      },
-      "arimax|HOUSEHOLD|mae": {
-        "value": 3.0735536072800365,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 3.95412208076905
-      },
-      "arimax|HOUSEHOLD|mape": {
-        "value": 0.6576560816154465,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.6426348461151945
-      },
-      "arimax|HOUSEHOLD|smape": {
-        "value": 0.4964608448640103,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.5332442580698523
-      },
-      "arimax|HOUSEHOLD|wape": {
-        "value": 0.4736455851375452,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.552348439939286
-      },
-      "arimax|HOUSEHOLD|mase": {
-        "value": 0.8203130176819506,
-        "source": "comparison_metrics_summary.csv",
-        "n": 50,
-        "mean": 0.8281165613911297
       }
     },
     "mape_excluded_share": {
@@ -5385,19 +4081,7 @@
           -0.213228294719751
         ],
         "p_value": 2.594302786258403e-26,
-        "p_holm": 1.2971513931292017e-25,
-        "a_better": true
-      },
-      "H2|best-ets": {
-        "value": -0.0074004916024028,
-        "source": "comparison_tests.csv",
-        "n": 150,
-        "ci95": [
-          -0.0109760101586402,
-          -0.0033262631104719
-        ],
-        "p_value": 3.359960119268497e-09,
-        "p_holm": 6.719920238536995e-09,
+        "p_holm": 1.0377211145033612e-25,
         "a_better": true
       },
       "H2|best-hw_add": {
@@ -5409,7 +4093,7 @@
           -0.0049971572357225
         ],
         "p_value": 1.3351058942473912e-11,
-        "p_holm": 4.005317682742173e-11,
+        "p_holm": 2.6702117884947824e-11,
         "a_better": true
       },
       "H2|best-arima": {
@@ -5421,7 +4105,7 @@
           -0.0249272691799243
         ],
         "p_value": 1.1427169569774086e-19,
-        "p_holm": 4.570867827909634e-19,
+        "p_holm": 3.4281508709322264e-19,
         "a_better": true
       },
       "H2|best-sarima": {
@@ -5447,64 +4131,6 @@
       "source": "comparison_metrics_summary.csv",
       "significant_vs_all": true
     },
-    "h4": {
-      "zero-heavy": {
-        "value": 0.7626045991744553,
-        "source": "classical_h4.csv",
-        "n": 74,
-        "hw_mul": 0.7618196676614682,
-        "share_items_add_better": 0.527027027027027,
-        "mul_within_5pct": null
-      },
-      "not zero-heavy": {
-        "value": 0.7539547587255024,
-        "source": "classical_h4.csv",
-        "n": 76,
-        "hw_mul": 0.7614909678997697,
-        "share_items_add_better": 0.5394736842105263,
-        "mul_within_5pct": null
-      },
-      "all": {
-        "value": 0.756593811146852,
-        "source": "classical_h4.csv",
-        "n": 150,
-        "hw_mul": 0.7614909678997697,
-        "share_items_add_better": 0.5333333333333333,
-        "mul_within_5pct": null
-      },
-      "CA_TOTAL": {
-        "value": 0.7905216603598023,
-        "source": "classical_h4.csv",
-        "n": 1,
-        "hw_mul": 0.7697975754811776,
-        "share_items_add_better": null,
-        "mul_within_5pct": true
-      },
-      "FOODS": {
-        "value": 0.8494181349020691,
-        "source": "classical_h4.csv",
-        "n": 1,
-        "hw_mul": 0.8520966170680305,
-        "share_items_add_better": null,
-        "mul_within_5pct": true
-      },
-      "HOBBIES": {
-        "value": 0.6608277214409389,
-        "source": "classical_h4.csv",
-        "n": 1,
-        "hw_mul": 0.6704909577629697,
-        "share_items_add_better": null,
-        "mul_within_5pct": true
-      },
-      "HOUSEHOLD": {
-        "value": 0.9066552415866148,
-        "source": "classical_h4.csv",
-        "n": 1,
-        "hw_mul": 0.8887622164737451,
-        "share_items_add_better": null,
-        "mul_within_5pct": true
-      }
-    },
     "aggregate_mase": {
       "CA_TOTAL|arima": {
         "value": 0.986078448977482,
@@ -5516,18 +4142,8 @@
         "source": "comparison_totals_metrics.csv",
         "how": "sum of items"
       },
-      "CA_TOTAL|ets": {
-        "value": 0.7688147407415903,
-        "source": "comparison_totals_metrics.csv",
-        "how": "sum of items"
-      },
       "CA_TOTAL|hw_add": {
         "value": 0.7905216603598023,
-        "source": "comparison_totals_metrics.csv",
-        "how": "fitted on total"
-      },
-      "CA_TOTAL|hw_mul": {
-        "value": 0.7697975754811776,
         "source": "comparison_totals_metrics.csv",
         "how": "fitted on total"
       },
@@ -5551,18 +4167,8 @@
         "source": "comparison_totals_metrics.csv",
         "how": "sum of items"
       },
-      "FOODS|ets": {
-        "value": 0.8129920018442665,
-        "source": "comparison_totals_metrics.csv",
-        "how": "sum of items"
-      },
       "FOODS|hw_add": {
         "value": 0.8494181349020691,
-        "source": "comparison_totals_metrics.csv",
-        "how": "fitted on total"
-      },
-      "FOODS|hw_mul": {
-        "value": 0.8520966170680305,
         "source": "comparison_totals_metrics.csv",
         "how": "fitted on total"
       },
@@ -5586,18 +4192,8 @@
         "source": "comparison_totals_metrics.csv",
         "how": "sum of items"
       },
-      "HOBBIES|ets": {
-        "value": 0.6629918108613951,
-        "source": "comparison_totals_metrics.csv",
-        "how": "sum of items"
-      },
       "HOBBIES|hw_add": {
         "value": 0.6608277214409389,
-        "source": "comparison_totals_metrics.csv",
-        "how": "fitted on total"
-      },
-      "HOBBIES|hw_mul": {
-        "value": 0.6704909577629697,
         "source": "comparison_totals_metrics.csv",
         "how": "fitted on total"
       },
@@ -5621,18 +4217,8 @@
         "source": "comparison_totals_metrics.csv",
         "how": "sum of items"
       },
-      "HOUSEHOLD|ets": {
-        "value": 0.8968592293095138,
-        "source": "comparison_totals_metrics.csv",
-        "how": "sum of items"
-      },
       "HOUSEHOLD|hw_add": {
         "value": 0.9066552415866148,
-        "source": "comparison_totals_metrics.csv",
-        "how": "fitted on total"
-      },
-      "HOUSEHOLD|hw_mul": {
-        "value": 0.8887622164737451,
         "source": "comparison_totals_metrics.csv",
         "how": "fitted on total"
       },
@@ -5659,18 +4245,6 @@
         "source": "classical_run_stats.csv",
         "n": 28,
         "not_converged_rate": 0.0
-      },
-      "hw_mul|item": {
-        "value": 0.0,
-        "source": "classical_run_stats.csv",
-        "n": 1050,
-        "not_converged_rate": 0.1419047619047619
-      },
-      "hw_mul|aggregate": {
-        "value": 0.0,
-        "source": "classical_run_stats.csv",
-        "n": 28,
-        "not_converged_rate": 0.0357142857142857
       },
       "arima|item": {
         "value": 0.0,
@@ -5705,21 +4279,7 @@
         "normality_pass": 0.0,
         "roots_ok": 1.0
       },
-      "ets|aggregate": {
-        "value": 0.0,
-        "source": "diagnostics_summary.csv",
-        "n": 4,
-        "normality_pass": 0.0,
-        "roots_ok": null
-      },
       "hw_add|aggregate": {
-        "value": 0.25,
-        "source": "diagnostics_summary.csv",
-        "n": 4,
-        "normality_pass": 0.0,
-        "roots_ok": null
-      },
-      "hw_mul|aggregate": {
         "value": 0.25,
         "source": "diagnostics_summary.csv",
         "n": 4,
@@ -5740,22 +4300,8 @@
         "normality_pass": 0.0,
         "roots_ok": 1.0
       },
-      "ets|item": {
-        "value": 0.2933333333333333,
-        "source": "diagnostics_summary.csv",
-        "n": 150,
-        "normality_pass": 0.0,
-        "roots_ok": null
-      },
       "hw_add|item": {
         "value": 0.4733333333333333,
-        "source": "diagnostics_summary.csv",
-        "n": 150,
-        "normality_pass": 0.0066666666666666,
-        "roots_ok": null
-      },
-      "hw_mul|item": {
-        "value": 0.4866666666666667,
         "source": "diagnostics_summary.csv",
         "n": 150,
         "normality_pass": 0.0066666666666666,
@@ -5872,14 +4418,6 @@
         "cycle_service_level": 0.8991517436380773,
         "avg_inventory_value": 37962.04759416719
       },
-      "conformal|ets": {
-        "value": 9143.271707097638,
-        "source": "stock_summary.csv",
-        "n": 150,
-        "fill_rate": 0.9879611746134151,
-        "cycle_service_level": 0.9006979695431472,
-        "avg_inventory_value": 38977.86757408589
-      },
       "conformal|hw_add": {
         "value": 9311.812193986065,
         "source": "stock_summary.csv",
@@ -5912,14 +4450,6 @@
         "cycle_service_level": 0.8447164948453608,
         "avg_inventory_value": 33410.69840151837
       },
-      "normal formula|ets": {
-        "value": 12354.081616337877,
-        "source": "stock_summary.csv",
-        "n": 150,
-        "fill_rate": 0.9766538850644688,
-        "cycle_service_level": 0.8375651041666666,
-        "avg_inventory_value": 34266.97102631011
-      },
       "normal formula|hw_add": {
         "value": 12425.08092614763,
         "source": "stock_summary.csv",
@@ -5946,26 +4476,14 @@
       }
     },
     "stock_tests": {
-      "conformal|sarima-ets": {
-        "value": -0.1407291536377031,
-        "source": "stock_tests.csv",
-        "n": 150,
-        "total_cost_diff": -1286.7248888194074,
-        "total_ci_dollars": [
-          -2877.822568925938,
-          -70.45977695188026
-        ],
-        "median_fill_rate_diff": 0.0,
-        "p_value_cost": 0.462614965676414
-      },
       "conformal|sarima-best": {
         "value": -0.0489386370263428,
         "source": "stock_tests.csv",
         "n": 150,
         "total_cost_diff": -404.2732761406868,
         "total_ci_dollars": [
-          -1322.9286418675144,
-          369.2036208157657
+          -1322.8413033324186,
+          355.8053897927736
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.7949724088602641
@@ -5976,23 +4494,11 @@
         "n": 150,
         "total_cost_diff": -1116.9970475066807,
         "total_ci_dollars": [
-          -2498.7803291421837,
-          -87.00292083709128
+          -2523.675828812269,
+          -56.93088824223717
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.0468254358024498
-      },
-      "conformal|hw_add-ets": {
-        "value": 0.0184332799338768,
-        "source": "stock_tests.csv",
-        "n": 150,
-        "total_cost_diff": 168.5404868884265,
-        "total_ci_dollars": [
-          -237.22700298102703,
-          620.4681956852287
-        ],
-        "median_fill_rate_diff": 0.0,
-        "p_value_cost": 0.1602101132601555
       },
       "conformal|hw_add-best": {
         "value": 0.1272261213238631,
@@ -6000,8 +4506,8 @@
         "n": 150,
         "total_cost_diff": 1050.9920995671475,
         "total_ci_dollars": [
-          384.2451595986814,
-          1938.0157912788145
+          377.4016019444439,
+          1903.237158350424
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.0026905475976754
@@ -6012,23 +4518,11 @@
         "n": 150,
         "total_cost_diff": 338.2683282011535,
         "total_ci_dollars": [
-          -227.6101558723952,
-          942.2242207429258
+          -225.03103875967724,
+          939.34349084002
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.5071700336180645
-      },
-      "normal formula|sarima-ets": {
-        "value": -0.1394447785052431,
-        "source": "stock_tests.csv",
-        "n": 150,
-        "total_cost_diff": -1722.712174625932,
-        "total_ci_dollars": [
-          -3735.3333866507455,
-          -172.89249127010817
-        ],
-        "median_fill_rate_diff": 0.0,
-        "p_value_cost": 0.2428232729661866
       },
       "normal formula|sarima-best": {
         "value": -0.0536750971547816,
@@ -6036,8 +4530,8 @@
         "n": 150,
         "total_cost_diff": -603.0062042714723,
         "total_ci_dollars": [
-          -1959.571730556053,
-          544.2828239690655
+          -1955.8937295164849,
+          480.1291701331445
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.260671434705846
@@ -6048,23 +4542,11 @@
         "n": 150,
         "total_cost_diff": -805.6881578591774,
         "total_ci_dollars": [
-          -2788.8211202773778,
-          679.102303849888
+          -2712.2755186213462,
+          661.3835063756153
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.5011815318090782
-      },
-      "normal formula|hw_add-ets": {
-        "value": 0.0057470326014243,
-        "source": "stock_tests.csv",
-        "n": 150,
-        "total_cost_diff": 70.9993098097516,
-        "total_ci_dollars": [
-          -1099.4016840648258,
-          935.499460320332
-        ],
-        "median_fill_rate_diff": 0.0,
-        "p_value_cost": 0.0529484614905526
       },
       "normal formula|hw_add-best": {
         "value": 0.1059876683569789,
@@ -6072,8 +4554,8 @@
         "n": 150,
         "total_cost_diff": 1190.7052801642112,
         "total_ci_dollars": [
-          365.4429864398767,
-          2119.4568524861124
+          355.1769129880611,
+          2167.782689528016
         ],
         "median_fill_rate_diff": 0.0,
         "p_value_cost": 0.0464118661716632
@@ -6084,8 +4566,8 @@
         "n": 150,
         "total_cost_diff": 988.0233265765064,
         "total_ci_dollars": [
-          254.48980239498343,
-          1759.473097661372
+          268.27970406328234,
+          1771.9458597359303
         ],
         "median_fill_rate_diff": -0.0010452145161725,
         "p_value_cost": 0.0730134160688579
@@ -6430,132 +4912,6 @@
         "kind": "contender",
         "validation": null
       },
-      "combination_weighted|ALL|rmse": {
-        "value": 4.400188654116665,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": 4.558636554444908
-      },
-      "combination_weighted|ALL|mae": {
-        "value": 3.498766550291436,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": 3.6599174094155646
-      },
-      "combination_weighted|ALL|mape": {
-        "value": 0.585775016142543,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": 0.6079925430892644
-      },
-      "combination_weighted|ALL|smape": {
-        "value": 0.4692425025491444,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": null
-      },
-      "combination_weighted|ALL|wape": {
-        "value": 0.4357539926016032,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": null
-      },
-      "combination_weighted|ALL|mase": {
-        "value": 0.7464769312010489,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "combination, second version",
-        "validation": null
-      },
-      "ar|ALL|rmse": {
-        "value": 4.760597761106336,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 5.241344916582604
-      },
-      "ar|ALL|mae": {
-        "value": 3.922217243966173,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 4.07696011076869
-      },
-      "ar|ALL|mape": {
-        "value": 0.6397064468330276,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 0.6359691728313174
-      },
-      "ar|ALL|smape": {
-        "value": 0.4826482620957862,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "ar|ALL|wape": {
-        "value": 0.4574727048724387,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "ar|ALL|mase": {
-        "value": 0.7860172738880171,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "ma|ALL|rmse": {
-        "value": 5.288307757294407,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 5.4966520661069405
-      },
-      "ma|ALL|mae": {
-        "value": 4.298561848092858,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 4.422930626239273
-      },
-      "ma|ALL|mape": {
-        "value": 0.6406158469993684,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 0.6408389916200216
-      },
-      "ma|ALL|smape": {
-        "value": 0.5035754755925868,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "ma|ALL|wape": {
-        "value": 0.476256693220231,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "ma|ALL|mase": {
-        "value": 0.8386695620203886,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
       "arma|ALL|rmse": {
         "value": 4.541906486661197,
         "source": "ts_headline.csv",
@@ -6640,48 +4996,6 @@
         "kind": "building block",
         "validation": null
       },
-      "arimax|ALL|rmse": {
-        "value": 4.801194668998152,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 4.938657584429601
-      },
-      "arimax|ALL|mae": {
-        "value": 3.8657617536039934,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 3.935799212826784
-      },
-      "arimax|ALL|mape": {
-        "value": 0.6372769289663807,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": 0.6562515210739905
-      },
-      "arimax|ALL|smape": {
-        "value": 0.4877913826205523,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "arimax|ALL|wape": {
-        "value": 0.4636367957595155,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
-      "arimax|ALL|mase": {
-        "value": 0.8009742291147128,
-        "source": "ts_headline.csv",
-        "n": 150,
-        "kind": "building block",
-        "validation": null
-      },
       "sarima_07a|ALL|rmse": {
         "value": 4.444982316412452,
         "source": "ts_headline.csv",
@@ -6724,18 +5038,6 @@
         "kind": "reference (07a)",
         "validation": null
       },
-      "ar|FOODS|rmse": {
-        "value": 9.131092591167722,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|FOODS|mae": {
-        "value": 7.139817575197842,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|FOODS|mape": {
-        "value": 0.5568237559467563,
-        "source": "ts_headline_by_category.csv"
-      },
       "arima|FOODS|rmse": {
         "value": 8.94832312660261,
         "source": "ts_headline_by_category.csv"
@@ -6746,18 +5048,6 @@
       },
       "arima|FOODS|mape": {
         "value": 0.5506710819478647,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|FOODS|rmse": {
-        "value": 8.979553040875386,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|FOODS|mae": {
-        "value": 7.344862358815297,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|FOODS|mape": {
-        "value": 0.5510480531357951,
         "source": "ts_headline_by_category.csv"
       },
       "arma|FOODS|rmse": {
@@ -6796,18 +5086,6 @@
         "value": 0.502779548367018,
         "source": "ts_headline_by_category.csv"
       },
-      "combination_weighted|FOODS|rmse": {
-        "value": 8.000633536157588,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|FOODS|mae": {
-        "value": 6.270931789602172,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|FOODS|mape": {
-        "value": 0.5035550667230781,
-        "source": "ts_headline_by_category.csv"
-      },
       "ets|FOODS|rmse": {
         "value": 8.150470505415033,
         "source": "ts_headline_by_category.csv"
@@ -6818,18 +5096,6 @@
       },
       "ets|FOODS|mape": {
         "value": 0.4927969932774095,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|FOODS|rmse": {
-        "value": 9.346507880585271,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|FOODS|mae": {
-        "value": 7.368115304074196,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|FOODS|mape": {
-        "value": 0.5526107930913347,
         "source": "ts_headline_by_category.csv"
       },
       "prophet|FOODS|rmse": {
@@ -6904,18 +5170,6 @@
         "value": 0.5203257338219596,
         "source": "ts_headline_by_category.csv"
       },
-      "ar|HOBBIES|rmse": {
-        "value": 3.286276019261796,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|HOBBIES|mae": {
-        "value": 2.5688103358439345,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|HOBBIES|mape": {
-        "value": 0.6664840977330635,
-        "source": "ts_headline_by_category.csv"
-      },
       "arima|HOBBIES|rmse": {
         "value": 3.2639027845771285,
         "source": "ts_headline_by_category.csv"
@@ -6926,18 +5180,6 @@
       },
       "arima|HOBBIES|mape": {
         "value": 0.6977249804973364,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOBBIES|rmse": {
-        "value": 3.263283556582702,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOBBIES|mae": {
-        "value": 2.553261157919364,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOBBIES|mape": {
-        "value": 0.6628855372884488,
         "source": "ts_headline_by_category.csv"
       },
       "arma|HOBBIES|rmse": {
@@ -6976,18 +5218,6 @@
         "value": 0.6471331672488216,
         "source": "ts_headline_by_category.csv"
       },
-      "combination_weighted|HOBBIES|rmse": {
-        "value": 3.168197385796719,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|HOBBIES|mae": {
-        "value": 2.467275102591616,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|HOBBIES|mape": {
-        "value": 0.647272114237683,
-        "source": "ts_headline_by_category.csv"
-      },
       "ets|HOBBIES|rmse": {
         "value": 3.131237122736745,
         "source": "ts_headline_by_category.csv"
@@ -6998,18 +5228,6 @@
       },
       "ets|HOBBIES|mape": {
         "value": 0.6123122425260095,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOBBIES|rmse": {
-        "value": 3.362394001153561,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOBBIES|mae": {
-        "value": 2.6676575375686897,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOBBIES|mape": {
-        "value": 0.6610700137353418,
         "source": "ts_headline_by_category.csv"
       },
       "prophet|HOBBIES|rmse": {
@@ -7084,18 +5302,6 @@
         "value": 0.6721585130230449,
         "source": "ts_headline_by_category.csv"
       },
-      "ar|HOUSEHOLD|rmse": {
-        "value": 3.943068997054647,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|HOUSEHOLD|mae": {
-        "value": 3.087303780814707,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ar|HOUSEHOLD|mape": {
-        "value": 0.6458726351336079,
-        "source": "ts_headline_by_category.csv"
-      },
       "arima|HOUSEHOLD|rmse": {
         "value": 3.957968044261955,
         "source": "ts_headline_by_category.csv"
@@ -7106,18 +5312,6 @@
       },
       "arima|HOUSEHOLD|mape": {
         "value": 0.6452189525222402,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOUSEHOLD|rmse": {
-        "value": 3.9551780358426942,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOUSEHOLD|mae": {
-        "value": 3.0735536072800365,
-        "source": "ts_headline_by_category.csv"
-      },
-      "arimax|HOUSEHOLD|mape": {
-        "value": 0.6576560816154465,
         "source": "ts_headline_by_category.csv"
       },
       "arma|HOUSEHOLD|rmse": {
@@ -7156,18 +5350,6 @@
         "value": 0.5735851911211948,
         "source": "ts_headline_by_category.csv"
       },
-      "combination_weighted|HOUSEHOLD|rmse": {
-        "value": 3.664387369436275,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|HOUSEHOLD|mae": {
-        "value": 2.8745016292259917,
-        "source": "ts_headline_by_category.csv"
-      },
-      "combination_weighted|HOUSEHOLD|mape": {
-        "value": 0.5732722323900539,
-        "source": "ts_headline_by_category.csv"
-      },
       "ets|HOUSEHOLD|rmse": {
         "value": 3.660112506720084,
         "source": "ts_headline_by_category.csv"
@@ -7178,18 +5360,6 @@
       },
       "ets|HOUSEHOLD|mape": {
         "value": 0.5533021402911736,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOUSEHOLD|rmse": {
-        "value": 4.126798007294502,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOUSEHOLD|mae": {
-        "value": 3.117787164698721,
-        "source": "ts_headline_by_category.csv"
-      },
-      "ma|HOUSEHOLD|mape": {
-        "value": 0.6789337002312209,
         "source": "ts_headline_by_category.csv"
       },
       "prophet|HOUSEHOLD|rmse": {
@@ -7283,7 +5453,7 @@
           1.1428155748432969,
           1.6671169886230113
         ],
-        "p_holm": 3.1813890968313045e-23,
+        "p_holm": 2.2025001439601337e-23,
         "better": false
       },
       "rmse|ets-sarima_07a": {
@@ -7316,7 +5486,7 @@
           0.0097135881061454,
           0.0379274543188232
         ],
-        "p_holm": 0.0006289969479739,
+        "p_holm": 0.0005241641233116,
         "better": false
       },
       "rmse|theta-sarima_07a": {
@@ -7349,7 +5519,7 @@
           0.3167075539220447,
           0.5355834920316611
         ],
-        "p_holm": 1.1265318142655625e-19,
+        "p_holm": 7.510212095103749e-20,
         "better": false
       },
       "rmse|combination-sarima_07a": {
@@ -7363,39 +5533,6 @@
         "p_holm": 0.0304354508458678,
         "better": true
       },
-      "rmse|combination_weighted-sarima_07a": {
-        "value": -0.0242453550333383,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          -0.0417991890197155,
-          -0.0074597888036047
-        ],
-        "p_holm": 0.019705255715521,
-        "better": true
-      },
-      "rmse|ar-sarima_07a": {
-        "value": 0.2378048457388792,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.16087755201479,
-          0.2944589123460619
-        ],
-        "p_holm": 1.0513607348508771e-15,
-        "better": false
-      },
-      "rmse|ma-sarima_07a": {
-        "value": 0.3289963894102949,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.2486489574558024,
-          0.4687815994810762
-        ],
-        "p_holm": 6.863367424397214e-19,
-        "better": false
-      },
       "rmse|arma-sarima_07a": {
         "value": 0.0559790969232825,
         "source": "ts_tests.csv",
@@ -7404,7 +5541,7 @@
           0.0247185745663784,
           0.072435964766679
         ],
-        "p_holm": 4.844424854324577e-05,
+        "p_holm": 4.1523641608496376e-05,
         "better": false
       },
       "rmse|arima-sarima_07a": {
@@ -7415,18 +5552,7 @@
           0.0584342356443517,
           0.1725618952142118
         ],
-        "p_holm": 7.700719912040478e-15,
-        "better": false
-      },
-      "rmse|arimax-sarima_07a": {
-        "value": 0.1562461827188768,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.0808242418661518,
-          0.2105986699680602
-        ],
-        "p_holm": 9.718619733606583e-17,
+        "p_holm": 6.738129923035418e-15,
         "better": false
       },
       "mae|seasonal_naive-sarima_07a": {
@@ -7437,7 +5563,7 @@
           0.8758890921682889,
           1.2821952723455443
         ],
-        "p_holm": 7.40584054082735e-23,
+        "p_holm": 5.127120374418935e-23,
         "better": false
       },
       "mae|ets-sarima_07a": {
@@ -7503,7 +5629,7 @@
           0.1769085045082059,
           0.3853244873953046
         ],
-        "p_holm": 7.340404792684851e-17,
+        "p_holm": 5.33847621286171e-17,
         "better": false
       },
       "mae|combination-sarima_07a": {
@@ -7517,39 +5643,6 @@
         "p_holm": 0.0010124391787986,
         "better": true
       },
-      "mae|combination_weighted-sarima_07a": {
-        "value": -0.0392819720594863,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          -0.0477052732070334,
-          -0.0233154849591681
-        ],
-        "p_holm": 0.0005141292443995,
-        "better": true
-      },
-      "mae|ar-sarima_07a": {
-        "value": 0.1779252795451353,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.1188935482236475,
-          0.2569586260607051
-        ],
-        "p_holm": 1.4492014753021468e-14,
-        "better": false
-      },
-      "mae|ma-sarima_07a": {
-        "value": 0.2620086826343308,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.1975092900988491,
-          0.414724830263989
-        ],
-        "p_holm": 1.83693872453932e-18,
-        "better": false
-      },
       "mae|arma-sarima_07a": {
         "value": 0.0350513423279169,
         "source": "ts_tests.csv",
@@ -7558,7 +5651,7 @@
           0.0209582312729694,
           0.0733122093871122
         ],
-        "p_holm": 0.0001130998936518,
+        "p_holm": 9.694276598734055e-05,
         "better": false
       },
       "mae|arima-sarima_07a": {
@@ -7569,18 +5662,7 @@
           0.0425916180079335,
           0.1351917444465633
         ],
-        "p_holm": 1.5056175775594266e-13,
-        "better": false
-      },
-      "mae|arimax-sarima_07a": {
-        "value": 0.1232556575586286,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.0842403745857965,
-          0.1798793913416865
-        ],
-        "p_holm": 3.9396907127238597e-14,
+        "p_holm": 1.317415380364498e-13,
         "better": false
       },
       "mape|seasonal_naive-sarima_07a": {
@@ -7591,7 +5673,7 @@
           0.1029552004806884,
           0.1484076995445671
         ],
-        "p_holm": 1.0178736924451204e-17,
+        "p_holm": 7.04681787077391e-18,
         "better": false
       },
       "mape|ets-sarima_07a": {
@@ -7602,7 +5684,7 @@
           -0.0530192822117992,
           -0.0275761316052021
         ],
-        "p_holm": 1.311555055335544e-11,
+        "p_holm": 8.346259443044369e-12,
         "better": true
       },
       "mape|sarima-sarima_07a": {
@@ -7668,41 +5750,8 @@
           -0.0272864366437191,
           -0.0147397256099724
         ],
-        "p_holm": 2.1085538056771383e-09,
+        "p_holm": 1.4057025371180924e-09,
         "better": true
-      },
-      "mape|combination_weighted-sarima_07a": {
-        "value": -0.0213543959765389,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          -0.0271829195589106,
-          -0.0149479500030144
-        ],
-        "p_holm": 1.366747294233164e-09,
-        "better": true
-      },
-      "mape|ar-sarima_07a": {
-        "value": 0.0308391160449007,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.0164594690746158,
-          0.0396822628558715
-        ],
-        "p_holm": 0.0002173152970511,
-        "better": false
-      },
-      "mape|ma-sarima_07a": {
-        "value": 0.0333211295929758,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.0165706641443646,
-          0.0594732087029853
-        ],
-        "p_holm": 2.518283670235773e-05,
-        "better": false
       },
       "mape|arma-sarima_07a": {
         "value": 0.0019895580931753,
@@ -7723,18 +5772,7 @@
           0.0145490837632369,
           0.0361671145192329
         ],
-        "p_holm": 4.8406031860797744e-14,
-        "better": false
-      },
-      "mape|arimax-sarima_07a": {
-        "value": 0.0413453607212651,
-        "source": "ts_tests.csv",
-        "n": 150,
-        "ci95": [
-          0.0266810147344584,
-          0.0520439606768685
-        ],
-        "p_holm": 8.964752673221892e-09,
+        "p_holm": 3.2270687907198504e-14,
         "better": false
       }
     },
@@ -7843,15 +5881,7 @@
         "scored_rmse": 4.6458336893343954,
         "scored_mae": 3.677085739133229
       },
-      "building block|building block: ARIMAX": {
-        "value": 4.938657584429601,
-        "source": "ts_sarima_ablation.csv",
-        "kept": false,
-        "val_mae": 3.935799212826784,
-        "scored_rmse": 4.801194668998152,
-        "scored_mae": 3.8657617536039934
-      },
-      "ETS|ETS as in 07a": {
+      "Holt-Winters|damped Holt-Winters as in 07a": {
         "value": 4.668454667490359,
         "source": "ts_sarima_ablation.csv",
         "kept": false,
@@ -7859,7 +5889,7 @@
         "scored_rmse": 4.4984342852994095,
         "scored_mae": 3.51059550042455
       },
-      "ETS|ETS + log1p": {
+      "Holt-Winters|Holt-Winters + log1p": {
         "value": 4.675013228180644,
         "source": "ts_sarima_ablation.csv",
         "kept": false,
@@ -7867,7 +5897,7 @@
         "scored_rmse": 4.592786872110423,
         "scored_mae": 3.622899088664402
       },
-      "ETS|ETS + Box-Cox": {
+      "Holt-Winters|Holt-Winters + Box-Cox": {
         "value": 4.605824364540144,
         "source": "ts_sarima_ablation.csv",
         "kept": true,
@@ -7875,7 +5905,7 @@
         "scored_rmse": 4.512845451154038,
         "scored_mae": 3.5429420300655408
       },
-      "ETS|ETS + clipping": {
+      "Holt-Winters|Holt-Winters + clipping": {
         "value": 4.605824364540144,
         "source": "ts_sarima_ablation.csv",
         "kept": false,

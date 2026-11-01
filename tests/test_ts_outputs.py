@@ -111,7 +111,7 @@ def test_07h_applies_the_blow_up_guard():
     sys.path.insert(0, str(ROOT / "src"))
     import best_model as bm
     inp = tm.load_inputs()
-    single = fc[~fc["model"].isin(["combination", "combination_weighted"])]
+    single = fc[fc["model"] != "combination"]
     worst = single.groupby(["item_id", "origin", "model"])["forecast"].max().reset_index()
     peak = {i: d["sales"].max() for i, d in inp["daily"].items()}
     worst["ratio"] = worst["forecast"] / worst["item_id"].map(peak).clip(lower=1)
@@ -139,3 +139,19 @@ def test_accuracy_page_shows_the_eight_models():
     at.multiselect(key="acc_extra").set_value(groups).run()
     assert not at.exception, [e.value for e in at.exception]
     assert len(at.dataframe[0].value) > len(SHOWN)
+
+
+def test_only_the_twelve_models_are_reported():
+    """No table the dashboard reads still carries a model that was removed from the project."""
+    gone = {"hw_mul", "tsb", "ar", "ma", "arimax", "combination_weighted"}
+    for f in ["ts_headline.csv", "ts_item_scores.csv", "comparison_metrics_summary.csv", "model_mase_unrounded.csv",
+              "classical_metrics_summary.csv", "pbi_fact_forecast_error.csv"]:
+        path = T / f
+        if not path.exists():
+            continue
+        left = gone & set(pd.read_csv(path, usecols=["model"])["model"])
+        assert not left, (f, left)
+    # 07a's raw damped ETS is gone too; 07h keeps the key 'ets' for the Box-Cox Holt-Winters
+    for f in ["classical_metrics_summary.csv", "model_mase_unrounded.csv", "pbi_fact_forecast_error.csv"]:
+        if (T / f).exists():
+            assert "ets" not in set(pd.read_csv(T / f, usecols=["model"])["model"]), f

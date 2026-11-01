@@ -1,11 +1,7 @@
 level,model,n,fit_failed,ljung_box_pass,normality_pass,roots_ok
 aggregate,arima,4,0.0,0.0,0.0,1.0
-aggregate,ets,4,0.0,0.0,0.0,
 aggregate,hw_add,4,0.0,0.25,0.0,
-aggregate,hw_mul,4,0.0,0.25,0.0,
 aggregate,sarima,4,0.0,0.0,0.0,0.75
 item,arima,150,0.0,0.2866666666666667,0.0,1.0
-item,ets,150,0.0,0.29333333333333333,0.0,
 item,hw_add,150,0.0,0.47333333333333333,0.006666666666666667,
-item,hw_mul,150,0.0,0.4866666666666667,0.006666666666666667,
 item,sarima,150,0.0,0.82,0.006666666666666667,1.0

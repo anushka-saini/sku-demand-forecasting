@@ -1,14 +1,12 @@
 state,conclusion,evidence,holds
 TX,R1 breaks are common,CUSUM break rate 0.6635,True
 TX,R2 Combination beats seasonal naive,"median MASE 0.7281 vs 0.9479, p = 1.14e-86",True
-TX,R3 Combination at least as good as ETS,median MASE 0.7281 vs ETS 0.7393,True
 TX,R4 truncate-adaptation does not help,"median diff +0.0011 (CI +0.0004 to +0.0023), p = 0.0001, n = 353",True
 TX,R5 static Combination cheaper than naive (95%),59574 vs 56254,False
 TX,R6 adaptive not cheaper than static (95%),"total diff -1940, 95% CI -4674 to +110",True
 TX,R7 99% cheapest of 90/95/99,cheapest = 0.99,True
 WI,R1 breaks are common,CUSUM break rate 0.6488,True
 WI,R2 Combination beats seasonal naive,"median MASE 0.7993 vs 1.0252, p = 9.14e-99",True
-WI,R3 Combination at least as good as ETS,median MASE 0.7993 vs ETS 0.8049,True
 WI,R4 truncate-adaptation does not help,"median diff +0.0013 (CI +0.0007 to +0.0017), p = 0.0000, n = 386",True
 WI,R5 static Combination cheaper than naive (95%),65482 vs 60474,False
 WI,R6 adaptive not cheaper than static (95%),"total diff -327, 95% CI -1660 to +883",True
