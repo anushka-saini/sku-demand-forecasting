@@ -18,6 +18,14 @@ pmdarima==2.1.1
 # Prophet (notebooks/07f_theta_prophet_autots.ipynb); AutoTS is in requirements-extra.txt
 prophet==1.5.0
 
+# Final models (notebook 13): gradient boosting, tuning, neural nets, GARCH
+xgboost==3.4.1
+lightgbm==4.7.0
+optuna==5.1.0
+torch==2.14.1
+arch==9.0.0
+scikit-learn==1.9.1
+
 # Plots
 matplotlib==3.11.2
 
@@ -35,6 +43,10 @@ plotly==7.1.0
 
 # Testing
 pytest==9.1.1
+
+# Report and slides (scripts/build_report.py, scripts/build_slides.py)
+python-docx==1.2.0
+python-pptx==1.0.2
 
 # Screenshots and PDF summary (scripts/screenshots.py, scripts/build_summary.py)
 playwright==1.64.0
