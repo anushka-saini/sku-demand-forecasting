@@ -1,0 +1,35 @@
+feature,group
+mean7,past
+mean14,past
+mean28,past
+mean56,past
+mean112,past
+std28,past
+zero28,past
+max28,past
+wd_mean8,past
+wd1,past
+wd2,past
+wd3,past
+wd4,past
+trend,past
+h,known ahead
+dow,known ahead
+dom,known ahead
+month,known ahead
+sin1,known ahead
+cos1,known ahead
+sin2,known ahead
+cos2,known ahead
+snap,known ahead
+christmas,known ahead
+event,known ahead
+ev_sporting,known ahead
+ev_cultural,known ahead
+ev_national,known ahead
+ev_religious,known ahead
+event_soon,known ahead
+rel_price,known ahead
+price_chg,known ahead
+cat,item
+dept,item

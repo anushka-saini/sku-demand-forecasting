@@ -1,0 +1,14 @@
+,weight,name
+autots,0.0,AutoTS
+ets_boxcox,0.0,"Holt-Winters (damped, Box-Cox)"
+gru,0.0,GRU
+lightgbm,0.26901887922983686,LightGBM (reference)
+lstm,0.025301958805866984,LSTM
+patchtst,0.0,PatchTST
+prophet,0.0,Prophet
+prophet_tuned,0.20873432386832874,"Prophet (tuned, events)"
+sarima,0.0,SARIMA
+sarimax,0.13550599304512312,SARIMAX
+seasonal_naive,0.0,Seasonal naive
+theta,0.0,Theta
+xgboost,0.3157080457765696,XGBoost (Optuna)

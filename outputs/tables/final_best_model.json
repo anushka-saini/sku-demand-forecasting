@@ -1,0 +1,19 @@
+{
+ "model": "xgboost",
+ "name": "XGBoost (Optuna)",
+ "best_single": "xgboost",
+ "best_single_name": "XGBoost (Optuna)",
+ "avg_top3_members": [
+  "xgboost",
+  "lightgbm",
+  "sarimax"
+ ],
+ "hybrid_base": "sarima",
+ "stack_weights": {
+  "lightgbm": 0.26901887922983686,
+  "lstm": 0.025301958805866984,
+  "prophet_tuned": 0.20873432386832874,
+  "sarimax": 0.13550599304512312,
+  "xgboost": 0.3157080457765696
+ }
+}

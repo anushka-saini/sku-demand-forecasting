@@ -1,0 +1,6 @@
+part,origins,first_day,last_day
+train,all history before the first validation origin,2011-01-29,2015-09-13
+validation fold 1,2015-09-13,2015-09-14,2015-10-11
+validation fold 2,2015-10-11,2015-10-12,2015-11-08
+validation fold 3,2015-11-08,2015-11-09,2015-12-06
+"test (6 windows, scored once)",2015-12-06 to 2016-04-24,2015-12-07,2016-05-22
