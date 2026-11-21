@@ -35,9 +35,12 @@ NOTEBOOKS = \
 	notebooks/90_powerbi_export.ipynb \
 	notebooks/91_dashboard_export.ipynb
 
-.PHONY: all notebooks facts test dashboard
+.PHONY: all models notebooks facts test dashboard
 
-all: notebooks facts test
+all: models notebooks facts test
+
+models:
+	for m in xgb prophet lstm gru patchtst; do $(PY) src/run_models.py $$m || exit 1; done
 
 notebooks:
 	@for nb in $(NOTEBOOKS); do echo "== $$nb"; $(RUN) $$nb || exit 1; done

@@ -37,6 +37,7 @@ ORDER = ["01_meet_the_data", "02_scope", "03_explore", "04_zeros_and_trimming", 
          "11d_inventory_other_seasons", "11e_classical_forecasts_and_stock",
          "07i_model_verdict",      # reads 07h's scores, and 09's and 11e's files for its stock check
          "11f_texas_and_wisconsin",
+         "13_final_models",        # reads the cached fits written by src/run_models.py (run first, see MODEL_RUNS)
          "90_powerbi_export", "91_dashboard_export"]
 
 
@@ -63,7 +64,22 @@ def pick(args):
     return names
 
 
+# the heavy fits of notebook 13, one process each; every run caches its forecasts, so a finished one is skipped
+MODEL_RUNS = ["xgb", "prophet", "lstm", "gru", "patchtst"]
+
+
+def model_runs():
+    cache = ROOT / "data" / "processed" / "final"
+    done = {"xgb": "xgboost_forecasts.parquet", "prophet": "prophet_tuned_forecasts.parquet", "lstm": "lstm_forecasts.parquet",
+            "gru": "gru_forecasts.parquet", "patchtst": "patchtst_forecasts.parquet"}
+    for m in MODEL_RUNS:
+        if not (cache / done[m]).exists():
+            run([PY, "src/run_models.py", m], f"fit {m}")
+
+
 def main():
+    if "13_final_models" in pick(sys.argv[1:]):
+        model_runs()
     for nb in pick(sys.argv[1:]):
         run([PY, "-m", "jupyter", "nbconvert", "--to", "notebook", "--execute", "--inplace",
              "--ExecutePreprocessor.timeout=20000", "--ExecutePreprocessor.kernel_name=run_all",

@@ -210,6 +210,9 @@ def build():
     ts = build_time_series()
     if ts:
         F['time_series'] = ts
+    fin = build_final()
+    if fin:
+        F['final'] = fin
     return F
 
 
@@ -325,6 +328,38 @@ def build_time_series():
     M['combination_members'] = {'value': r["ts_combination_members.csv"]['member'].tolist(),
                                 'source': "ts_combination_members.csv"}
     return M
+
+
+# ---------------------------------------------------------------- final comparison (notebook 13)
+
+FINAL_FILES = ["final_leaderboard.csv", "final_dm_tests.csv", "final_garch_intervals.csv", "final_stock_summary.csv",
+               "final_stack_weights.csv", "final_best_model.json"]
+
+
+def build_final():
+    """Headline numbers of the final comparison. Returns {} if notebook 13 has not been run."""
+    if not all((T / f).exists() for f in FINAL_FILES):
+        return {}
+    lb = pd.read_csv(T / "final_leaderboard.csv").set_index("model")
+    info = json.loads((T / "final_best_model.json").read_text())
+    F = {'best': {'value': info['model'], 'name': info['name'], 'source': "final_best_model.json"},
+         'metrics': {f"{m}|{k}": fact(lb.loc[m, k], "final_leaderboard.csv", rank=lb.loc[m, 'rank'])
+                     for m in lb.index for k in ['mae', 'rmse', 'mape_nonzero', 'wape', 'pooled_mae', 'pooled_rmse',
+                                                 'mae_std', 'rmse_std', 'fit_seconds'] if k in lb}}
+    F['rank'] = {m: fact(lb.loc[m, 'rank'], "final_leaderboard.csv") for m in lb.index}
+    dm = pd.read_csv(T / "final_dm_tests.csv")
+    F['dm'] = {f"{r.model_a}-{r.model_b}|{r.loss}": fact(r.dm_stat, "final_dm_tests.csv", p=r.p_value,
+                                                          significant=bool(r.significant_5pct)) for r in dm.itertuples()}
+    g = pd.read_csv(T / "final_garch_intervals.csv")
+    F['garch'] = {f"{r.interval}|{r.nominal}": fact(r.coverage, "final_garch_intervals.csv", width=r.mean_width,
+                                                    score=r.interval_score) for r in g.itertuples()}
+    st = pd.read_csv(T / "final_stock_summary.csv")
+    F['stock'] = {f"{r.method}|{r.model}": fact(r.total_cost, "final_stock_summary.csv", fill_rate=r.fill_rate,
+                                                avg_inventory_value=r.avg_inventory_value)
+                  for r in st.itertuples()}
+    w = pd.read_csv(T / "final_stack_weights.csv")
+    F['stack_weights'] = {r[0]: fact(r.weight, "final_stack_weights.csv") for r in w.rename(columns={w.columns[0]: 'm'}).itertuples(index=False)}
+    return F
 
 
 if __name__ == '__main__':
