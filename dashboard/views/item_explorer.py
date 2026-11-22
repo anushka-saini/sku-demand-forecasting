@@ -34,10 +34,10 @@ info = items.set_index("item_id").loc[item]
 in_sample = item in set(sample["item_id"])
 # models run on the 150-item sample only; on the sample the best model is the 07h contender it repeats
 SAMPLE_MODELS = [m for m in ["sarima", "sarimax", "theta", "prophet", "autots", "ets_boxcox", "combination", "hw_add",
-                             "hw_mul", "arima"] if m not in SAMPLE_DUPLICATES.values()]
+                             "arima"] if m not in SAMPLE_DUPLICATES.values()]
 
 fd = in_window(fd_all[fd_all["item_id"] == item], flt["window"])
-models = [m for m in [BEST, "ets", "seasonal_naive", "tsb"] if m in set(fd["model"])]
+models = [m for m in [BEST, "seasonal_naive"] if m in set(fd["model"])]
 if in_sample:
     models += [m for m in SAMPLE_MODELS if m in set(cmp_fc["model"])]
 if st.session_state.get("ie_model") not in models:

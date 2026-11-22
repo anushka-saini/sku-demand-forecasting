@@ -19,7 +19,7 @@ page("Overview", "Can better forecasts, or reacting to shifts in demand, cut the
 n_items = int(value(f, "scope", "ax_ay_items"))
 ca_items = int(value(f, "scope", "ca_items"))
 units_share = value(f, "scope", "ax_ay_share_of_units")
-all_rows = mase[(mase["category"] == "ALL") & mase["model"].isin(["seasonal_naive", "ets", BEST])].set_index("model")
+all_rows = mase[(mase["category"] == "ALL") & mase["model"].isin(["seasonal_naive", BEST])].set_index("model")
 naive = all_rows.loc["seasonal_naive", "median_item_mase"]
 best = all_rows["median_item_mase"].idxmin()
 best_val = all_rows.loc[best, "median_item_mase"]
@@ -31,9 +31,7 @@ fr_text, fr_cal = c95.loc["normal formula", "fill_rate"], c95.loc["conformal", "
 
 # every version that reacts to a shift, and whether any of them met the "helps" rule
 best_all = variants[variants["group"] == "all detected breaks"]
-reacting = len(best_all) + len(adaptive[(adaptive["comparison"].str.startswith("adaptive")) & (adaptive["category"] == "ALL")
-                                      & adaptive["model"].isin(["ets", "tsb"])]) \
-    + len(shift_sarima[shift_sarima["group"] == "all break item-origins"])
+reacting = len(best_all) + len(shift_sarima[shift_sarima["group"] == "all break item-origins"])
 any_better = bool(best_all["helps"].astype(str).str.lower().eq("true").any()) or bool(
     shift_sarima.loc[shift_sarima["group"] == "all break item-origins", "helps"].astype(str).str.lower().eq("true").any())
 
@@ -72,6 +70,16 @@ todo = (f"**What to do with this:** plan with {name(best)} forecasts as they are
         + (", do not retrain them after a detected shift," if not any_better else ",")
         + " and size safety stock from past forecast errors rather than the textbook formula.")
 st.markdown(todo)
+
+# the final comparison adds gradient boosting, neural nets and combinations to the eight; say where it ends up
+from utils.final import best_info, load as load_final, ready as final_ready  # noqa: E402
+if final_ready():
+    flb = load_final("leaderboard")
+    flb = flb[flb["level"] == "item"].sort_values("rank")
+    fb, fn = flb.iloc[0], flb[flb["model"] == "seasonal_naive"].iloc[0]
+    st.markdown(f"**Final comparison, with machine-learning and neural models added:** {fb['name']} has the best combined rank on "
+                f"MAE and RMSE (MAE {fb['mae']:.2f}, RMSE {fb['rmse']:.2f} units a day, against {fn['mae']:.2f} and {fn['rmse']:.2f} for "
+                f"seasonal naive). The earlier numbers on this page are for the time-series models only. See the Final leaderboard page.")
 
 # the eight time-series models of 07h on the 150-item sample, on RMSE, the measure the winner was picked on, with
 # ARIMA beside them for reference

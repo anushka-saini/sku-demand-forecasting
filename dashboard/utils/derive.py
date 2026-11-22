@@ -34,7 +34,7 @@ def in_window(df, window, col="origin"):
     return df[(df[col] >= a) & (df[col] <= b)]
 
 
-TS_KEYS = {"ets": "ets_boxcox"}                                 # 07h's ETS is the Box-Cox one; 07a already has an 'ets'
+TS_KEYS = {"ets": "ets_boxcox"}                                 # 07h stores the Box-Cox Holt-Winters as 'ets'
 TS_SKIP = ["seasonal_naive", "sarima", "arima", "sarima_07a"]   # 07h repeats 07a's forecasts for these; 07a's are kept
 
 
@@ -96,7 +96,7 @@ def sample_scores(window):
 
     e = get("forecast_error")
     e = in_window(e[e["is_eval_origin"] & e["item_id"].isin(ids)], window)
-    for model, key in [("ets", "ets_retrained"), ("best", "best_restart"), ("tsb", "tsb_retrained")]:
+    for model, key in [("best", "best_restart")]:
         d = e[(e["model"] == model) & (e["variant"] == "adaptive")]
         if len(d):
             out.append(d.groupby("item_id", as_index=False)[["mase", "mae"]].mean().merge(items).assign(model=key))

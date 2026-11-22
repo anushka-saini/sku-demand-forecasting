@@ -36,26 +36,35 @@ def shifts(f):
 
 
 def best_model(f):
-    med = {m: value(f, 'forecasts', 'median_item_mase', f'{m}_ALL') for m in ('seasonal_naive', 'ets', BEST)}
+    mase = lookup(f, 'forecasts', 'median_item_mase')
+    med = {k[:-4]: v['value'] for k, v in mase.items() if k.endswith('_ALL')}       # every model scored on all items
     best = min(med, key=med.get)
     others = [m for m in med if m != best]
-    ca_sig = all(value(f, 'forecasts', 'pairwise', f'{best}-{o}|ALL') < 0 and
-                 lookup(f, 'forecasts', 'pairwise', f'{best}-{o}|ALL')['p_value'] < 0.05
-                 for o in others if f'{best}-{o}|ALL' in lookup(f, 'forecasts', 'pairwise'))
+    pw = lookup(f, 'forecasts', 'pairwise')
+
+    def gap(o):
+        """best minus o on all items, read whichever way round the test was saved."""
+        if f'{best}-{o}|ALL' in pw:
+            return pw[f'{best}-{o}|ALL']['value'], pw[f'{best}-{o}|ALL']['p_value']
+        if f'{o}-{best}|ALL' in pw:
+            return -pw[f'{o}-{best}|ALL']['value'], pw[f'{o}-{best}|ALL']['p_value']
+        return None
+
+    ca_sig = all(g[0] < 0 and g[1] < 0.05 for g in map(gap, others) if g)
     rep_sig = all(lookup(f, 'replication_tests', f'{s}|{best} - {o}')['p_value'] < 0.05
                   for s in STATES for o in others if f'{s}|{best} - {o}' in lookup(f, 'replication_tests'))
     strength = 'strong' if ca_sig and rep_sig else ('moderate' if ca_sig else 'weak')
     bias = value(f, 'forecasts', 'bias', f'{best}_static_ALL')
-    names = {BEST: BEST_SHORT, 'ets': 'ETS', 'seasonal_naive': 'Seasonal naive'}
+    names = {BEST: BEST_SHORT, 'sarima': 'SARIMA', 'seasonal_naive': 'Seasonal naive'}
     runner = sorted(others, key=med.get)[0]
-    pw = lookup(f, 'forecasts', 'pairwise')
-    t = pw.get(f'{best}-{runner}|ALL') or pw.get(f'{runner}-{best}|ALL')
-    level = t is not None and t['p_value'] >= 0.05
+    t = gap(runner)
+    level = t is not None and t[1] >= 0.05
     return {
-        'question': 'Which forecast is best?', 'verdict': names[best], 'strength': strength,
-        'answer': f"{names[best]}: median error {med[best]:.3f} vs {med['seasonal_naive']:.3f} for the simple "
+        'question': 'Which forecast is best?', 'verdict': names.get(best, best), 'strength': strength,
+        'answer': f"{names.get(best, best)}: median error {med[best]:.3f} vs {med['seasonal_naive']:.3f} for the simple "
                   f"baseline (MASE; lower is better)."
-                  + (f" {names[runner]} is level with it ({med[runner]:.3f}; the difference is not significant)." if level else ""),
+                  + (f" {names.get(runner, runner)} is level with it ({med[runner]:.3f}; the difference is not significant)."
+                     if level else ""),
         'caveat': (f"It under-forecasts by {abs(bias):.1%} in total." if bias < 0 else f"It over-forecasts by {bias:.1%} in total."),
         'page': 'views/accuracy.py'}
 
@@ -83,7 +92,7 @@ def retraining(f):
                      f"Simply restarting from the shift left the median error unchanged and made it better for only "
                      f"{trunc['share_improved']:.0%} of {trunc['n']} items")
                   + (f", and the same holds in {n_rep} other states." if rep else "."),
-        'caveat': (f"Tested with {BEST_SHORT} (restart and a blend), and on ETS, TSB and SARIMA in 08d; small shifts are "
+        'caveat': (f"Tested with {BEST_SHORT} (restart and a blend), and on SARIMA in 08d; small shifts are "
                    "invisible to the detector."),
         'page': 'views/demand_shifts.py'}
 

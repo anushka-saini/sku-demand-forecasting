@@ -91,10 +91,6 @@ for v, lab in [("truncate", f"{BEST_SHORT}, retrained after a shift"), ("blend",
     r = variants[(variants["group"] == "all detected breaks") & (variants["variant"] == v)].iloc[0]
     rows.append({"version": lab, "model": BEST, "items": int(r["n"]), "change": r["median_diff"], "low": r["ci_low"],
                  "high": r["ci_high"], "better_for": r["share_improved"], "meets_rule": str(r["helps"]).lower() == "true"})
-for m, lab in [("ets", "ETS, retrained after a shift"), ("tsb", "TSB, retrained after a shift")]:
-    r = adaptive[(adaptive["model"] == m) & adaptive["comparison"].str.startswith("adaptive") & (adaptive["category"] == "ALL")].iloc[0]
-    rows.append({"version": lab, "model": m, "items": int(r["n"]), "change": r["median_diff"], "low": r["ci_low"], "high": r["ci_high"],
-                 "better_for": r["share_improved"], "meets_rule": False})
 for v, lab in [("restart", "SARIMA, retrained after a shift"), ("dummy", "SARIMA with a shift marker")]:
     for grp, suffix in [("all break item-origins", ""), ("only where the variant differs", " (only where it differs)")]:
         r = sarima[(sarima["group"] == grp) & (sarima["variant"] == v)].iloc[0]

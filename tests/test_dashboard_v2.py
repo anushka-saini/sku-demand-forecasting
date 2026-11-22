@@ -86,9 +86,9 @@ def test_best_model_is_lowest_median_mase():
     f = copy.deepcopy(read_facts())
     from utils.models import BEST_SHORT
     assert verdicts.best_model(f)["verdict"] == BEST_SHORT
-    f["forecasts"]["median_item_mase"]["ets_ALL"]["value"] = 0.1
-    f["forecasts"]["pairwise"].setdefault("ets-best|ALL", {"value": -0.1, "p_value": 0.001})
-    assert verdicts.best_model(f)["verdict"] == "ETS"
+    f["forecasts"]["median_item_mase"]["sarima_ALL"]["value"] = 0.1          # make the runner-up the lowest
+    f["forecasts"]["bias"]["sarima_static_ALL"] = {"value": -0.004}            # 09 saves bias only for its own models
+    assert verdicts.best_model(f)["verdict"] == "SARIMA"
 
 
 # ---------------------------------------------------------------- watchlist

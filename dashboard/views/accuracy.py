@@ -37,7 +37,7 @@ if scores.empty:
     st.stop()
 
 lb_all = leaderboard(scores, metric)
-few = lb_all[lb_all["n_items"] < 0.9 * lb_all["n_items"].max()]          # e.g. TSB, which only runs on items that often sell nothing
+few = lb_all[lb_all["n_items"] < 0.9 * lb_all["n_items"].max()]          # a model that ran on only some items
 lb_all = lb_all[lb_all["n_items"] >= 0.9 * lb_all["n_items"].max()]
 vals = lb_all.set_index("model")["value"]
 cont = vals.reindex(CONTENDERS).dropna().sort_values()
@@ -62,9 +62,8 @@ kpis([
 ])
 
 # the leaderboard: the eight models of 07h, plus any group the reader adds
-GROUPS = {"Other classical models (07a)": ["ets", "hw_add", "hw_mul"],
-          "Building blocks (07c)": BLOCKS,
-          "Weighted combination (07h)": ["combination_weighted"],
+GROUPS = {"Holt-Winters additive (07a)": ["hw_add"],
+          "Building blocks: ARMA and ARIMA (07c)": BLOCKS,
           "Versions that react to a shift": SHIFT_AWARE}
 extra = st.multiselect("Also show", list(GROUPS), key="acc_extra",
                        help="The chart starts with the eight models compared head to head. Every bar you add is scored "
@@ -99,8 +98,7 @@ chart(fig, f"{SHORT[best]} has the lowest typical {metric} of the eight, {cont.i
 head = get("ts_headline").set_index("model")
 table = lb.sort_values("value")[["model", "label", "kind", "value", "beats_baseline", "n_items"]]
 table["vs baseline"] = table["value"] / base - 1
-table["Validation RMSE"] = table["model"].map(lambda m: head["val_rmse"].get({"ets_boxcox": "ets"}.get(m, m), np.nan)
-                                             if m != "ets" else np.nan)       # 07h's 'ets' is the Box-Cox one
+table["Validation RMSE"] = table["model"].map(lambda m: head["val_rmse"].get({"ets_boxcox": "ets"}.get(m, m), np.nan))
 table["What it assumes"] = table["model"].map(lambda m: ASSUMES.get(m.split("_")[0] if m in SHIFT_AWARE else m, ""))
 table = table.drop(columns="model").rename(columns={"label": "Model", "kind": "Type", "value": f"Typical {metric}",
                                                     "beats_baseline": "Beats the baseline on", "n_items": "Items"})
@@ -332,15 +330,13 @@ with st.expander("All 726 items: the models run on every item"):
         r = pw[(pw["model_a"] == x) & (pw["model_b"] == y) & (pw["category"] == "ALL")]
         return r.iloc[0] if len(r) else None
 
-    le, tsb = pair(BEST, "ets"), a.loc["tsb"]
+    bn = pair(BEST, "seasonal_naive")
     st.markdown(f"Typical MASE on all {int(a.loc[BEST, 'n_items']):,} items: {BEST_SHORT} {a.loc[BEST, 'median_item_mase']:.3f}, "
-                f"ETS {a.loc['ets', 'median_item_mase']:.3f}, seasonal naive {a.loc['seasonal_naive', 'median_item_mase']:.3f}. "
-                f"{BEST_SHORT} is better than ETS for {le['share_improved']:.0%} of items ({pv(le['p_value'])}). TSB, built "
-                f"for items that often sell nothing, runs only on the {int(tsb['n_items'])} such items and scores "
-                f"{tsb['median_item_mase']:.3f}.")
-    runner = next((m for m in a.index if m not in ("seasonal_naive", "ets", BEST, "tsb")), None)   # 09b
+                f"seasonal naive {a.loc['seasonal_naive', 'median_item_mase']:.3f}. {BEST_SHORT} has the smaller error for "
+                f"{bn['share_improved']:.0%} of items ({pv(bn['p_value'])}).")
+    runner = next((m for m in a.index if m not in ("seasonal_naive", BEST)), None)   # 09b
     if runner is not None and pair(runner, BEST) is not None:
-        rb, re_ = pair(runner, BEST), pair(runner, "ets")
+        rb, re_ = pair(runner, BEST), pair(runner, "seasonal_naive")
 
         def compared(r, other):
             if r["p_value"] < 0.05:
@@ -349,9 +345,9 @@ with st.expander("All 726 items: the models run on every item"):
         st.markdown(f"{SHORT[runner]}, the runner-up on the sample, was also fitted on every item (09b). Its typical MASE "
                     f"is {a.loc[runner, 'median_item_mase']:.3f}: {compared(rb, BEST_SHORT)} (smaller error for "
                     f"{rb['share_improved']:.0%} of items, median difference {rb['median_diff']:+.4f}, {pv(rb['p_value'])}) "
-                    f"and {compared(re_, 'ETS')} (smaller error for {re_['share_improved']:.0%}, {pv(re_['p_value'])}). The "
+                    f"and {compared(re_, 'seasonal naive')} (smaller error for {re_['share_improved']:.0%}, {pv(re_['p_value'])}). The "
                     f"stock work uses {BEST_SHORT}, picked by the rule fixed before the run.")
-    keep = [m for m in ["seasonal_naive", "ets", BEST, runner, "tsb"] if m in a.index]
+    keep = [m for m in ["seasonal_naive", BEST, runner] if m in a.index]
     t726 = pd.DataFrame({"Model": [name(m) for m in keep], "Items": a.loc[keep, "n_items"].astype(int).to_numpy(),
                          "Typical MASE": a.loc[keep, "median_item_mase"].to_numpy()})
     st.dataframe(t726, hide_index=True, width="stretch",
@@ -411,7 +407,7 @@ with st.expander("Forecast against actual, any of the 150 products"):
     origin = c2.select_slider("Forecast date", options=origins, value=origins[-1], key="acc_origin",
                               format_func=lambda o: f"{pd.Timestamp(o):%d %b %Y}")
     have = set(fc["model"].unique())
-    avail = [m for m in CONTENDERS + GROUPS["Other classical models (07a)"] + BLOCKS + ["combination_weighted"] if m in have]
+    avail = [m for m in CONTENDERS + GROUPS["Holt-Winters additive (07a)"] + BLOCKS if m in have]
     picked = st.multiselect("Models", avail, default=[m for m in [PICKED, second, "seasonal_naive"] if m in avail],
                             format_func=name, key="acc_models")
     g = fc[(fc["item_id"] == item) & (fc["origin"] == origin)]
