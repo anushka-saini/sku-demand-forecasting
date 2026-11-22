@@ -1,0 +1,2 @@
+model,items,mae,rmse,mape_nonzero,wape,mase,source,settings
+lightgbm_first_version,150,3.5475542738220764,4.4835746004524335,0.5735605651292073,0.4255235695789494,0.7467717596502159,"git commit 9670e60 (2026-10-25), outputs/tables/comparison_metrics_summary.csv, row ALL/lightgbm; same 150 items and six scored windows (mape_excluded_share identical to the final table)","tweedie loss (power 1.1), learning rate 0.05, 63 leaves, 300 rounds, features lagged 28+ days (src/forecasting.py at commit 2fef597)"

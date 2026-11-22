@@ -88,7 +88,10 @@ def residuals(fc, model, written):
     stats.probplot(g["e"] / g["e"].std(), dist="norm", plot=ax[1, 0])
     ax[1, 0].get_lines()[0].set_markersize(2)
     ax[1, 0].get_lines()[0].set_color(COL[model])
+    ax[1, 0].set_title("")
     ax[1, 0].set_title("Normal Q-Q plot of the errors", loc="left")
+    ax[1, 0].set_xlabel("theoretical quantiles")
+    ax[1, 0].set_ylabel("ordered errors (standardised)")
     day = g.groupby("date")["e"].sum().sort_index()
     from statsmodels.tsa.stattools import acf
     r = acf(day.to_numpy(), nlags=28)
@@ -142,7 +145,8 @@ def volatility(daytype, iv, item, written):
     ax[0].bar(x + 0.2, daytype["mean_abs_error_over_scale"], 0.4, color="#D55E00", label="actual absolute error")
     ax[0].set_xticks(x, daytype["day_type"], rotation=20, ha="right")
     ax[0].set_ylabel("relative to the item's usual sales")
-    ax[0].legend(frameon=False)
+    ax[0].set_ylim(0, max(daytype["mean_sigma_over_scale"].max(), daytype["mean_abs_error_over_scale"].max()) * 1.35)
+    ax[0].legend(frameon=False, ncol=2, loc="upper center", fontsize=9)
     ax[0].set_title("Fitted spread and real error by type of day", loc="left")
     g = iv[(iv["item_id"] == item)].sort_values("date")
     o = g["origin"].iloc[len(g) // 2]
@@ -156,7 +160,10 @@ def volatility(daytype, iv, item, written):
     ax[1].plot(g["date"], g["actual"], color="#222222", lw=1.6, label="actual")
     ax[1].set_title(f"{item}, one 28-day window", loc="left")
     ax[1].legend(frameon=False, fontsize=9)
-    fig.autofmt_xdate()
+    import matplotlib.dates as mdates
+    ax[1].xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=5))
+    ax[1].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+    ax[0].tick_params(axis="x", rotation=20)
     fig.tight_layout()
     save(fig, "final_garch_volatility.png", written)
 

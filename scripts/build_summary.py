@@ -42,7 +42,8 @@ def build(f):
     sc, br, fc, inv = f["scope"], f["breaks"], f["forecasts"], f["inventory"]
     adj = br["adjusted_share_with_real_shift"]["CUSUM"]
     trunc = fc["adaptation_variants"]["all detected breaks|truncate"]
-    cov = fc["band_coverage"]["lightgbm_static_90_origins2-6"]
+    cov = fc["band_coverage"]["best_static_90_origins2-6"]
+    bm = f["best_model"]["name"].split(" (")[0]
     base = inv["static_vs_naive_base_95"]
     calc = inv["conformal_vs_normal_cost_change"]["0.95"]
     w = sc["windows"]["W1"]
@@ -56,10 +57,14 @@ def build(f):
         ("False alarms (seasonal null)", f"CUSUM {pct(br['seasonal_null_false_alarm_rate']['CUSUM']['value'])}, PELT {pct(br['seasonal_null_false_alarm_rate']['PELT']['value'])}"),
         ("Items with a real shift", f"{pct(adj['value'])} (95% CI {pct(adj['ci95'][0])} to {pct(adj['ci95'][1])}), n = {adj['n']}"),
         ("High-confidence breaks", f"{int(br['high_confidence_breaks']['ALL']['value'])} of {int(br['high_confidence_breaks']['ALL']['n'])}"),
-        ("Median forecast error (MASE)", f"LightGBM {fc['median_item_mase']['lightgbm_ALL']['value']:.3f}, ETS {fc['median_item_mase']['ets_ALL']['value']:.3f}, seasonal naive {fc['median_item_mase']['seasonal_naive_ALL']['value']:.3f}"),
+        ("Median forecast error (MASE)", f"{bm} {fc['median_item_mase']['best_ALL']['value']:.3f}, "
+                                         + "".join(f"{k[:-4].upper()} {v['value']:.3f}, " for k, v in fc['median_item_mase'].items()
+                                                   if k.endswith('_ALL') and k[:-4] not in ('best', 'seasonal_naive'))
+                                         + f"seasonal naive {fc['median_item_mase']['seasonal_naive_ALL']['value']:.3f}"),
         ("Retraining from the shift", f"{trunc['value']:+.4f} MASE (95% CI {trunc['ci95'][0]:+.4f} to {trunc['ci95'][1]:+.4f}), n = {trunc['n']}"),
         ("Calibrated 90% band coverage", f"{pct(cov['value'])} (was {pct(cov['coverage_before'])})"),
-        ("Static LightGBM vs naive, 95% target <span class='assumed'>ASSUMED COSTS</span>", f"{pct(abs(base['inventory_change']))} less inventory, {pct(abs(base['value']))} lower cost"),
+        (f"Static {e(bm)} vs naive, 95% target <span class='assumed'>ASSUMED COSTS</span>", f"{pct(abs(base['inventory_change']))} {'less' if base['inventory_change'] < 0 else 'more'} inventory, "
+                                                                                     f"{pct(abs(base['value']))} {'lower' if base['value'] < 0 else 'higher'} cost"),
         ("Calibrated safety stock, 95% target <span class='assumed'>ASSUMED COSTS</span>", f"total cost {calc['value']:+.1%}"),
     ]
     table = "".join(f"<tr><th>{k}</th><td>{e(val)}</td></tr>" for k, val in rows)
