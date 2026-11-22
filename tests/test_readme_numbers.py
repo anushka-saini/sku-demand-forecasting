@@ -27,7 +27,8 @@ def test_no_result_numbers_outside_generated_block():
     text = README.read_text(encoding="utf-8")
     head, rest = text.split(update_readme.START, 1)
     _, tail = rest.split(update_readme.END, 1)
-    outside = re.sub(r"```.*?```", "", head + tail, flags=re.S)            # code blocks are commands
+    outside = re.sub(r"<!-- FINAL:START.*?<!-- FINAL:END -->", "", head + tail, flags=re.S)   # hand-written final results
+    outside = re.sub(r"```.*?```", "", outside, flags=re.S)                # code blocks are commands
     outside = re.sub(r"\d{4}-\d{2}-\d{2}", "", outside)                    # dates
     stray = re.findall(r"\d+\.\d+|\d+(?:\.\d+)?\s?%", outside)
     assert not stray, f"numbers outside the generated block: {stray}"
