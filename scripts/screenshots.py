@@ -17,8 +17,8 @@ OUT = ROOT / "docs" / "screenshots"
 PORT = 8599
 # page -> (url path, window height). Streamlit scrolls inside its own container, so a tall window is used
 # instead of a "full page" screenshot.
-PAGES = {"overview": ("", 1500), "data_scope": ("data_scope", 2300), "demand_patterns": ("demand_patterns", 2700),
-         "accuracy": ("accuracy", 3300), "item_explorer": ("item_explorer", 2200), "demand_shifts": ("demand_shifts", 2700),
+PAGES = {"overview": ("", 2500), "data_scope": ("data_scope", 2300), "demand_patterns": ("demand_patterns", 2700),
+         "accuracy": ("accuracy", 6800), "item_explorer": ("item_explorer", 2200), "demand_shifts": ("demand_shifts", 2700),
          "stock_impact": ("stock_impact", 2900), "method_limits": ("method_limits", 1700)}
 
 

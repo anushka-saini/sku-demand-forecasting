@@ -47,6 +47,8 @@ pytest==9.1.1
 # Report and slides (scripts/build_report.py, scripts/build_slides.py)
 python-docx==1.2.0
 python-pptx==1.0.2
+reportlab==5.1.0          # scripts/build_explanation.py
+pymupdf==2.1              # page counts and checks of the PDFs (tests, scripts/check_numbers.py)
 
 # Screenshots and PDF summary (scripts/screenshots.py, scripts/build_summary.py)
 playwright==1.64.0

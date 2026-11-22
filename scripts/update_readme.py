@@ -23,17 +23,19 @@ def render(f):
     adj = br["adjusted_share_with_real_shift"]["CUSUM"]
     hc = br["high_confidence_breaks"]["ALL"]
     trunc = fc["adaptation_variants"]["all detected breaks|truncate"]
-    le = fc["pairwise"]["lightgbm-ets|ALL"]
-    cov = fc["band_coverage"]["lightgbm_static_90_origins2-6"]
+    bm = f["best_model"]["name"].split(" (")[0]
+    runner = next(k[:-4] for k in fc["median_item_mase"] if k.endswith("_ALL") and k[:-4] not in ("seasonal_naive", "best"))
+    le = pair(fc, "best", runner)
+    cov = fc["band_coverage"]["best_static_90_origins2-6"]
     base = inv["static_vs_naive_base_95"]
     calc = inv["conformal_vs_normal_cost_change"]["0.95"]
     rep = f["replication"]
     n_hold = sum(r["holds"] for r in rep.values())
     states = sorted({k.split("|")[0] for k in rep})
     s20 = br["injection_power_cusum"]["step_20pct"]["value"]
-    lgb = fc["median_item_mase"]["lightgbm_ALL"]["value"]
+    top = fc["median_item_mase"]["best_ALL"]["value"]
     naive = fc["median_item_mase"]["seasonal_naive_ALL"]["value"]
-    bias = fc["bias"]["lightgbm_static_ALL"]["value"]
+    bias = fc["bias"]["best_static_ALL"]["value"]
     n_methods = len({k.split("|")[1] for k in fc["adaptation_variants"]})
     windows = {k: x for k, x in inv["multi_window_cost_differences"].items() if k.endswith("|static - naive|0.95")}
     n_win_sig = sum(x["ci95"][1] < 0 for x in windows.values())
@@ -45,19 +47,26 @@ def render(f):
         f"1. Do sales levels really change? {'Yes, often' if adj['ci95'][0] > 0.5 else ('Yes' if adj['ci95'][0] > 0 else 'Not clearly')}. After removing changes that would appear just by chance, about "
         f"{adj['value']:.0%} of the busy products changed their normal sales level at some point. Our change detector only "
         f"notices big changes, though: a sudden 20% jump is spotted just {s20:.0%} of the time.",
-        f"2. Which forecast works best? {verdict['Which forecast is best?']}. Its typical error is {1 - lgb / naive:.0%} smaller "
-        f"than simply copying last week's sales. It guesses a little low overall ({abs(bias):.1%} under).",
+        f"2. Which forecast works best? {verdict['Which forecast is best?']}"
+        + (f", though {runner.upper()} is just as good (the difference is not significant)" if le["p_value"] >= 0.05 else
+           f", ahead of {runner.upper()}, the runner-up, for {1 - le['share_improved']:.0%} of products" if le["value"] < 0 else "")
+        + f". Its typical error is {1 - top / naive:.0%} "
+        f"smaller than simply copying last week's sales. It guesses a little {'low' if bias < 0 else 'high'} overall "
+        f"({abs(bias):.1%} {'under' if bias < 0 else 'over'}).",
         f"3. Does retraining the model after a change help? {verdict['Does retraining after a shift help?']}. We tried "
-        f"{n_methods} different ways. None made forecasts better, and the simplest one made them slightly worse. "
-        f"The same was true in {' and '.join(STATE_NAMES.get(x, x) for x in states)}.",
+        f"{n_methods} different ways. None made forecasts better"
+        + (", and the simplest one made them slightly worse. " if trunc["value"] > 0 else ". ")
+        + f"The same was true in {' and '.join(STATE_NAMES.get(x, x) for x in states)}.",
         f"4. Does a better forecast save money on stock? {verdict['Does a better forecast cut stock cost?']}. Using the better "
-        f"forecast to decide when to reorder means holding {abs(base['inventory_change']):.0%} less stock at "
-        f"{abs(base['value']):.0%} lower cost than the simple method, and it was clearly cheaper in {n_win_sig} of "
-        f"{len(windows)} time periods tested. Setting safety stock from realistic error ranges cut the cost by a further "
-        f"{abs(calc['value']):.0%}. These costs use assumed prices for storage and lost sales, not real Walmart figures.",
+        f"forecast to decide when to reorder means holding {abs(base['inventory_change']):.0%} "
+        f"{'less' if base['inventory_change'] < 0 else 'more'} stock at {abs(base['value']):.0%} "
+        f"{'lower' if base['value'] < 0 else 'higher'} cost than the simple method, and it was clearly cheaper in "
+        f"{n_win_sig} of {len(windows)} time periods tested. Setting safety stock from realistic error ranges cut the "
+        f"cost by {abs(calc['value']):.0%}. These costs use assumed prices for storage and lost sales, not real Walmart figures.",
         "",
     ]
     lines += classical_lines(f)
+    lines += time_series_lines(f)
     lines += [
         "<details><summary>Technical details (verdicts, confidence intervals, test statistics)</summary>",
         "",
@@ -74,16 +83,19 @@ def render(f):
         f"rate on a seasonality-preserving null is {br['seasonal_null_false_alarm_rate']['CUSUM']['value']:.1%}, so the "
         f"chance-adjusted share with a real shift is {adj['value']:.1%} (95% CI {adj['ci95'][0]:.1%} to {adj['ci95'][1]:.1%}). "
         f"Only {int(hc['value'])} of {int(hc['n'])} breaks are high-confidence.",
-        f"- Forecasting: median MASE is {fc['median_item_mase']['lightgbm_ALL']['value']:.3f} for LightGBM, "
-        f"{fc['median_item_mase']['ets_ALL']['value']:.3f} for ETS and "
-        f"{fc['median_item_mase']['seasonal_naive_ALL']['value']:.3f} for seasonal naive. LightGBM − ETS is "
+        f"- Forecasting: median MASE is {top:.3f} for {bm}, "
+        f"{fc['median_item_mase'][runner + '_ALL']['value']:.3f} for {runner.upper()}, the runner-up, and "
+        f"{fc['median_item_mase']['seasonal_naive_ALL']['value']:.3f} for seasonal naive. {bm} − {runner.upper()} is "
         f"{le['value']:+.4f} (95% CI {le['ci95'][0]:+.4f} to {le['ci95'][1]:+.4f}). Calibrated 90% bands cover "
         f"{cov['value']:.1%} of days (was {cov['coverage_before']:.1%}).",
         f"- Retraining after a shift: restarting from the shift changes MASE by {trunc['value']:+.4f} "
-        f"(95% CI {trunc['ci95'][0]:+.4f} to {trunc['ci95'][1]:+.4f}, n = {trunc['n']}). None of the "
+        f"(95% CI {trunc['ci95'][0]:+.4f} to {trunc['ci95'][1]:+.4f}, n = {trunc['n']}"
+        + (f"; for most products the restart is the static model, and it is better for only {trunc['share_improved']:.0%}"
+           if trunc["value"] == 0 else "") + "). None of the "
         f"{len({k.split('|')[1] for k in fc['adaptation_variants']})} methods tested helps.",
-        f"- Inventory (95% target, 7-day lead time, assumed costs): static LightGBM holds "
-        f"{abs(base['inventory_change']):.1%} less inventory at {abs(base['value']):.1%} lower cost than seasonal naive. "
+        f"- Inventory (95% target, 7-day lead time, assumed costs): static {bm} holds "
+        f"{abs(base['inventory_change']):.1%} {'less' if base['inventory_change'] < 0 else 'more'} inventory at "
+        f"{abs(base['value']):.1%} {'lower' if base['value'] < 0 else 'higher'} cost than seasonal naive. "
         f"Calibrated safety stock changes total cost by {calc['value']:+.1%}.",
         f"- Replication: {n_hold} of {len(rep)} conclusion checks hold in {' and '.join(states)}.",
         "",
@@ -91,6 +103,16 @@ def render(f):
         END,
     ]
     return "\n".join(lines)
+
+
+def pair(fc, a, b, cat="ALL"):
+    """The paired a - b test, whichever way round 10 stored it."""
+    pw = fc["pairwise"]
+    if f"{a}-{b}|{cat}" in pw:
+        return pw[f"{a}-{b}|{cat}"]
+    r = dict(pw[f"{b}-{a}|{cat}"])
+    r["value"], r["ci95"] = -r["value"], [-r["ci95"][1], -r["ci95"][0]]
+    return r
 
 
 def classical_lines(f):
@@ -102,8 +124,9 @@ def classical_lines(f):
     n = m["sample"]["value"]
     sar, hw = m["tests"]["H1|sarima-seasonal_naive"], m["tests"]["H1|hw_add-seasonal_naive"]
     best = m["h2_lowest_median_mase"]["model"]
-    names = {"lightgbm": "LightGBM", "sarima": "SARIMA", "hw_add": "Holt-Winters", "ets": "damped Holt-Winters (ETS)",
-             "arima": "ARIMA", "seasonal_naive": "seasonal naive", "hw_mul": "multiplicative Holt-Winters"}
+    names = {"sarima": "SARIMA", "hw_add": "Holt-Winters", "arima": "ARIMA", "seasonal_naive": "seasonal naive",
+             "ets_boxcox": "Holt-Winters (damped, Box-Cox)", "sarimax": "SARIMAX", "theta": "Theta",
+             "prophet": "Prophet", "autots": "AutoTS", "combination": "the combination", "best": "the best model"}
     r, d = m["shift_aware"]["all break item-origins|restart"], m["shift_aware"]["all break item-origins|dummy"]
     st = m["stationarity"]["stationary|ALL"]
     yes = lambda b: "Yes" if b else "No"
@@ -118,6 +141,47 @@ def classical_lines(f):
         f"The lowest median error is {names[best]} ({m['h2_lowest_median_mase']['value']:.3f}). Reacting to a detected "
         f"break helps SARIMA: {yes(not m['h3_supported'])} (restart {r['value']:+.4f}, level-shift dummy "
         f"{d['value']:+.4f} MASE, n = {r['n']} products). Details: `notebooks/10_model_comparison.ipynb`.",
+        "",
+    ]
+
+
+def time_series_lines(f):
+    """The time-series comparison in plain words, or nothing if 07h has not been run."""
+    if "time_series" not in f:
+        return []
+    t = f["time_series"]
+    names = {"seasonal_naive": "seasonal naive", "ets": "Holt-Winters (damped, Box-Cox)", "sarima": "SARIMA",
+             "sarimax": "SARIMAX", "theta": "Theta", "prophet": "Prophet", "autots": "AutoTS", "combination": "the combination"}
+    b = t["best_contender"]
+    ref = lambda k: t["metrics"][f"sarima_07a|ALL|{k}"]["value"]
+    kept = [k.split("|")[1].lstrip("+ ") for k, v in t["ablation"].items() if k.startswith("SARIMA|") and v["kept"]]
+    same = abs(b["rmse_vs_sarima_07a"]) < 1e-9 and abs(b["mae_vs_sarima_07a"]) < 1e-9
+    test = t["tests"][f"rmse|{b['model']}-sarima_07a"]
+    mase, pw = f["forecasts"]["median_item_mase"], f["forecasts"]["pairwise"]
+    on_all = ""
+    runner = next((k[:-4] for k in mase if k.endswith("_ALL") and k[:-4] not in ("seasonal_naive", "best")), None)
+    if runner and f"{runner}-best|ALL" in pw:                          # 09b: the runner-up on all 726 products
+        c = pw[f"{runner}-best|ALL"]
+        how = ("level with it" if c["p_value"] >= 0.05 else
+               "significantly better" if c["value"] < 0 else "significantly worse")
+        on_all = (f"On all 726 products the winner's median MASE is {mase['best_ALL']['value']:.3f}; the runner-up, "
+                  f"{names.get(runner, runner)}, fitted on them too (09b), scores {mase[f'{runner}_ALL']['value']:.3f}, "
+                  f"{how} (smaller error for {c['share_improved']:.0%} of products, "
+                  + ("p < 0.001). " if c["p_value"] < 0.001 else f"p = {c['p_value']:.3f}). "))
+    return [
+        "### Time-series models",
+        "",
+        f"Eight time-series contenders on the same 150 products and backtest, tuned on three earlier validation dates only. "
+        f"{names[b['model']][0].upper() + names[b['model']][1:]} has the lowest median RMSE: {b['rmse']:.3f}, MAE {b['mae']:.3f}, MAPE {b['mape']:.1%}, "
+        + (f"exactly SARIMA as it was in 07a, because no tweak improved it on validation. " if same else
+           f"against {ref('rmse'):.3f}, {ref('mae'):.3f} and {ref('mape'):.1%} for SARIMA as it was before tuning "
+           f"({'significantly' if test['better'] else 'not significantly'} better on RMSE after Holm correction). ")
+        + f"Tweaks that passed validation for the SARIMA family: {', '.join(kept) if kept else 'none'}"
+        + (" (it became SARIMAX, which scored worse)" if same and kept else "") + ". The combination averages "
+        f"{', '.join(names[m] for m in t['combination_members']['value'])}. " + on_all +
+        "Which gaps are real and which are ties, the ranks over six measures and the stock cost of each model: "
+        "`notebooks/07i_model_verdict.ipynb`. Details: `notebooks/07h_time_series_comparison.ipynb`, "
+        "`10_model_comparison.ipynb` and `docs/TS_MODELS.md`.",
         "",
     ]
 
