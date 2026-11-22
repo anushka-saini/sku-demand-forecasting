@@ -14,6 +14,7 @@ pages = {
     "Start here": [st.Page("views/summary.py", title="Summary", default=True)],
     "Final results": [
         st.Page("views/final_leaderboard.py", title="Final leaderboard"),
+        st.Page("views/forecaster.py", title="Forecaster"),
         st.Page("views/forecast_viewer.py", title="Forecast viewer"),
         st.Page("views/volatility.py", title="Volatility (GARCH)"),
         st.Page("views/final_stock.py", title="Stock impact, best model"),

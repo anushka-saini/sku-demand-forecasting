@@ -64,3 +64,56 @@ def text():
     sys.path.append(str(Path(__file__).resolve().parents[2] / "src"))
     import final_text
     return final_text.Final().all()
+
+
+# ---------------------------------------------------------------- the Forecaster page
+# Written so that sales after a window's start date are only read when you press Reveal: the forecast and band
+# loaders never ask for the actual column, and the history loader stops at the forecast origin.
+FC_FILES = {"bands": "final_forecaster_bands.parquet", "sales": "final_forecaster_sales.parquet",
+            "summary": "final_forecaster_summary.csv"}
+FC_MODELS = [m for m in MAIN if m != "gru"]       # GRU is out: its leaderboard row is a mean over seeds, not one forecast
+
+
+def forecaster_ready():
+    return ready() and all((TABLES / f).exists() for f in FC_FILES.values())
+
+
+def _read(name, cols, flt):
+    return pd.read_parquet(TABLES / name, columns=cols, filters=flt)
+
+
+@st.cache_data(show_spinner=False)
+def fc_index():
+    """Every item and test window, read without any sales numbers."""
+    d = _read(FILES["forecasts"], ["item_id", "origin"], [("split", "==", "test"), ("model", "==", "seasonal_naive")])
+    return d.drop_duplicates().sort_values(["item_id", "origin"]).reset_index(drop=True)
+
+
+@st.cache_data(show_spinner=False)
+def fc_window(item, origin, model):
+    """The 28-day forecast and its 80% band. No actuals."""
+    o = pd.Timestamp(origin)
+    f = _read(FILES["forecasts"], ["date", "forecast"], [("split", "==", "test"), ("model", "==", model),
+                                                         ("item_id", "==", item), ("origin", "==", o)])
+    b = _read(FC_FILES["bands"], ["date", "lo", "hi"], [("model", "==", model), ("item_id", "==", item), ("origin", "==", o)])
+    return f.merge(b, on="date").sort_values("date").reset_index(drop=True)
+
+
+@st.cache_data(show_spinner=False)
+def fc_history(item, origin, days=90):
+    """The last `days` days of sales up to and including the origin, never later."""
+    o = pd.Timestamp(origin)
+    d = _read(FC_FILES["sales"], ["date", "sales"], [("item_id", "==", item), ("date", "<=", o)])
+    return d.sort_values("date").tail(days).reset_index(drop=True)
+
+
+def fc_actuals(item, origin, models):
+    """Called only after Reveal: forecast and actual for the given models over one window, not cached."""
+    o = pd.Timestamp(origin)
+    return _read(FILES["forecasts"], ["date", "model", "forecast", "actual"],
+                 [("split", "==", "test"), ("item_id", "==", item), ("origin", "==", o), ("model", "in", list(models))])
+
+
+@st.cache_data(show_spinner=False)
+def fc_summary():
+    return pd.read_csv(TABLES / FC_FILES["summary"]).set_index("model")

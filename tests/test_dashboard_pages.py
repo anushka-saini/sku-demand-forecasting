@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / "dashboard"))
 from utils.data import SCHEMA  # noqa: E402
 
 PAGES = ["summary", "overview", "data_scope", "demand_patterns", "accuracy", "item_explorer", "demand_shifts", "stock_impact",
-         "method_limits", "final_leaderboard", "forecast_viewer", "volatility", "final_stock"]
+         "method_limits", "final_leaderboard", "forecast_viewer", "forecaster", "volatility", "final_stock"]
 # built from pieces so this file does not match itself
 COURSE = ["M" + "1", "M" + "2", "M" + "3", "mile" + "stone", "mid" + "-sem", "mid" + "sem", "pha" + "se", "syn" + "opsis"]
 FILLER = ["rob" + "ust", "lever" + "age", "del" + "ve", "compre" + "hensive", "key " + "takeaways"]
