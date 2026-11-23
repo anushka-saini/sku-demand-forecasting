@@ -1,14 +1,14 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from utils.final import COL, MAIN, best_info, load, names, need_results, text
+from utils.final import COL, MAIN, best_info, load, names, need_results
 from utils.ui import chart, download, kpis, page, style, tells, verdict_box
 
 need_results()
 lb = load("leaderboard")
 nm = names(lb)
 info = best_info()
-page("Final leaderboard", "Which model forecasts best on the six untouched test windows, and does a combination beat the best single model?")
+page("Leaderboard", "Which model forecasts best on the six untouched test windows, and does a combination beat the best single model?")
 
 lbi = lb[lb["level"] == "item"].sort_values("rank")
 best = lbi.iloc[0]
@@ -64,20 +64,7 @@ for _, r in lbi[lbi["family"] == "Combination"].iterrows():
                 + f" the best single model ({single['name']}: {single['mae']:.2f} / {single['rmse']:.2f}).")
 verdict_box(rows, head="Does a combination win?")
 
-t1, t2, t3, t4, t5 = st.tabs(["Error by horizon", "Ensemble weights", "Is the gain real?", "Where models fail", "What it means"])
-with t1:
-    hz = load("horizon")
-    pick = st.multiselect("Models", list(lbi["model"]), default=[m for m in MAIN if m in ("xgboost", "combination", "sarima", "seasonal_naive")],
-                          format_func=nm.get, key="lb_hz")
-    hk = st.radio("Measure", ["MAE", "RMSE"], horizontal=True, key="lb_hzm").lower()
-    f2 = go.Figure()
-    for m in pick:
-        g = hz[hz["model"] == m]
-        f2.add_trace(go.Scatter(x=g["h"], y=g[hk], mode="lines", name=nm[m], line=dict(color=COL.get(m), width=2)))
-    f2.update_xaxes(title="days ahead")
-    f2.update_yaxes(title=f"{hk.upper()}, units a day")
-    chart(style(f2), "Error by forecast day", "Error at each of the 28 days ahead, over all test windows and items.", key="lb_h")
-with t2:
+with st.expander("Stacking weights (how the stacked forecast mixes models)"):
     w = load("weights")
     w = w[w["weight"] > 1e-6].sort_values("weight")
     f3 = go.Figure(go.Bar(y=w["name"], x=w["weight"], orientation="h", marker_color=[COL.get(m, "#888") for m in w.iloc[:, 0]],
@@ -86,44 +73,7 @@ with t2:
     chart(style(f3, legend=False), "Stacking weights (non-negative, fitted on validation windows only)",
           f"Weights sum to {w['weight'].sum():.2f}. The simple average uses: " + ", ".join(nm.get(m, m) for m in info["avg_top3_members"]) + ".",
           key="lb_w")
-with t3:
-    dm = load("dm")
-    show = dm.copy()
-    show["model_a"], show["model_b"] = show["model_a"].map(nm), show["model_b"].map(nm)
-    st.dataframe(show[["model_a", "model_b", "loss", "mean_loss_a", "mean_loss_b", "dm_stat", "p_value", "significant_5pct",
-                       "share_items_a_better", "wilcoxon_p"]].round(4), hide_index=True, width="stretch")
-    sig = dm[dm["significant_5pct"] & dm["a_better"]]
-    st.caption("Diebold-Mariano on per-day loss differences over the 168 test days (Newey-West, 27 lags, small-sample correction), plus "
-               f"a paired Wilcoxon test per item. {len(sig)} of {len(dm)} tests show the first model significantly better at 5%.")
-with t4:
-    seg = load("segments")
-    ms = [m for m in [best["model"], "seasonal_naive", "sarima"] if m in set(seg["model"])]
-    s = seg[seg["model"].isin(ms)].pivot(index="segment", columns="model", values="mae")
-    s.columns = [nm[c] for c in s.columns]
-    s["Item-days"] = seg[seg["model"] == best["model"]].set_index("segment")["item_days"]
-    st.dataframe(s.round(3), width="stretch")
-    st.caption("MAE on groups of item-days (test windows). Event and SNAP days come from the M5 calendar; 'zero week before origin' "
-               "means nothing sold in the 7 days before the forecast was made.")
-with t5:
-    tx = text()
-    st.markdown("**Which model wins, and why**")
-    st.markdown(tx["winner"])
-    st.markdown(tx["combos"])
-    st.markdown(tx["dm"])
-    st.markdown(tx["why"])
-    st.markdown(tx["nn"])
-    st.markdown("**Where the best model fails**")
-    for t in tx["failure"]:
-        st.markdown("- " + t)
-    st.markdown("**Limitations**")
-    for t in tx["limitations"]:
-        st.markdown("- " + t)
-    st.markdown("**Challenges**")
-    for t in tx["challenges"]:
-        st.markdown("- " + t)
-    st.markdown("**Future scope**")
-    for t in tx["future"]:
-        st.markdown("- " + t)
+st.caption("Error by forecast day is on the Model Lab page. Significance tests and where the models fail are on the Diagnostics page.")
 tells(f"{best['name']} has the best combined rank on MAE and RMSE. Its MAE is {abs(best['mae'] / naive['mae'] - 1):.0%} "
       f"{'below' if best['mae'] < naive['mae'] else 'above'} seasonal naive and its RMSE {abs(best['rmse'] / naive['rmse'] - 1):.0%} "
       f"{'below' if best['rmse'] < naive['rmse'] else 'above'}.")

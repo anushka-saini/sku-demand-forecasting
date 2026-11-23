@@ -1,13 +1,19 @@
-# One accent colour in both themes. Setting colours at the top level of [theme] locks the app to the light
-# theme, so they are set per theme and the app follows the viewer's light/dark system setting.
+# One accent colour and calm greys in both themes. The colours are set inside each theme block, because colours at the
+# top level of [theme] would lock the app to light; this way it follows the viewer's light or dark setting.
 [theme]
 font = "sans serif"
 
 [theme.light]
-primaryColor = "#0072B2"
+primaryColor = "#1F6F8B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F2F5F7"
+textColor = "#1F2933"
 
 [theme.dark]
-primaryColor = "#4FA3E0"
+primaryColor = "#4FA3C7"
+backgroundColor = "#12161B"
+secondaryBackgroundColor = "#1B2128"
+textColor = "#E6EAEE"
 
 [server]
 headless = true

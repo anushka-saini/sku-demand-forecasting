@@ -134,7 +134,7 @@ def test_page_renders(page):
     from streamlit.testing.v1 import AppTest
     at = AppTest.from_file(str(ROOT / "dashboard" / "app.py"), default_timeout=60)
     at.run()
-    if page != "overview":
+    if page != "home":
         at.switch_page(f"views/{page}.py").run()
     assert not at.exception, at.exception
     assert not at.error, [e.value for e in at.error]

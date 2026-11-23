@@ -57,35 +57,37 @@ chk = sales.merge(test[test["model"] == "seasonal_naive"][["item_id", "date", "a
 assert np.allclose(chk["sales"], chk["actual"]), "history file disagrees with the saved actuals"
 sales.to_parquet(T / "final_forecaster_sales.parquet", index=False)
 
-# one row per item, window and model
+# one row per item, window and model, for the first 7, 14 and all 28 days of each window
 test["ae"] = (test["actual"] - test["forecast"]).abs()
 test["se"] = (test["actual"] - test["forecast"]) ** 2
 test["inside"] = (test["actual"] >= test["lo"]) & (test["actual"] <= test["hi"])
-w = test.groupby(["item_id", "origin", "model"]).agg(mae=("ae", "mean"), mse=("se", "mean"), cover=("inside", "mean")).reset_index()
-w["rmse"] = np.sqrt(w["mse"])
-mae_w = w.pivot_table(index=["item_id", "origin"], columns="model", values="mae")
-
+test["day"] = (test["date"] - test["origin"]).dt.days
 rows = []
-for m in MAIN:
-    x = w[w["model"] == m]
-    # leaderboard way: each item's mean over its six windows, then the median over items
-    r = {"model": m, "item_windows": len(x), "median_mae": x["mae"].median(), "median_rmse": x["rmse"].median(),
-         "coverage": x["cover"].mean(), "lb_mae": x.groupby("item_id")["mae"].mean().median(),
-         "lb_rmse": x.groupby("item_id")["rmse"].mean().median()}
-    for base in ("seasonal_naive", "sarima"):
-        r[f"beat_{base}"] = np.nan if m == base else float((mae_w[m] < mae_w[base]).mean())
-    rows.append(r)
+for h in (7, 14, 28):
+    w = test[test["day"] <= h].groupby(["item_id", "origin", "model"]).agg(
+        mae=("ae", "mean"), mse=("se", "mean"), cover=("inside", "mean")).reset_index()
+    w["rmse"] = np.sqrt(w["mse"])
+    mae_w = w.pivot_table(index=["item_id", "origin"], columns="model", values="mae")
+    for m in MAIN:
+        x = w[w["model"] == m]
+        # leaderboard way: each item's mean over its six windows, then the median over items
+        r = {"model": m, "h": h, "item_windows": len(x), "median_mae": x["mae"].median(), "median_rmse": x["rmse"].median(),
+             "coverage": x["cover"].mean(), "lb_mae": x.groupby("item_id")["mae"].mean().median(),
+             "lb_rmse": x.groupby("item_id")["rmse"].mean().median()}
+        for base in ("seasonal_naive", "sarima"):
+            r[f"beat_{base}"] = np.nan if m == base else float((mae_w[m] < mae_w[base]).mean())
+        rows.append(r)
 summ = pd.DataFrame(rows)
 summ.to_csv(T / "final_forecaster_summary.csv", index=False)
 
 # check against the leaderboard
 lb = pd.read_csv(T / "final_leaderboard.csv").set_index("model")
-for _, r in summ.iterrows():
+for _, r in summ[summ["h"] == 28].iterrows():
     assert abs(r["lb_mae"] - lb.loc[r["model"], "mae"]) < 1e-9, (r["model"], "mae")
     assert abs(r["lb_rmse"] - lb.loc[r["model"], "rmse"]) < 1e-9, (r["model"], "rmse")
 gi = pd.read_csv(T / "final_garch_intervals.csv")
 want = float(gi.loc[gi["interval"].str.startswith("GARCH"), "coverage"].iloc[0])
 got = float(test[test["model"] == BEST]["inside"].mean())
 assert abs(got - want) < 1e-9, ("band coverage", got, want)
-print(summ.round(3).to_string(index=False))
-print(f"matches the leaderboard MAE and RMSE for all {len(summ)} models; {BEST} band coverage {got:.4f} = volatility page")
+print(summ[summ["h"] == 28].round(3).to_string(index=False))
+print(f"matches the leaderboard MAE and RMSE for all {len(MAIN)} models; {BEST} band coverage {got:.4f} = volatility page")

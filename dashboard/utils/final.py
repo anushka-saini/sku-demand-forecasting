@@ -116,4 +116,20 @@ def fc_actuals(item, origin, models):
 
 @st.cache_data(show_spinner=False)
 def fc_summary():
-    return pd.read_csv(TABLES / FC_FILES["summary"]).set_index("model")
+    """One row per model and horizon length (7, 14 or 28 days)."""
+    return pd.read_csv(TABLES / FC_FILES["summary"]).set_index(["model", "h"])
+
+
+def fc_past_errors(item, origin, model):
+    """Forecast minus actual for every earlier window of this item (validation and earlier test windows). Strictly before
+    the origin, so it holds nothing from the window being forecast."""
+    o = pd.Timestamp(origin)
+    d = _read(FILES["forecasts"], ["origin", "date", "forecast", "actual"],
+              [("model", "==", model), ("item_id", "==", item), ("origin", "<", o)])
+    return [g.sort_values("date").pipe(lambda x: (x["actual"] - x["forecast"]).to_numpy()) for _, g in d.groupby("origin")]
+
+
+def fc_flags(item, origin):
+    """Event and SNAP flags for one window. Only read after Reveal."""
+    o = pd.Timestamp(origin)
+    return _read(FILES["intervals"], ["date", "snap", "event"], [("item_id", "==", item), ("origin", "==", o)])

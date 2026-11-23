@@ -3,3 +3,4 @@ streamlit>=1.50
 plotly>=6.0
 pandas>=2.2
 pyarrow>=15
+scipy>=1.11            # the order advice reuses src/inventory.py

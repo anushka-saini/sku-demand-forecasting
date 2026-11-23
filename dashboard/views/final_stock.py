@@ -10,7 +10,8 @@ nm = names(lb)
 info = best_info()
 st_ = load("stock")
 cmp_ = load("stock_cmp")
-page("Stock impact, best model", "What does the final best model do to stock held, lost sales and cost, against the earlier models?")
+page("Inventory", "What does the best model do to stock held, lost sales and cost, against the baselines?")
+st.caption("Reorder points and safety stock come from each model's forecast, with the safety stock sized from the model's own past errors. All costs are assumed.")
 simulated("The test windows' real sales are replayed against a reorder rule (7-day lead time, 95% service level). Costs are "
           "assumptions: holding 25% of the price a year, and a lost sale costs half the price.")
 method = st.radio("Safety stock rule", ["conformal", "normal formula"], horizontal=True, key="fs_m",
@@ -50,6 +51,24 @@ c = c.assign(versus=c["versus"].map(nm), model=c["model"].map(nm))
 st.markdown("**Paired comparison** (sum over items of the cost difference, bootstrap 95% interval; negative means the best model is cheaper)")
 st.dataframe(c[["model", "versus", "total_cost_diff", "total_cost_diff_pct", "ci_low", "ci_high", "stock_value_diff_pct"]].round(4),
              hide_index=True, width="stretch")
+
+# reorder point = forecast demand over the lead time + safety stock, averaged over the items
+it = load("stock_items")
+it = it[it["method"] == method].copy()
+it["lt_demand"] = it["demand_units"] / 168 * it["lead_time"]          # demand is summed over the 168 test days
+it["rop"] = it["lt_demand"] + it["mean_safety_stock"]
+ss_ = it.groupby("model")[["lt_demand", "mean_safety_stock", "rop"]].mean()
+ss_ = ss_.loc[[m for m in order if m in ss_.index]]
+ss_.index = [nm[m] for m in ss_.index]
+ss_.columns = ["Demand over the lead time", "Safety stock", "Reorder point"]
+st.markdown("**Safety stock and reorder point per item** (units, average over the 150 items; lead time 7 days, 95% target)")
+st.dataframe(ss_.round(1), width="stretch")
+one = st.selectbox("One item", sorted(it["item_id"].unique()), key="fs_item")
+x = it[(it["item_id"] == one) & (it["model"] == b)].iloc[0]
+kpis([{"label": f"Demand over {int(x['lead_time'])} days", "value": f"{x['lt_demand']:.0f}", "compare": nm[b]},
+      {"label": "Safety stock", "value": f"{x['mean_safety_stock']:.0f}"},
+      {"label": "Reorder point", "value": f"{x['rop']:.0f}", "compare": "demand plus safety stock"},
+      {"label": "Fill rate", "value": f"{x['fill_rate']:.1%}", "compare": "over the 168 test days"}])
 download(st_, "final_stock_summary.csv")
 st.markdown(text()["stock"])
 tells("Lower forecast error only turns into lower cost if the safety stock follows it. If the interval in the table includes zero, "
