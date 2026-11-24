@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from utils.final import TABLES, best_info, fc_index, load, names, need_results, text
-from utils.ui import kpis, page, tells
+from utils.ui import download, kpis, page, tells
 
 need_results()
 split = load("split")
@@ -27,6 +27,7 @@ st.markdown("#### The split")
 sp = split.copy()
 sp.columns = ["Part", "Forecast dates", "First day", "Last day"]
 st.dataframe(sp, hide_index=True, width="stretch")
+download(sp, "method_split.csv", key="dl_me_split")
 st.markdown("Each model sees only the sales up to a forecast date and forecasts the next 28 days. The test windows were scored once, after all choices were made.")
 
 st.markdown("#### Tuning")
@@ -34,6 +35,7 @@ tune = {"XGBoost": "final_xgb_trials.csv", "Prophet": "final_prophet_tuning.csv"
         "GRU": "final_gru_tuning.csv", "PatchTST": "final_patchtst_tuning.csv"}
 rows = [{"Model": k, "Settings tried": len(pd.read_csv(TABLES / f))} for k, f in tune.items() if (TABLES / f).exists()]
 st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+download(pd.DataFrame(rows), "method_tuning_trials.csv", key="dl_me_tune")
 st.markdown("Settings were chosen on the three validation windows only, by the score on those windows. The stacking weights and the average "
             "of the top three were also fitted there.")
 

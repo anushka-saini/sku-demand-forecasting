@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from utils.final import COL, best_info, load, names, need_results, text
-from utils.ui import chart, kpis, page, style, tells
+from utils.ui import chart, download, kpis, page, style, tells
 
 need_results()
 lb = load("leaderboard")
@@ -31,6 +31,7 @@ with t1:
     t.columns = [nm[c] for c in t.columns]
     t["Item-days"] = seg[seg["model"] == b].set_index("segment")["item_days"]
     st.dataframe(t.round(3), width="stretch")
+    download(t.round(4).reset_index(names="Segment"), "diagnostics_failure_segments.csv", key="dl_dg_seg")
     st.caption("Event and SNAP days come from the M5 calendar; 'zero week before origin' means nothing sold in the 7 days before the forecast was made.")
     for line in tx["failure"]:
         st.markdown("- " + line)
@@ -41,6 +42,7 @@ with t2:
     show["model_a"], show["model_b"] = show["model_a"].map(nm), show["model_b"].map(nm)
     st.dataframe(show[["model_a", "model_b", "loss", "mean_loss_a", "mean_loss_b", "dm_stat", "p_value", "significant_5pct",
                        "share_items_a_better", "wilcoxon_p"]].round(4), hide_index=True, width="stretch")
+    download(show.round(5), "diagnostics_significance_tests.csv", key="dl_dg_dm")
     sig = dm[dm["significant_5pct"] & dm["a_better"]]
     st.caption("Diebold-Mariano on per-day loss differences over the 168 test days (Newey-West, 27 lags, small-sample correction), plus a "
                f"paired Wilcoxon test per item. {len(sig)} of {len(dm)} tests show the first model significantly better at 5%.")
@@ -67,6 +69,7 @@ with t3:
     chart(style(fig), "Fitted spread and real error by type of day",
           "Where the orange bar is clearly above the blue one, the spread under-states the error on those days.", key="dg_dt")
     st.dataframe(g.round(3), hide_index=True, width="stretch")
+    download(g.round(4), "diagnostics_garch_intervals.csv", key="dl_dg_garch")
     st.markdown(tx["garch"])
 
 with t4:
@@ -74,9 +77,11 @@ with t4:
     st.markdown("A VAR model forecasts the three category totals together (Foods, Hobbies, Household), and its forecast is then split down to the items.")
     st.markdown("**Settings chosen at each forecast date** (lag order by AIC, number of differences, and the ADF check per category)")
     st.dataframe(var, hide_index=True, width="stretch")
+    download(var, "diagnostics_var_settings.csv", key="dl_dg_var")
     st.markdown("**Category totals: error of each model on the three totals** (units a day, summed over the category)")
     tt = tot[["name", "mae", "rmse", "wape"]].rename(columns={"name": "Model", "mae": "MAE", "rmse": "RMSE", "wape": "WAPE"})
     st.dataframe(tt.round(3), hide_index=True, width="stretch")
+    download(tt.round(4), "diagnostics_category_totals.csv", key="dl_dg_tot")
     if "var" in vs.index:
         v, bb = vs.loc["var"], vs.loc[b]
         st.markdown(f"On the items, VAR has MAE {v['mae']:.2f} and RMSE {v['rmse']:.2f} (rank {int(v['rank'])} of {len(vs)}), against "

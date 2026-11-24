@@ -1,19 +1,19 @@
-# One accent colour and calm greys in both themes. The colours are set inside each theme block, because colours at the
+# Deep navy and teal, with amber used in the page styling. The colours are set inside each theme block, because colours at the
 # top level of [theme] would lock the app to light; this way it follows the viewer's light or dark setting.
 [theme]
 font = "sans serif"
 
 [theme.light]
-primaryColor = "#1F6F8B"
+primaryColor = "#0E7C86"
 backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F2F5F7"
-textColor = "#1F2933"
+secondaryBackgroundColor = "#EAF1F5"
+textColor = "#0B1F33"
 
 [theme.dark]
-primaryColor = "#4FA3C7"
-backgroundColor = "#12161B"
-secondaryBackgroundColor = "#1B2128"
-textColor = "#E6EAEE"
+primaryColor = "#3FC1B8"
+backgroundColor = "#0B1F33"
+secondaryBackgroundColor = "#12304A"
+textColor = "#E8EEF4"
 
 [server]
 headless = true

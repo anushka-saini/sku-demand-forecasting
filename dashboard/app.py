@@ -12,11 +12,13 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 # the eight pages, in the order you would walk someone through them
 main = [
-    st.Page("views/home.py", title="Overview", default=True),
+    st.Page("views/home.py", title="Home", default=True),
     st.Page("views/data_final.py", title="Data"),
     st.Page("views/final_leaderboard.py", title="Leaderboard"),
     st.Page("views/model_lab.py", title="Model Lab"),
     st.Page("views/forecaster.py", title="Forecaster"),
+    st.Page("views/sku_tracker.py", title="SKU Tracker"),
+    st.Page("views/value_added.py", title="Value Added"),
     st.Page("views/final_stock.py", title="Inventory"),
     st.Page("views/diagnostics.py", title="Diagnostics"),
     st.Page("views/method_final.py", title="Method and Limits"),

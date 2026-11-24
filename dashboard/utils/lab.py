@@ -32,18 +32,33 @@ DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
 @st.cache_data(show_spinner=False)
-def test_errors():
-    """Absolute and squared error per item-day on the test windows, with category, weekday and horizon day."""
-    d = pd.read_parquet(TABLES / FILES["forecasts"], filters=[("split", "==", "test")])
-    d["ae"] = (d["actual"] - d["forecast"]).abs()
-    d["se"] = (d["actual"] - d["forecast"]) ** 2
+def rows():
+    """Every test item-day: forecast and actual for every model, with the item's category."""
+    d = pd.read_parquet(TABLES / FILES["forecasts"], columns=["item_id", "origin", "date", "model", "forecast", "actual", "split"],
+                        filters=[("split", "==", "test")]).drop(columns="split")
     d["cat"] = d["item_id"].str.split("_").str[0]
-    d["wd"] = d["date"].dt.dayofweek
-    return d[["model", "cat", "wd", "ae", "se"]]
+    return d
 
 
-def cut(d, models, by):
-    """Pooled MAE and RMSE per model and group. Pooled means every item-day counts once."""
-    g = d[d["model"].isin(models)].groupby(["model", by]).agg(mae=("ae", "mean"), mse=("se", "mean")).reset_index()
-    g["rmse"] = g["mse"] ** 0.5
-    return g.drop(columns="mse")
+@st.cache_data(show_spinner=False)
+def errors(models, level):
+    """Error per row at the chosen level. 'item' scores each item-day; 'category' and 'total' first add the item forecasts and
+    actuals up, so the totals are always the sum of the item-level forecasts."""
+    d = rows()
+    d = d[d["model"].isin(models)]
+    if level == "item":
+        g = d.assign(grp=d["cat"])
+    elif level == "category":
+        g = d.groupby(["model", "cat", "origin", "date"], as_index=False)[["forecast", "actual"]].sum().assign(grp=lambda x: x["cat"])
+    else:
+        g = d.groupby(["model", "origin", "date"], as_index=False)[["forecast", "actual"]].sum().assign(grp="All items")
+    e = g["forecast"] - g["actual"]
+    g = g.assign(ae=e.abs(), se=e ** 2, wd=g["date"].dt.dayofweek, h=(g["date"] - g["origin"]).dt.days)
+    return g[["model", "grp", "wd", "h", "ae", "se"]]
+
+
+def cut(g, by):
+    """MAE and RMSE per model and group, pooled over the rows (every item-day, category-day or total-day counts once)."""
+    t = g.groupby(["model", by]).agg(mae=("ae", "mean"), mse=("se", "mean")).reset_index()
+    t["rmse"] = t["mse"] ** 0.5
+    return t.drop(columns="mse")

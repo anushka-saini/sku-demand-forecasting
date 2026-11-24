@@ -75,6 +75,20 @@ with right:
     # ------------------------------------------------------------ step 1: the forecast
     st.markdown(f"### Step 1: Forecast")
     st.markdown(f"**{item}**, {h} days from **{start:%d %b %Y} to {end:%d %b %Y}**, model **{nm[m]}**.")
+
+    # your own adjustment: scale the whole forecast, then optionally edit single days
+    with st.expander("Adjust the forecast (optional)"):
+        mult = st.slider("Scale the model forecast by", 0.5, 1.5, 1.0, 0.05, key="fc_mult",
+                         help="1.00 keeps the model forecast. 1.10 adds ten percent to every day.")
+        ed = pd.DataFrame({"Date": fw["date"].dt.strftime("%a %d %b"), "Model forecast": fw["forecast"].round(2).to_numpy(),
+                           "Your forecast": (fw["forecast"] * mult).round(2).to_numpy()})
+        ed = st.data_editor(ed, hide_index=True, width="stretch", disabled=["Date", "Model forecast"],
+                            key=f"fc_edit_{item}_{origin:%Y%m%d}_{m}_{h}_{mult}")
+        mine = np.clip(ed["Your forecast"].astype(float).to_numpy(), 0, None)
+    edited = int((np.abs(mine - (fw["forecast"] * mult).round(2).to_numpy()) > 1e-9).sum())
+    changed = mult != 1.0 or edited > 0
+    if not changed:
+        mine = fw["forecast"].to_numpy()          # untouched: use the model's own numbers, not the rounded ones in the table
     fig = go.Figure()
     fig.add_vrect(x0=start, x1=end, fillcolor="rgba(128,128,128,0.08)", line_width=0)
     fig.add_trace(go.Scatter(x=hist["date"], y=hist["sales"], name="sales so far", mode="lines", line=dict(color="#222222", width=1.8)))
@@ -82,6 +96,8 @@ with right:
                              fillcolor="rgba(0,114,178,0.16)", line=dict(width=0), name="80% band", hoverinfo="skip"))
     fig.add_trace(go.Scatter(x=fw["date"], y=fw["forecast"], name=f"{nm[m]} forecast", mode="lines",
                              line=dict(color=COL.get(m, "#0072B2"), width=2.4)))
+    if changed:
+        fig.add_trace(go.Scatter(x=fw["date"], y=mine, name="your adjusted forecast", mode="lines", line=dict(color="#E0A040", width=2.2, dash="dash")))
     if revealed:
         a = fc_actuals(item, origin, [m, "seasonal_naive", "sarima"])
         a = a[a["date"] <= end]
@@ -152,6 +168,27 @@ with right:
             st.markdown(f"**You vs the model:** your guess {guess:.0f}, the model {ftot:.0f}, actual {atot:.0f}. "
                         + {"you": "You were closer.", "the model": "The model was closer.", "tie": "A tie."}[who])
 
+        # your adjusted forecast against the model, on the same days
+        ym = errors(mine, aa)
+        if changed:
+            res = "better" if ym["mae"] < s["mae"] else "worse" if ym["mae"] > s["mae"] else "the same"
+            st.markdown(f"**Your adjusted forecast vs the model:** MAE {ym['mae']:.2f} against {s['mae']:.2f} for the model, so yours was **{res}**.")
+        else:
+            res = "kept the model forecast"
+            st.markdown("**Your adjusted forecast vs the model:** you kept the model forecast.")
+
+        # one line in the session log for each different set of choices
+        gk = None if guess is None else float(guess)
+        key = (item, str(origin), m, h, round(float(mult), 2), tuple(np.round(mine, 2)), gk)
+        done = ss.setdefault("fc_logged", set())
+        if key not in done:
+            done.add(key)
+            ss.setdefault("fc_log", []).append({
+                "Item": item, "Window": span(origin), "Model": nm[m], "Days": h, "Scale": round(float(mult), 2), "Days edited": edited,
+                "Model MAE": round(s["mae"], 2), "Your MAE": round(ym["mae"], 2), "Your forecast was": res,
+                "Guess": gk, "Model total": round(ftot), "Actual total": round(atot),
+                "Closer": "no guess" if gk is None else closer(gk, ftot, atot)})
+
         # the three worst days, and what kind of day they were
         fl = fc_flags(item, origin).set_index("date")
         worst = worst_days(fa, aa)
@@ -194,13 +231,27 @@ with right:
               {"label": "Order-up-to level", "value": f"{adv['level']:.0f}", "help": "Forecast demand over the lead time plus safety stock."},
               {"label": "Suggested order", "value": f"{max(0.0, adv['level'] - hand):.0f}", "compare": "level minus stock on hand"}])
 
-    # ------------------------------------------------------------ download
+    # ------------------------------------------------------------ download and the session log
+    if changed:
+        table["Your forecast"] = np.round(mine, 2)
     if revealed:
         csv = table.drop(columns=["Worst-day note"]).to_csv(index=False)
     else:
         csv = table.to_csv(index=False)
     st.download_button("Download this forecast as CSV", csv.encode("utf-8"), file_name=f"forecast_{item}_{origin:%Y%m%d}_{m}.csv",
                        mime="text/csv", key="fc_dl")
+    log = ss.get("fc_log", [])
+    with st.expander(f"Session log ({len(log)} reveals)"):
+        if not log:
+            st.caption("Each reveal adds a line here: what you changed and how it did against the model.")
+        else:
+            ld = pd.DataFrame(log)
+            st.dataframe(ld, hide_index=True, width="stretch")
+            st.download_button("Download the log as CSV", ld.to_csv(index=False).encode("utf-8"), file_name="forecaster_session_log.csv",
+                               mime="text/csv", key="fc_log_dl")
+            if st.button("Clear the log", key="fc_log_clear"):
+                ss["fc_log"] = []                  # the set of logged choices stays, so the current reveal is not added again
+                st.rerun()
 
 # ---------------------------------------------------------------- track record over the whole test set
 st.divider()

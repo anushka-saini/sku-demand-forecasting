@@ -94,10 +94,64 @@ def test_xgboost_band_coverage_matches_the_garch_table():
     assert np.isclose(((x["actual"] >= x["lo"]) & (x["actual"] <= x["hi"])).mean(), want)
 
 
-def test_pooled_error_by_category_matches_the_leaderboard_pooled_mae():
-    d = lab.test_errors()
+def test_pooled_error_matches_the_leaderboard_pooled_mae():
+    g = lab.errors(("xgboost", "sarima", "seasonal_naive"), "item")
     lb = pd.read_csv(T / "final_leaderboard.csv").set_index("model")
     for m in ("xgboost", "sarima", "seasonal_naive"):
-        assert np.isclose(d.loc[d["model"] == m, "ae"].mean(), lb.loc[m, "pooled_mae"]), m
-        assert np.isclose((d.loc[d["model"] == m, "se"].mean()) ** 0.5, lb.loc[m, "pooled_rmse"]), m
-    assert set(lab.cut(d, ["xgboost"], "wd")["wd"]) == set(range(7))
+        x = g[g["model"] == m]
+        assert np.isclose(x["ae"].mean(), lb.loc[m, "pooled_mae"]), m
+        assert np.isclose(x["se"].mean() ** 0.5, lb.loc[m, "pooled_rmse"]), m
+    assert set(lab.cut(g, "wd")["wd"]) == set(range(7))
+
+
+def test_forecast_day_errors_match_the_saved_horizon_file():
+    hz = pd.read_csv(T / "final_horizon.csv")
+    c = lab.cut(lab.errors(("xgboost", "sarima"), "item"), "h")
+    for m in ("xgboost", "sarima"):
+        a, b = c[c["model"] == m].set_index("h"), hz[hz["model"] == m].set_index("h")
+        assert np.allclose(a["mae"], b["mae"]) and np.allclose(a["rmse"], b["rmse"])
+
+
+def test_category_totals_agree_with_the_saved_totals_file():
+    tot = pd.read_csv(T / "final_totals_level.csv").set_index("model")
+    c = lab.errors(tuple(tot.index), "category")
+    for m, r in tot.iterrows():
+        x = c[c["model"] == m]
+        assert np.isclose(x["ae"].mean(), r["mae"]) and np.isclose(x["se"].mean() ** 0.5, r["rmse"]), m
+
+
+def test_total_level_is_the_sum_of_the_item_forecasts():
+    d = lab.rows()
+    d = d[d["model"] == "xgboost"]
+    one = d.groupby("date")[["forecast", "actual"]].sum()
+    g = lab.errors(("xgboost",), "total")
+    assert len(g) == len(one) == 168
+    assert np.isclose(g["ae"].sum(), (one["forecast"] - one["actual"]).abs().sum())
+
+
+# ---------------------------------------------------------------- the SKU Tracker and Value Added tables
+
+def test_item_windows_shape_and_bias_sign():
+    from utils import track
+    w = track.item_windows()
+    assert len(w) == 150 * 6 * 21
+    x = w[(w["model"] == "xgboost")].iloc[0]
+    d = pd.read_parquet(T / "final_forecasts.parquet", filters=[("model", "==", "xgboost"), ("split", "==", "test"),
+                                                                  ("item_id", "==", x["item_id"]), ("origin", "==", x["origin"])])
+    assert np.isclose(x["bias"], (d["forecast"] - d["actual"]).mean()) and np.isclose(x["mae"], (d["forecast"] - d["actual"]).abs().mean())
+
+
+def test_movers_orders_by_the_size_of_the_change():
+    from utils import track
+    o = pd.to_datetime(["2016-01-01", "2016-02-01", "2016-03-01"])
+    w = pd.DataFrame({"item_id": ["a"] * 3 + ["b"] * 3, "origin": list(o) * 2, "mae": [1, 5, 4, 2, 2.5, 2.4]})
+    mv = track.movers(w, k=2)
+    assert mv.iloc[0]["item_id"] == "a" and np.isclose(mv.iloc[0]["change"], 4)
+
+
+def test_bias_flags_use_a_band_of_average_demand_and_skip_zero_items():
+    from utils import track
+    o = pd.to_datetime(["2016-01-01", "2016-02-01", "2016-03-01"])
+    w = pd.DataFrame({"item_id": ["a"] * 3 + ["z"] * 3, "origin": list(o) * 2, "bias": [3, 3, 0.5, 1, 1, 1], "demand": [10, 10, 10, 0, 0, 0]})
+    f = track.bias_flags(w, 0.10).set_index("item_id")
+    assert list(f.index) == ["a"] and f.loc["a", "outside"] == 2 and f.loc["a", "direction"] == "over-forecast"

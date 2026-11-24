@@ -63,6 +63,7 @@ ss_.index = [nm[m] for m in ss_.index]
 ss_.columns = ["Demand over the lead time", "Safety stock", "Reorder point"]
 st.markdown("**Safety stock and reorder point per item** (units, average over the 150 items; lead time 7 days, 95% target)")
 st.dataframe(ss_.round(1), width="stretch")
+download(ss_.round(2).reset_index(names="Model"), "inventory_safety_stock_reorder_point.csv", key="dl_inv_ss")
 one = st.selectbox("One item", sorted(it["item_id"].unique()), key="fs_item")
 x = it[(it["item_id"] == one) & (it["model"] == b)].iloc[0]
 kpis([{"label": f"Demand over {int(x['lead_time'])} days", "value": f"{x['lt_demand']:.0f}", "compare": nm[b]},

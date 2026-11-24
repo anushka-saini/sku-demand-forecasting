@@ -7,7 +7,8 @@ import streamlit as st
 
 FIGS = Path(__file__).resolve().parents[2] / "outputs" / "figures"
 
-ACCENT = "#1F6F8B"          # the one interface accent: links, the closing box, single-series charts
+ACCENT = "#0E7C86"          # teal, the interface accent: links, the closing box, single-series charts
+NAVY, AMBER = "#0B1F33", "#E0A040"
 NEUTRAL = "#8C8C8C"
 DARK = "#5B6670"
 GOOD, BAD = "#2E7D5B", "#B0463C"
@@ -30,9 +31,9 @@ p.question {font-size: 1.06rem; opacity: 0.85; margin: 0 0 1.1rem 0; max-width: 
 .kpi .value {font-size: 1.75rem; font-weight: 700; line-height: 1.2; margin-top: 0.2rem; font-variant-numeric: tabular-nums;}
 .kpi .compare {font-size: 0.8rem; opacity: 0.75; margin-top: 0.15rem;}
 .kpi .compare.good {color: #2E7D5B; opacity: 1;} .kpi .compare.bad {color: #B0463C; opacity: 1;}
-.tells {border-left: 4px solid #1F6F8B; background: rgba(31,111,139,0.08); border-radius: 4px; padding: 0.7rem 1rem;
+.tells {border-left: 4px solid #0E7C86; background: rgba(14,124,134,0.08); border-radius: 4px; padding: 0.7rem 1rem;
         margin: 1.6rem 0 0.4rem 0; max-width: 62rem;}
-.tells .head {font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #1F6F8B;
+.tells .head {font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: #0E7C86;
               margin-bottom: 0.2rem;}
 .verdict {border: 2px solid #B26B00; background: rgba(178,107,0,0.07); border-radius: 6px; padding: 0.8rem 1.1rem;
            margin: 0.8rem 0 1.6rem 0; max-width: 62rem;}
@@ -43,9 +44,27 @@ p.question {font-size: 1.06rem; opacity: 0.85; margin: 0 0 1.1rem 0; max-width: 
 .simulated b {color: #B26B00;}
 .takeaway {font-size: 0.92rem; margin: -0.4rem 0 1.4rem 0; opacity: 0.85;}
 .chart-title {font-size: 1.08rem; font-weight: 600; margin: 1.0rem 0 0.1rem 0;}
+.hero {background: linear-gradient(135deg, #0B1F33 0%, #0E4A5C 60%, #0E7C86 100%); color: #FFFFFF; border-radius: 14px;
+        padding: 2.4rem 2.2rem 1.9rem 2.2rem; margin: 0.2rem 0 1rem 0;}
+.hero h1 {color: #FFFFFF; font-size: 2.5rem !important; line-height: 1.15; margin: 0 0 0.6rem 0 !important;}
+.hero .sub {font-size: 1.12rem; opacity: 0.92; max-width: 46rem;}
+.hero .tag {display: inline-block; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #E0A040; margin-bottom: 0.5rem;}
+.cards {display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.9rem; margin: 0.4rem 0 1.2rem 0;}
+.card {border: 1px solid rgba(128,128,128,0.25); border-top: 3px solid #E0A040; border-radius: 8px; padding: 0.9rem 1rem;}
+.card .t {font-weight: 700; margin-bottom: 0.25rem;} .card .d {font-size: 0.9rem; opacity: 0.8;}
+.steps {display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin: 0.4rem 0 1.2rem 0;}
+.step {border-left: 3px solid #0E7C86; padding: 0.3rem 0.8rem; background: rgba(14,124,134,0.07); border-radius: 4px;}
+.step .n {font-size: 0.75rem; font-weight: 700; color: #0E7C86; letter-spacing: 0.06em;} .step .t {font-weight: 600;} .step .d {font-size: 0.85rem; opacity: 0.8;}
+.qa {border-left: 3px solid #E0A040; padding: 0.2rem 0.9rem; margin: 0.5rem 0;}
+.qa .q {font-weight: 700;} .qa .a {opacity: 0.88;}
+@media (max-width: 640px) {
+  .hero {padding: 1.3rem 1.1rem 1.1rem 1.1rem;} .hero h1 {font-size: 1.55rem !important;} .hero .sub {font-size: 1rem;}
+  .block-container {padding-left: 1rem; padding-right: 1rem;}
+}
 @media (prefers-color-scheme: dark) {
+  .step .n {color: #3FC1B8;} .step {border-left-color: #3FC1B8; background: rgba(63,193,184,0.10);}
   .kpi .compare.good {color: #5CC08F;} .kpi .compare.bad {color: #E8857B;}
-  .tells .head {color: #6FB6CF;} .tells {border-left-color: #6FB6CF; background: rgba(111,182,207,0.10);}
+  .tells .head {color: #3FC1B8;} .tells {border-left-color: #3FC1B8; background: rgba(63,193,184,0.10);}
   .simulated b {color: #E0A040;}
   .verdict {border-color: #E0A040; background: rgba(224,160,64,0.09);} .verdict .head {color: #E0A040;}
 }
@@ -170,8 +189,14 @@ def apply_item_filters(items, f, shift_col="has_shift"):
     return d
 
 
+# fill these in: one line per team member
+TEAM = ["Team member 1 (roll no. to add)", "Team member 2 (roll no. to add)"]
+
+
 def footer(f):
     sc, w = f["scope"], f["scope"]["windows"]["W1"]
     st.markdown(f"<div class='footer'>California, {sc['ax_ay_items']['value']:,} high-volume items, sales added across "
                 f"the four stores. Forecasts tested on {w['first_eval_day']} to {w['last_eval_day']}. All numbers are "
-                f"read from the saved results in outputs/ when the page loads.</div>", unsafe_allow_html=True)
+                f"read from the saved results in outputs/ when the page loads.<br>"
+                f"Team: {html.escape(' · '.join(TEAM))}. Data: M5 Forecasting - Accuracy, Walmart, via Kaggle. "
+                f"A course project; stock costs are assumptions, not Walmart figures.</div>", unsafe_allow_html=True)

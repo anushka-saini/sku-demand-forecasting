@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "dashboard"))
 from utils.data import SCHEMA  # noqa: E402
 
-PAGES = ["home", "data_final", "final_leaderboard", "model_lab", "forecaster", "final_stock", "diagnostics", "method_final"]
+PAGES = ["home", "data_final", "final_leaderboard", "model_lab", "forecaster", "sku_tracker", "value_added", "final_stock", "diagnostics", "method_final"]
 # built from pieces so this file does not match itself
 COURSE = ["M" + "1", "M" + "2", "M" + "3", "mile" + "stone", "mid" + "-sem", "mid" + "sem", "pha" + "se", "syn" + "opsis"]
 FILLER = ["rob" + "ust", "lever" + "age", "del" + "ve", "compre" + "hensive", "key " + "takeaways"]

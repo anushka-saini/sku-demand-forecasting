@@ -4,7 +4,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.final import FC_FILES, TABLES, fc_index, load, need_results
-from utils.ui import chart, kpis, page, style, tells
+from utils.ui import chart, download, kpis, page, style, tells
 
 need_results()
 items = get("items")
@@ -44,6 +44,30 @@ t.index = [c.title() for c in t.index]
 st.dataframe(t.style.format({"Days with no sales": "{:.1%}"}), width="stretch")
 st.caption("Days with no sales are measured on the 150 final items from August 2015 on, the period the forecasts cover.")
 
+download(t.reset_index(names="Category"), "data_categories.csv", key="dl_data_cat")
+
+# how the study items were chosen
+st.markdown("#### How the 726 products were chosen: ABC and XYZ classes")
+st.markdown("Products are classed inside each category, on their sales from their first sale on (leading zeros trimmed), with the four stores added up.\n"
+            "- **Volume (ABC):** rank products by total units sold. **A** is the products that together make up the first 70% of the category's units, "
+            "**B** the next 20% (70% to 90%), **C** the last 10%.\n"
+            "- **Variability (XYZ):** the coefficient of variation of daily sales (standard deviation over the mean). **X** is 0.5 or below, "
+            "**Y** is above 0.5 up to 1.0, **Z** is above 1.0.\n"
+            "- **Kept:** classes **AX** and **AY**, the high-volume products with low to medium variability.")
+ab = items.assign(abc_class=items["abc_class"].fillna("?"), xyz_class=items["xyz_class"].fillna("?"))
+cp = st.radio("Show", ["All categories"] + [c.title() for c in cats], horizontal=True, key="data_abc")
+ab = ab if cp == "All categories" else ab[ab["category"] == cp.upper()]
+grid = ab.groupby(["abc_class", "xyz_class"]).size().unstack(fill_value=0).reindex(index=["A", "B", "C"], columns=["X", "Y", "Z"], fill_value=0)
+grid.index = [f"{c} (volume)" for c in grid.index]
+grid.columns = [f"{c} (variability)" for c in grid.columns]
+st.dataframe(grid.style.apply(lambda col: ["background-color: rgba(14,124,134,0.28)" if (i < 1 and col.name[0] in "XY") else "" for i in range(len(col))]),
+             width="stretch")
+kept = ab[ab["segment"].isin(["AX", "AY"])]
+st.caption(f"Products per class. The shaded cells (AX and AY) are the study set: {len(kept)} of {len(ab)} products, "
+           f"{kept['total_sales'].sum() / ab['total_sales'].sum():.0%} of the units. The classes use the whole sales history, including the test months, "
+           "so the choice of products is not strictly out of sample.")
+download(grid.reset_index(names="ABC"), "data_abc_xyz.csv", key="dl_data_abc")
+
 # weekly sales of the 726 items, with the three parts of the history shaded
 pick = st.radio("Category", ["All"] + [c.title() for c in cats], horizontal=True, key="data_cat")
 w = get("sales_weekly").merge(scope[["item_id", "category"]], on="item_id")
@@ -67,6 +91,7 @@ chart(style(fig, height=380, legend=False), f"Weekly sales, {pick.lower()} produ
 sp = split.copy()
 sp.columns = ["Part", "Forecast dates", "First day", "Last day"]
 st.dataframe(sp, hide_index=True, width="stretch")
+download(sp, "data_split.csv", key="dl_data_split")
 st.caption("Each forecast looks 28 days ahead from a forecast date. Sales before that date are all a model may see.")
 tells(f"{len(final_items)} of the {len(scope)} study products are compared in full, and about {zall:.0%} of their item-days are zero. "
       "Zero days are kept as they are, so some may be stock-outs rather than lack of demand.")
