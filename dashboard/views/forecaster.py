@@ -6,7 +6,7 @@ import streamlit as st
 from utils.final import COL, FC_MODELS, best_info, fc_actuals, fc_flags, fc_history, fc_index, fc_past_errors, fc_summary, \
     fc_window, forecaster_ready, load, names, need_results
 from utils.score import LEAD, LEVEL, closer, coverage, errors, order_advice, totals, verdict, worst_days
-from utils.ui import chart, kpis, page, style, tells, verdict_box
+from utils.ui import chart, ink, kpis, page, style, tells, verdict_box
 
 need_results()
 if not forecaster_ready():
@@ -91,7 +91,7 @@ with right:
         mine = fw["forecast"].to_numpy()          # untouched: use the model's own numbers, not the rounded ones in the table
     fig = go.Figure()
     fig.add_vrect(x0=start, x1=end, fillcolor="rgba(128,128,128,0.08)", line_width=0)
-    fig.add_trace(go.Scatter(x=hist["date"], y=hist["sales"], name="sales so far", mode="lines", line=dict(color="#222222", width=1.8)))
+    fig.add_trace(go.Scatter(x=hist["date"], y=hist["sales"], name="sales so far", mode="lines", line=dict(color=ink(), width=1.8)))
     fig.add_trace(go.Scatter(x=pd.concat([fw["date"], fw["date"][::-1]]), y=pd.concat([fw["hi"], fw["lo"][::-1]]), fill="toself",
                              fillcolor="rgba(0,114,178,0.16)", line=dict(width=0), name="80% band", hoverinfo="skip"))
     fig.add_trace(go.Scatter(x=fw["date"], y=fw["forecast"], name=f"{nm[m]} forecast", mode="lines",

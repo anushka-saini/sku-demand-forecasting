@@ -74,6 +74,14 @@ p.question {font-size: 1.06rem; opacity: 0.85; margin: 0 0 1.1rem 0; max-width: 
 """
 
 
+def ink():
+    """The colour for a line that has to show on either theme: dark on the light theme, pale on the dark one."""
+    try:
+        return "#E8EEF4" if st.context.theme.type == "dark" else "#0B1F33"
+    except Exception:
+        return "#0B1F33"
+
+
 def topbar(items, ca_items):
     st.markdown(f"<div class='topbar'><span class='brand'>SKU Demand Forecasting</span>"
                 f"<span class='sub'>Walmart M5 · California stores · {items:,} of {ca_items:,} items</span></div>",

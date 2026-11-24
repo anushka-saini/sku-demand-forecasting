@@ -4,7 +4,7 @@ import streamlit as st
 
 from utils.data import get
 from utils.final import FC_FILES, TABLES, fc_index, load, need_results
-from utils.ui import chart, download, kpis, page, style, tells
+from utils.ui import chart, download, ink, kpis, page, style, tells
 
 need_results()
 items = get("items")
@@ -79,14 +79,14 @@ s = split.set_index("part")
 tr_end = pd.Timestamp(s.loc["train", "last_day"])
 va0, va1 = pd.Timestamp(s.iloc[1]["first_day"]), pd.Timestamp(s.iloc[3]["last_day"])
 te0, te1 = pd.Timestamp(s.iloc[4]["first_day"]), pd.Timestamp(s.iloc[4]["last_day"])
-fig = go.Figure(go.Scatter(x=w["week_start"], y=w["units"], mode="lines", line=dict(color="#222222", width=1.6), name="weekly units"))
-for a, z, c, lab in [(w["week_start"].min(), tr_end, "rgba(128,128,128,0.10)", "training"),
-                     (va0, va1, "rgba(230,159,0,0.22)", "validation"), (te0, te1, "rgba(0,114,178,0.20)", "test")]:
-    fig.add_vrect(x0=a, x1=z, fillcolor=c, line_width=0, annotation_text=lab, annotation_position="top left")
+fig = go.Figure(go.Scatter(x=w["week_start"], y=w["units"], mode="lines", line=dict(color=ink(), width=1.6), name="weekly units"))
+for a, z, c, lab, pos in [(w["week_start"].min(), tr_end, "rgba(128,128,128,0.12)", "training", "top left"),
+                          (va0, va1, "rgba(224,160,64,0.30)", "validation", "bottom left"), (te0, te1, "rgba(14,124,134,0.30)", "test", "top left")]:
+    fig.add_vrect(x0=a, x1=z, fillcolor=c, line_width=0, annotation_text=lab, annotation_position=pos, annotation_font_color=ink())
 fig.update_yaxes(title="units a week, all study products", rangemode="tozero")
 fig.update_xaxes(title="week")
 chart(style(fig, height=380, legend=False), f"Weekly sales, {pick.lower()} products: training, validation and test",
-      "Models learn on the grey part, are tuned on the validation part, and are scored once on the test part.", key="data_series")
+      "Models learn on the training part, are tuned on the validation part, and are scored once on the test part.", key="data_series")
 
 sp = split.copy()
 sp.columns = ["Part", "Forecast dates", "First day", "Last day"]
